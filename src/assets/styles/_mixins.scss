@@ -1,0 +1,4 @@
+@mixin focus-outline {
+  outline: var(--stroke-strong) solid var(--accent);
+  outline-offset: var(--space-2);
+}
