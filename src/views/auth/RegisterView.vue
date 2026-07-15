@@ -9,6 +9,9 @@ import ProfileIcon from '~icons/icons-16/profile'
 import EmailIcon from '~icons/icons-16/email'
 import HideIcon from '~icons/icons-16/hide'
 import AuthSecondaryAction from './AuthSecondaryAction.vue'
+import { useAuthStore } from '../../stores/auth'
+import { useRouter } from 'vue-router'
+import { ApiError } from '../../api/client'
 
 const isPasswordVisible = ref(false)
 
@@ -87,9 +90,30 @@ function validate(): boolean {
   return ok
 }
 
-function handleSubmit() {
+const authStore = useAuthStore()
+const router = useRouter()
+
+async function handleSubmit() {
   if (!validate()) return
-  // TODO: send data to POST /auth/register
+
+  try {
+    await authStore.register({
+      email: email.value,
+      password: password.value,
+      display_name: name.value,
+    })
+    router.push('/')
+  } catch (e) {
+    if (e instanceof ApiError && e.status === 400) {
+      emailError.value = t(
+        'auth.validation.emailAlreadyExists',
+      )
+    } else {
+      emailError.value = t(
+        'general.error.somethingWentWrong',
+      )
+    }
+  }
 }
 </script>
 

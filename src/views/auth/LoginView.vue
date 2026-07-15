@@ -8,6 +8,9 @@ import ShowIcon from '~icons/icons-16/show'
 import HideIcon from '~icons/icons-16/hide'
 import EmailIcon from '~icons/icons-16/email'
 import AuthSecondaryAction from './AuthSecondaryAction.vue'
+import { useAuthStore } from '../../stores/auth'
+import { useRouter } from 'vue-router'
+import { ApiError } from '../../api/client'
 
 const isPasswordVisible = ref(false)
 
@@ -52,16 +55,31 @@ function validate(): boolean {
       'auth.validation.passwordRequired',
     )
     ok = false
-  } else if (password.value.length < 8) {
-    passwordError.value = t('auth.validation.wrongPassword')
   }
 
   return ok
 }
 
-function handleSubmit() {
+const authStore = useAuthStore()
+const router = useRouter()
+
+async function handleSubmit() {
   if (!validate()) return
-  // TODO: send data to POST /auth/jwt/login
+
+  try {
+    await authStore.login(email.value, password.value)
+    router.push('/')
+  } catch (e) {
+    if (e instanceof ApiError && e.status === 400) {
+      passwordError.value = t(
+        'auth.validation.invalidCredentials',
+      )
+    } else {
+      passwordError.value = t(
+        'general.error.somethingWentWrong',
+      )
+    }
+  }
 }
 </script>
 

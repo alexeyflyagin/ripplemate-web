@@ -33,6 +33,9 @@ const ru: typeof en = {
       password: 'Пароль',
       confirmPassword: 'Подтвердите пароль',
     },
+    error: {
+      somethingWentWrong: 'Что-то пошло не так',
+    },
   },
 }
 

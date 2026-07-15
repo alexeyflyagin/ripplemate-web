@@ -33,5 +33,8 @@ export default {
       password: 'Password',
       confirmPassword: 'Confirm password',
     },
+    error: {
+      somethingWentWrong: 'Something went wrong',
+    },
   },
 }
