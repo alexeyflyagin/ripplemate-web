@@ -11,19 +11,19 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
-      meta: { requiresAuth: true },
+      meta: { state: 'authorized' },
     },
     {
       path: '/login',
       name: 'login',
       component: LoginView,
-      meta: { requiresGuest: true },
+      meta: { state: 'guest' },
     },
     {
       path: '/register',
       name: 'register',
       component: RegisterView,
-      meta: { requiresGuest: true },
+      meta: { state: 'guest' },
     },
   ],
 })
@@ -31,11 +31,17 @@ const router = createRouter({
 router.beforeEach((to) => {
   const authStore = useAuthStore()
 
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+  if (
+    to.meta.state === 'authorized' &&
+    !authStore.isAuthenticated
+  ) {
     return { name: 'login' }
   }
 
-  if (to.meta.requiresGuest && authStore.isAuthenticated) {
+  if (
+    to.meta.state === 'guest' &&
+    authStore.isAuthenticated
+  ) {
     return { name: 'home' }
   }
 })

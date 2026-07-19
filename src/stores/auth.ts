@@ -5,7 +5,7 @@ import {
   register as registerApi,
 } from '../api/auth'
 import type { RegisterRequest } from '../api/types'
-import { isTokenExpired } from '../api/jwt'
+import { isJWTTokenExpired } from './utils'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(
@@ -14,7 +14,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => {
     if (token.value === null) return false
-    return !isTokenExpired(token.value)
+    return !isJWTTokenExpired(token.value)
   })
 
   async function login(email: string, password: string) {
@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('token', response.access_token)
   }
 
-  async function register(data: RegisterRequest) {
+  async function registerAndLogin(data: RegisterRequest) {
     await registerApi(data)
     await login(data.email, data.password)
   }
@@ -33,5 +33,11 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('token')
   }
 
-  return { token, isAuthenticated, login, register, logout }
+  return {
+    token,
+    isAuthenticated,
+    login,
+    register: registerAndLogin,
+    logout,
+  }
 })

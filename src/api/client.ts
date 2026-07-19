@@ -35,9 +35,7 @@ export async function request<T>(
     try {
       const data = await response.json()
       detail = data.detail
-    } catch {
-      // тела нет
-    }
+    } catch {}
     throw new ApiError(response.status, detail)
   }
 

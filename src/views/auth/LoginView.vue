@@ -12,6 +12,11 @@ import { useAuthStore } from '../../stores/auth'
 import { useRouter } from 'vue-router'
 import { ApiError } from '../../api/client'
 
+const { t } = useI18n()
+
+const authStore = useAuthStore()
+const router = useRouter()
+
 const isPasswordVisible = ref(false)
 
 const email = ref('')
@@ -20,13 +25,6 @@ const password = ref('')
 const emailError = ref('')
 const passwordError = ref('')
 
-watch(email, () => {
-  emailError.value = ''
-})
-watch(password, () => {
-  passwordError.value = ''
-})
-
 const passwordType = computed(() =>
   isPasswordVisible.value ? 'text' : 'password',
 )
@@ -34,7 +32,12 @@ const passwordIcon = computed(() =>
   isPasswordVisible.value ? ShowIcon : HideIcon,
 )
 
-const { t } = useI18n()
+watch(email, () => {
+  emailError.value = ''
+})
+watch(password, () => {
+  passwordError.value = ''
+})
 
 function validate(): boolean {
   emailError.value = ''
@@ -59,9 +62,6 @@ function validate(): boolean {
 
   return ok
 }
-
-const authStore = useAuthStore()
-const router = useRouter()
 
 async function handleSubmit() {
   if (!validate()) return

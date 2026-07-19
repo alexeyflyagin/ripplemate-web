@@ -13,7 +13,10 @@ import { useAuthStore } from '../../stores/auth'
 import { useRouter } from 'vue-router'
 import { ApiError } from '../../api/client'
 
-const isPasswordVisible = ref(false)
+const { t } = useI18n()
+
+const authStore = useAuthStore()
+const router = useRouter()
 
 const name = ref('')
 const email = ref('')
@@ -24,6 +27,8 @@ const nameError = ref('')
 const emailError = ref('')
 const passwordError = ref('')
 const confirmPasswordError = ref('')
+
+const isPasswordVisible = ref(false)
 
 watch(name, () => {
   nameError.value = ''
@@ -44,8 +49,6 @@ const passwordType = computed(() =>
 const passwordIcon = computed(() =>
   isPasswordVisible.value ? ShowIcon : HideIcon,
 )
-
-const { t } = useI18n()
 
 function validate(): boolean {
   nameError.value = ''
@@ -89,9 +92,6 @@ function validate(): boolean {
 
   return ok
 }
-
-const authStore = useAuthStore()
-const router = useRouter()
 
 async function handleSubmit() {
   if (!validate()) return
