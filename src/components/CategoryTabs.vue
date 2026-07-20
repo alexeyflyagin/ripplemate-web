@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import type { Tab } from './CategoryTab.types.ts'
+import type {
+  FollowTargetTab,
+  Tab,
+} from './CategoryTab.types.ts'
 import { watch, onMounted, ref } from 'vue'
 import CategoryTab from './CategoryTab.vue'
 import CaretDownIcon from '~icons/icons-12/caret-down'
@@ -14,6 +17,13 @@ let resizeObserver: ResizeObserver | null = null
 const selectedIndex = defineModel<number>('selectedIndex', {
   default: 0,
 })
+
+const followTarget = defineModel<FollowTargetTab | null>(
+  'followTarget',
+  {
+    default: null,
+  },
+)
 
 const containerEl = ref<HTMLElement>()
 const listEl = ref<HTMLElement>()
@@ -35,17 +45,52 @@ watch(selectedIndex, updateListOffset)
 watch(isDragging, () => {
   console.log(isDragging.value)
 })
+watch(followTarget, (newValue, oldValue) => {
+  if (!newValue) {
+    if (oldValue && oldValue.progress >= 0.5)
+      selectedIndex.value = oldValue.targetIndex
+    updateListOffset()
+    return
+  }
+
+  const currentOffset = getOffsetForTab(selectedIndex.value)
+  const targetOffset = getOffsetForTab(newValue.targetIndex)
+
+  if (currentOffset === null || targetOffset === null)
+    return
+
+  listOffset.value =
+    currentOffset +
+    (targetOffset - currentOffset) * newValue.progress
+
+  const currentWidth =
+    tabEls.value[selectedIndex.value]?.offsetWidth
+  const targetWidth =
+    tabEls.value[newValue.targetIndex]?.offsetWidth
+
+  if (!currentWidth || !targetWidth) return
+
+  indicatorWidth.value =
+    currentWidth +
+    (targetWidth - currentWidth) * newValue.progress
+})
+
+function getOffsetForTab(index: number): number {
+  const tab = tabEls.value[index]
+  const container = containerEl.value
+  if (!tab || !container) return 0
+
+  const containerCenter = container.offsetWidth / 2
+  const tabCenter = tab.offsetLeft + tab.offsetWidth / 2
+
+  return containerCenter - tabCenter
+}
 
 function updateListOffset() {
   const selectedTab = tabEls.value[selectedIndex.value]
-  const container = containerEl.value
-  if (!selectedTab || !container) return
+  if (!selectedTab) return
 
-  const containerCenter = container.offsetWidth / 2
-  const tabCenter =
-    selectedTab.offsetLeft + selectedTab.offsetWidth / 2
-
-  listOffset.value = containerCenter - tabCenter
+  listOffset.value = getOffsetForTab(selectedIndex.value)
   indicatorWidth.value = selectedTab.offsetWidth
 }
 
@@ -159,6 +204,7 @@ function getClosestTabIndex(): number {
 }
 
 function onPointerDown(event: PointerEvent) {
+  if (followTarget.value) return
   isPreDragging = true
   startX = event.clientX
   startOffset = listOffset.value
@@ -188,6 +234,7 @@ function onPointerUp() {
 }
 
 function onTabClick(index: number) {
+  if (followTarget.value) return
   if (Math.abs(offset) > 5) return
   selectedIndex.value = index
 }
@@ -222,6 +269,7 @@ onMounted(async () => {
       class="tabs__list"
       ref="listEl"
       :class="{
+        'tabs__list--is-following': followTarget,
         'tabs__list--dragging': isDragging,
         'tabs__list--animated': isReady,
       }"
@@ -240,6 +288,8 @@ onMounted(async () => {
     <div
       class="tabs__active-indicator"
       :class="{
+        'tabs__active-indicator--is-following':
+          followTarget,
         'tabs__active-indicator--dragging': isDragging,
         'tabs__active-indicator--animated': isReady,
       }"
@@ -288,7 +338,9 @@ onMounted(async () => {
 }
 
 .tabs__active-indicator--dragging,
-.tabs__list--dragging {
+.tabs__active-indicator--is-following,
+.tabs__list--dragging,
+.tabs__list--is-following {
   transition: none;
 }
 
