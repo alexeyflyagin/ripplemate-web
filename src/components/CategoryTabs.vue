@@ -324,6 +324,14 @@ onUnmounted(() => {
     black calc(100% - 60px),
     transparent 100%
   );
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 60px,
+    black calc(100% - 60px),
+    transparent 100%
+  );
 }
 
 .tabs__list {
