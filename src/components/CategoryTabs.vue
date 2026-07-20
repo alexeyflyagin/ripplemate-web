@@ -1,0 +1,306 @@
+<script setup lang="ts">
+import type { Tab } from './CategoryTab.types.ts'
+import { watch, onMounted, ref } from 'vue'
+import CategoryTab from './CategoryTab.vue'
+import CaretDownIcon from '~icons/icons-12/caret-down'
+import { nextPaint } from '@/utils/nextPaint.ts'
+
+defineProps<{
+  tabs: Tab[]
+}>()
+
+let resizeObserver: ResizeObserver | null = null
+
+const selectedIndex = defineModel<number>('selectedIndex', {
+  default: 0,
+})
+
+const containerEl = ref<HTMLElement>()
+const listEl = ref<HTMLElement>()
+const tabEls = ref<HTMLElement[]>([])
+
+const listOffset = ref(0)
+
+const indicatorWidth = ref(0)
+
+const isReady = ref(false)
+
+const isDragging = ref(false)
+let isPreDragging = false
+let startX = 0
+let startOffset = 0
+let offset = 0
+
+watch(selectedIndex, updateListOffset)
+watch(isDragging, () => {
+  console.log(isDragging.value)
+})
+
+function updateListOffset() {
+  const selectedTab = tabEls.value[selectedIndex.value]
+  const container = containerEl.value
+  if (!selectedTab || !container) return
+
+  const containerCenter = container.offsetWidth / 2
+  const tabCenter =
+    selectedTab.offsetLeft + selectedTab.offsetWidth / 2
+
+  listOffset.value = containerCenter - tabCenter
+  indicatorWidth.value = selectedTab.offsetWidth
+}
+
+function checkBoundaries(offset: number): number {
+  const containerWidth = containerEl.value!.offsetWidth
+  const firstTabWidth = tabEls.value.at(0)!.offsetWidth
+  const lastTabWidth = tabEls.value.at(-1)!.offsetWidth
+  const listWidth = listEl.value!.offsetWidth
+
+  const center = containerWidth / 2
+  const maxOffset = center - firstTabWidth / 2
+  const minOffset = center - listWidth + lastTabWidth / 2
+
+  if (offset > maxOffset) return maxOffset
+  if (offset < minOffset) return minOffset
+  return offset
+}
+
+function updateIndicatorWidth() {
+  const container = containerEl.value
+  if (!container || !indicatorWidth.value) return
+  if (tabEls.value.length === 0) return
+  if (tabEls.value.length === 1) {
+    indicatorWidth.value = tabEls.value[0]!.offsetWidth
+  }
+
+  const containerCenter = container.offsetWidth / 2
+
+  type TabInfo = {
+    el: HTMLElement
+    distance: number
+    center: number
+  }
+
+  const leftTab = tabEls.value.reduce<TabInfo | null>(
+    (acc, tab) => {
+      const center =
+        tab.offsetLeft +
+        tab.offsetWidth / 2 +
+        listOffset.value
+      if (center > containerCenter) return acc
+      if (!acc || center > acc.center) {
+        return {
+          el: tab,
+          distance: Math.abs(center - containerCenter),
+          center,
+        }
+      }
+      return acc
+    },
+    null,
+  )
+
+  const rightTab = tabEls.value.reduce<TabInfo | null>(
+    (acc, tab) => {
+      const center =
+        tab.offsetLeft +
+        tab.offsetWidth / 2 +
+        listOffset.value
+      if (center <= containerCenter) return acc
+      if (!acc || center < acc.center) {
+        return {
+          el: tab,
+          distance: Math.abs(center - containerCenter),
+          center,
+        }
+      }
+      return acc
+    },
+    null,
+  )
+
+  if (!leftTab || !rightTab) return
+
+  const lDistance = leftTab.distance
+  const rDistance = rightTab.distance
+
+  const totalDistance = lDistance + rDistance
+  const progress =
+    totalDistance === 0 ? 0 : lDistance / totalDistance
+
+  indicatorWidth.value =
+    leftTab.el.offsetWidth +
+    (rightTab.el.offsetWidth - leftTab.el.offsetWidth) *
+      progress
+}
+
+function getClosestTabIndex(): number {
+  const container = containerEl.value
+  if (!container) return selectedIndex.value
+
+  const containerCenter = container.offsetWidth / 2
+
+  let closestIndex = 0
+  let closestDistance = Infinity
+
+  tabEls.value.forEach((tab, index) => {
+    const tabCenter =
+      tab.offsetLeft +
+      tab.offsetWidth / 2 +
+      listOffset.value
+    const distance = Math.abs(tabCenter - containerCenter)
+
+    if (distance < closestDistance) {
+      closestDistance = distance
+      closestIndex = index
+    }
+  })
+
+  return closestIndex
+}
+
+function onPointerDown(event: PointerEvent) {
+  isPreDragging = true
+  startX = event.clientX
+  startOffset = listOffset.value
+  offset = 0
+  ;(event.target as HTMLElement).setPointerCapture(
+    event.pointerId,
+  )
+}
+
+function onPointerMove(event: PointerEvent) {
+  if (!isPreDragging) return
+  offset = event.clientX - startX
+  if (!isDragging.value && Math.abs(offset) > 5)
+    isDragging.value = true
+  listOffset.value = checkBoundaries(startOffset + offset)
+  updateIndicatorWidth()
+}
+
+function onPointerUp() {
+  isPreDragging = false
+  if (!isDragging.value) return
+  isDragging.value = false
+
+  const closestIndex = getClosestTabIndex()
+  selectedIndex.value = closestIndex
+  updateListOffset()
+}
+
+function onTabClick(index: number) {
+  if (Math.abs(offset) > 5) return
+  selectedIndex.value = index
+}
+
+onMounted(async () => {
+  await document.fonts.ready
+  await nextPaint()
+
+  resizeObserver = new ResizeObserver(async () => {
+    isReady.value = false
+    updateListOffset()
+    await nextPaint()
+    isReady.value = true
+  })
+
+  if (containerEl.value) {
+    resizeObserver.observe(containerEl.value)
+  }
+})
+</script>
+
+<template>
+  <div
+    class="tabs"
+    ref="containerEl"
+    @pointerdown="onPointerDown"
+    @pointermove="onPointerMove"
+    @pointerup="onPointerUp"
+    @pointercancel="onPointerUp"
+  >
+    <div
+      class="tabs__list"
+      ref="listEl"
+      :class="{
+        'tabs__list--dragging': isDragging,
+        'tabs__list--animated': isReady,
+      }"
+      :style="{ transform: `translateX(${listOffset}px)` }"
+    >
+      <CategoryTab
+        v-for="(tab, index) in tabs"
+        :key="tab.value"
+        :label="tab.label"
+        :ref="(el: any) => (tabEls[index] = el?.$el)"
+        :active="index === selectedIndex"
+        @click="() => onTabClick(index)"
+      />
+    </div>
+
+    <div
+      class="tabs__active-indicator"
+      :class="{
+        'tabs__active-indicator--dragging': isDragging,
+        'tabs__active-indicator--animated': isReady,
+      }"
+      :style="{ width: indicatorWidth + 'px' }"
+    />
+
+    <CaretDownIcon class="tabs__drop-down-icon" />
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.tabs {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  background-color: white;
+  touch-action: none;
+  cursor: grab;
+  padding: var(--space-4) 0;
+  user-select: none;
+}
+
+.tabs__list {
+  display: inline-flex;
+}
+
+.tabs__active-indicator {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  top: 50%;
+  width: 100px;
+  height: 40px;
+  border-radius: var(--corner-large);
+  background-color: var(--accent);
+  opacity: var(--opacity-20);
+  pointer-events: none;
+}
+
+.tabs__active-indicator--animated {
+  transition: width 0.3s ease;
+}
+
+.tabs__list--animated {
+  transition: transform 0.3s ease;
+}
+
+.tabs__active-indicator--dragging,
+.tabs__list--dragging {
+  transition: none;
+}
+
+.tabs__drop-down-icon {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  bottom: 6px;
+  color: var(--accent);
+  opacity: var(--opacity-40);
+}
+</style>

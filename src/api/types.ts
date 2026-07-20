@@ -12,6 +12,12 @@ export interface User {
   is_verified: boolean
 }
 
+export interface Category {
+  id: number
+  name: string
+  created_at: string
+}
+
 export interface LoginResponse {
   access_token: string
   token_type: string
