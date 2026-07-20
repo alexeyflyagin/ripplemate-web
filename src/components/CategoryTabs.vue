@@ -296,7 +296,12 @@ onMounted(async () => {
       :style="{ width: indicatorWidth + 'px' }"
     />
 
-    <CaretDownIcon class="tabs__drop-down-icon" />
+    <CaretDownIcon
+      class="tabs__drop-down-icon"
+      :class="{
+        'tabs__drop-down-icon--is-dragging': isDragging,
+      }"
+    />
   </div>
 </template>
 
@@ -305,11 +310,19 @@ onMounted(async () => {
   position: relative;
   display: flex;
   overflow: hidden;
-  background-color: white;
+  background-color: transparent;
   touch-action: none;
   cursor: grab;
   padding: var(--space-4) 0;
   user-select: none;
+
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 60px,
+    black calc(100% - 60px),
+    transparent 100%
+  );
 }
 
 .tabs__list {
@@ -327,20 +340,27 @@ onMounted(async () => {
   background-color: var(--accent);
   opacity: var(--opacity-20);
   pointer-events: none;
+  transition: height 0.3s ease;
 }
 
 .tabs__active-indicator--animated {
-  transition: width 0.3s ease;
+  transition:
+    width 0.3s ease,
+    height 0.3s ease;
 }
 
 .tabs__list--animated {
   transition: transform 0.3s ease;
 }
 
-.tabs__active-indicator--dragging,
-.tabs__active-indicator--is-following,
+.tabs__active-indicator--dragging {
+  transition: height 0.3s ease;
+  height: 44px;
+}
+
 .tabs__list--dragging,
-.tabs__list--is-following {
+.tabs__list--is-following,
+.tabs__active-indicator--is-following {
   transition: none;
 }
 
@@ -354,5 +374,13 @@ onMounted(async () => {
   bottom: 6px;
   color: var(--accent);
   opacity: var(--opacity-40);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.tabs__drop-down-icon--is-dragging {
+  transform: translateX(-50%) translateY(4px);
+  opacity: 0;
 }
 </style>
