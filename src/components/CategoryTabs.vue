@@ -3,7 +3,7 @@ import type {
   FollowTargetTab,
   Tab,
 } from './CategoryTab.types.ts'
-import { watch, onMounted, ref } from 'vue'
+import { watch, onMounted, ref, onUnmounted } from 'vue'
 import CategoryTab from './CategoryTab.vue'
 import CaretDownIcon from '~icons/icons-12/caret-down'
 import { nextPaint } from '@/utils/nextPaint.ts'
@@ -42,9 +42,6 @@ let startOffset = 0
 let offset = 0
 
 watch(selectedIndex, updateListOffset)
-watch(isDragging, () => {
-  console.log(isDragging.value)
-})
 watch(followTarget, (newValue, oldValue) => {
   if (!newValue) {
     if (oldValue && oldValue.progress >= 0.5)
@@ -254,6 +251,10 @@ onMounted(async () => {
     resizeObserver.observe(containerEl.value)
   }
 })
+
+onUnmounted(() => {
+  resizeObserver?.disconnect()
+})
 </script>
 
 <template>
@@ -327,6 +328,7 @@ onMounted(async () => {
 
 .tabs__list {
   display: inline-flex;
+  flex-shrink: 0;
 }
 
 .tabs__active-indicator {
