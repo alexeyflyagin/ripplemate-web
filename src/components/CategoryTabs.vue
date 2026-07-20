@@ -291,7 +291,8 @@ onUnmounted(() => {
       :class="{
         'tabs__active-indicator--is-following':
           followTarget,
-        'tabs__active-indicator--dragging': isDragging,
+        'tabs__active-indicator--dragging':
+          isDragging || followTarget,
         'tabs__active-indicator--animated': isReady,
       }"
       :style="{ width: indicatorWidth + 'px' }"
@@ -300,7 +301,8 @@ onUnmounted(() => {
     <CaretDownIcon
       class="tabs__drop-down-icon"
       :class="{
-        'tabs__drop-down-icon--is-dragging': isDragging,
+        'tabs__drop-down-icon--is-dragging':
+          isDragging || followTarget,
       }"
     />
   </div>
