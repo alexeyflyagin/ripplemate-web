@@ -21,7 +21,7 @@ const emit = defineEmits<{
 </template>
 
 <style lang="scss" scoped>
-@use '../assets/styles/text-styles' as *;
+@use '@/assets/styles/text-styles' as *;
 
 .category-tab {
   @include text-label;

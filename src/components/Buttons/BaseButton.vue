@@ -36,8 +36,8 @@ const emit = defineEmits<{
 </template>
 
 <style scoped lang="scss">
-@use '../assets/styles/text-styles' as *;
-@use '../assets/styles/mixins' as *;
+@use '@/assets/styles/text-styles' as *;
+@use '@/assets/styles/mixins' as *;
 
 .base-button {
   @include text-label-emphasized;

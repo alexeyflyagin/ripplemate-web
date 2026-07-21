@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import BaseTextField from '../../components/BaseTextField.vue'
-import BaseButton from '../../components/BaseButton.vue'
+import BaseTextField from '@/components/TextFields/BaseTextField.vue'
+import BaseButton from '@/components/Buttons/BaseButton.vue'
 import AuthHeader from './AuthHeader.vue'
 import { useI18n } from 'vue-i18n'
 import ShowIcon from '~icons/icons-16/show'
@@ -9,9 +9,9 @@ import ProfileIcon from '~icons/icons-16/profile'
 import EmailIcon from '~icons/icons-16/email'
 import HideIcon from '~icons/icons-16/hide'
 import AuthSecondaryAction from './AuthSecondaryAction.vue'
-import { useAuthStore } from '../../stores/auth'
+import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
-import { ApiError } from '../../api/client'
+import { ApiError } from '@/api/client'
 
 const { t } = useI18n()
 

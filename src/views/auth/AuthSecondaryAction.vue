@@ -21,7 +21,7 @@ defineProps<{
 </template>
 
 <style lang="scss" scoped>
-@use '../../assets//styles/text-styles' as *;
+@use '@/assets//styles/text-styles' as *;
 
 .auth-secondary-action {
   @include text-caption;

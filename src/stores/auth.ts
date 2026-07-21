@@ -3,8 +3,8 @@ import { ref, computed } from 'vue'
 import {
   login as loginApi,
   register as registerApi,
-} from '../api/auth'
-import type { RegisterRequest } from '../api/types'
+} from '@/api/auth'
+import type { RegisterRequest } from '@/api/types'
 import { isJWTTokenExpired } from './utils'
 
 export const useAuthStore = defineStore('auth', () => {

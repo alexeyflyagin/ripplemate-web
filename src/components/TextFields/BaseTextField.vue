@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseIconButton from '../components/BaseIconButton.vue'
+import BaseIconButton from '@/components/Buttons/BaseButton.vue'
 import {
   ref,
   computed,
@@ -206,7 +206,7 @@ function autoResize(event: Event) {
 </template>
 
 <style lang="scss" scoped>
-@use '../assets/styles/text-styles' as *;
+@use '@/assets/styles/text-styles' as *;
 
 .text-field-wrapper {
   display: flex;
