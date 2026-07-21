@@ -272,7 +272,7 @@ onUnmounted(() => {
       :class="{
         'tabs__list--is-following': followTarget,
         'tabs__list--dragging': isDragging,
-        'tabs__list--animated': isReady,
+        'tabs__list--is-ready': isReady,
       }"
       :style="{ transform: `translateX(${listOffset}px)` }"
     >
@@ -293,7 +293,7 @@ onUnmounted(() => {
           followTarget,
         'tabs__active-indicator--dragging':
           isDragging || followTarget,
-        'tabs__active-indicator--animated': isReady,
+        'tabs__active-indicator--is-ready': isReady,
       }"
       :style="{ width: indicatorWidth + 'px' }"
     />
@@ -339,6 +339,7 @@ onUnmounted(() => {
 .tabs__list {
   display: inline-flex;
   flex-shrink: 0;
+  opacity: 0;
 }
 
 .tabs__active-indicator {
@@ -350,18 +351,20 @@ onUnmounted(() => {
   height: 40px;
   border-radius: var(--corner-large);
   background-color: var(--accent);
-  opacity: var(--opacity-20);
   pointer-events: none;
   transition: height 0.3s ease;
+  opacity: 0;
 }
 
-.tabs__active-indicator--animated {
+.tabs__active-indicator--is-ready {
+  opacity: var(--opacity-20);
   transition:
     width 0.3s ease,
     height 0.3s ease;
 }
 
-.tabs__list--animated {
+.tabs__list--is-ready {
+  opacity: 1;
   transition: transform 0.3s ease;
 }
 
