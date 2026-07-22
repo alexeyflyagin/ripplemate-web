@@ -16,7 +16,7 @@ withDefaults(
 )
 
 const emit = defineEmits<{
-  click: []
+  click: [event: MouseEvent]
 }>()
 </script>
 
@@ -26,7 +26,7 @@ const emit = defineEmits<{
     :class="`base-button--${variant}`"
     :disabled="disabled"
     :type="type"
-    @click="emit('click')"
+    @click="emit('click', $event)"
   >
     <span v-if="icon" class="base-button__icon">
       <component :is="icon" width="100%" height="100%" />

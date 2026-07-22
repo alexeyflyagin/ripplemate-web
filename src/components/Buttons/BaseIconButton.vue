@@ -5,6 +5,10 @@ defineProps<{
   icon: Component
   disabled?: boolean
 }>()
+
+const emit = defineEmits<{
+  click: [event: MouseEvent]
+}>()
 </script>
 
 <template>
@@ -12,6 +16,7 @@ defineProps<{
     class="base-icon-button"
     :disabled="disabled"
     type="button"
+    @click="emit('click', $event)"
   >
     <span class="base-icon-button__icon">
       <component :is="icon" width="100%" height="100%" />
