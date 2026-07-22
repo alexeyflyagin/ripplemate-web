@@ -39,6 +39,10 @@ export async function request<T>(
     throw new ApiError(response.status, detail)
   }
 
+  if (response.status === 204) {
+    return undefined as T
+  }
+
   return response.json() as Promise<T>
 }
 
@@ -55,6 +59,21 @@ export function postJson<T>(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
+}
+
+export function patchJson<T>(
+  path: string,
+  body: unknown,
+): Promise<T> {
+  return request<T>(path, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+}
+
+export function del(path: string): Promise<void> {
+  return request<void>(path, { method: 'DELETE' })
 }
 
 export function postForm<T>(

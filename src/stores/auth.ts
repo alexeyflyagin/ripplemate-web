@@ -4,7 +4,7 @@ import {
   login as loginApi,
   register as registerApi,
 } from '@/api/auth'
-import type { RegisterRequest } from '@/api/types'
+import type { UserCreate } from '@/api/types'
 import { isJWTTokenExpired } from './utils'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('token', response.access_token)
   }
 
-  async function registerAndLogin(data: RegisterRequest) {
+  async function registerAndLogin(data: UserCreate) {
     await registerApi(data)
     await login(data.email, data.password)
   }

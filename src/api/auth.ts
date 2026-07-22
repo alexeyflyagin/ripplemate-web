@@ -1,14 +1,14 @@
 import { postJson, postForm } from './client'
 import type {
-  RegisterRequest,
-  User,
+  UserCreate,
+  UserRead,
   LoginResponse,
 } from './types'
 
 export function register(
-  data: RegisterRequest,
-): Promise<User> {
-  return postJson<User>('/auth/register', data)
+  data: UserCreate,
+): Promise<UserRead> {
+  return postJson<UserRead>('/auth/register', data)
 }
 
 export function login(
