@@ -237,6 +237,7 @@ function onPointerUp() {
 }
 
 function onTabClick(event: MouseEvent, index: number) {
+  updateListOffset()
   if (followTarget.value) return
   if (Math.abs(offset) > 5) return
   if (
@@ -427,6 +428,7 @@ onUnmounted(() => {
   bottom: 6px;
   color: var(--accent);
   opacity: var(--opacity-40);
+  pointer-events: none;
   transition:
     opacity 0.1s ease,
     transform 0.1s ease;
