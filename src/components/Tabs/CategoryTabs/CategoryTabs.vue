@@ -259,7 +259,6 @@ function onTabPointerDown(
   )
     return
 
-  emit('contextmenu', event, props.tabs[index])
   currentTabPointerDown.value = true
 }
 
