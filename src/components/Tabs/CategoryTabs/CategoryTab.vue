@@ -5,7 +5,9 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  click: []
+  click: [event: MouseEvent]
+  pointerdown: [event: MouseEvent]
+  pointerup: [event: MouseEvent]
 }>()
 </script>
 
@@ -14,7 +16,10 @@ const emit = defineEmits<{
     type="button"
     class="category-tab"
     :class="{ 'category-tab--active': active }"
-    @click="emit('click')"
+    @pointerdown="emit('pointerdown', $event)"
+    @pointerup="emit('pointerup', $event)"
+    @click="emit('click', $event)"
+    @contextmenu="emit('click', $event)"
   >
     {{ label }}
   </button>

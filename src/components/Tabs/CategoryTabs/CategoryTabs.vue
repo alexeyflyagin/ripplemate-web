@@ -8,7 +8,7 @@ import CategoryTab from './CategoryTab.vue'
 import CaretDownIcon from '~icons/icons-12/caret-down'
 import { nextPaint } from '@/utils/nextPaint.ts'
 
-defineProps<{
+const props = defineProps<{
   tabs: Tab[]
 }>()
 
@@ -25,6 +25,10 @@ const followTarget = defineModel<FollowTargetTab | null>(
   },
 )
 
+const emit = defineEmits<{
+  contextmenu: [event: MouseEvent, tab: Tab]
+}>()
+
 const containerEl = ref<HTMLElement>()
 const listEl = ref<HTMLElement>()
 const tabEls = ref<HTMLElement[]>([])
@@ -34,6 +38,8 @@ const listOffset = ref(0)
 const indicatorWidth = ref(0)
 
 const isReady = ref(false)
+
+const currentTabPointerDown = ref(false)
 
 const isDragging = ref(false)
 let isPreDragging = false
@@ -230,10 +236,37 @@ function onPointerUp() {
   updateListOffset()
 }
 
-function onTabClick(index: number) {
+function onTabClick(event: MouseEvent, index: number) {
   if (followTarget.value) return
   if (Math.abs(offset) > 5) return
+  if (
+    selectedIndex.value === index &&
+    props.tabs[index]?.clickable
+  ) {
+    emit('contextmenu', event, props.tabs[index])
+    currentTabPointerDown.value = false
+  }
   selectedIndex.value = index
+}
+
+function onTabPointerDown(
+  event: MouseEvent,
+  index: number,
+) {
+  if (
+    selectedIndex.value !== index ||
+    !props.tabs[index]?.clickable
+  )
+    return
+
+  emit('contextmenu', event, props.tabs[index])
+  currentTabPointerDown.value = true
+}
+
+function onTabPointerUp() {
+  if (currentTabPointerDown.value === false) return
+
+  currentTabPointerDown.value = false
 }
 
 onMounted(async () => {
@@ -282,7 +315,9 @@ onUnmounted(() => {
         :label="tab.label"
         :ref="(el: any) => (tabEls[index] = el?.$el)"
         :active="index === selectedIndex"
-        @click="() => onTabClick(index)"
+        @click="onTabClick($event, index)"
+        @pointerdown="onTabPointerDown($event, index)"
+        @pointerup="onTabPointerUp"
       />
     </div>
 
@@ -301,6 +336,10 @@ onUnmounted(() => {
     <CaretDownIcon
       class="tabs__drop-down-icon"
       :class="{
+        'tabs__drop-down-icon--pressed':
+          currentTabPointerDown,
+        'tabs__drop-down-icon--is-hidden':
+          !props.tabs[selectedIndex]?.clickable,
         'tabs__drop-down-icon--is-dragging':
           isDragging || followTarget,
       }"
@@ -390,11 +429,19 @@ onUnmounted(() => {
   color: var(--accent);
   opacity: var(--opacity-40);
   transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+    opacity 0.1s ease,
+    transform 0.1s ease;
 }
 
+.tabs__drop-down-icon--pressed {
+  transform: translateX(-50%) translateY(2px);
+}
+
+.tabs__drop-down-icon--is-hidden,
 .tabs__drop-down-icon--is-dragging {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
   transform: translateX(-50%) translateY(4px);
   opacity: 0;
 }
