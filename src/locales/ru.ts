@@ -2,6 +2,7 @@ import type en from './en'
 
 const ru: typeof en = {
   appName: 'RippleMate',
+  lang: 'РУС',
   auth: {
     loginHeader: 'Войдите в аккаунт',
     signupHeader: 'Создайте аккаунт',
@@ -25,13 +26,23 @@ const ru: typeof en = {
     action: {
       signup: 'Создать аккаунт',
       login: 'Войти',
+      logout: 'Выйти',
       letsGo: 'Поехали!',
+      edit: 'Редактировать',
+      delete: 'Удалить',
+      refresh: 'Обновить',
+      addWorkspace: 'Дообавить пространство',
     },
     label: {
+      all: 'Все',
       whatIsYourName: 'Как вас зовут?',
       email: 'Email',
       password: 'Пароль',
       confirmPassword: 'Подтвердите пароль',
+      workspaceName: 'Имя пространства',
+      font: 'Шрифт',
+      language: 'Язык',
+      theme: 'Тема',
     },
     error: {
       somethingWentWrong: 'Что-то пошло не так',

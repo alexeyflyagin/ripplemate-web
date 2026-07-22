@@ -1,5 +1,6 @@
 export default {
   appName: 'RippleMate',
+  lang: 'ENG',
   auth: {
     loginHeader: 'Log in to your account',
     signupHeader: 'Sign up',
@@ -25,13 +26,23 @@ export default {
     action: {
       signup: 'Sign up',
       login: 'Log in',
+      logout: 'Log out',
       letsGo: "Let's go!",
+      edit: 'Edit',
+      delete: 'Delete',
+      refresh: 'Refresh',
+      addWorkspace: 'Add workspace',
     },
     label: {
+      all: 'All',
       whatIsYourName: "What's your name?",
       email: 'Email',
       password: 'Password',
       confirmPassword: 'Confirm password',
+      workspaceName: 'Workspace name',
+      font: 'Font',
+      language: 'Language',
+      theme: 'Theme',
     },
     error: {
       somethingWentWrong: 'Something went wrong',
