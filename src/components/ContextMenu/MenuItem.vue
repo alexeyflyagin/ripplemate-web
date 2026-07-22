@@ -84,6 +84,7 @@ const emit = defineEmits<{
   padding: 12px;
   color: var(--text-muted);
   cursor: pointer;
+  user-select: none;
 
   &::after {
     content: '';
