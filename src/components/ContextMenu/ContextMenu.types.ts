@@ -1,5 +1,11 @@
 import type { Component } from 'vue'
 
+export interface MenuPos {
+  x: number
+  y: number
+  anchor?: MenuAnchor
+}
+
 export type MenuAnchor =
   | 'left-top'
   | 'center-top'

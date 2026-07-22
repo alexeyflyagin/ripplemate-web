@@ -19,6 +19,7 @@ const props = withDefaults(
     width?: string
     x: number
     y: number
+    data?: object
     anchor?: MenuAnchor
   }>(),
   {
@@ -28,7 +29,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  clickItem: [item: MenuItemData]
+  clickItem: [item: MenuItemData, data?: object]
 }>()
 
 const menuEl = ref<HTMLElement>()
@@ -210,7 +211,7 @@ onUnmounted(() => {
           v-for="item in items"
           :key="item.id"
           v-bind="item"
-          @click="emit('clickItem', item)"
+          @click="emit('clickItem', item, props.data)"
         />
       </div>
     </div>
