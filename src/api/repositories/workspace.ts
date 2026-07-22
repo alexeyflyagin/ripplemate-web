@@ -1,9 +1,9 @@
-import { del, get, patchJson, postJson } from './client'
+import { del, get, patchJson, postJson } from '../client'
 import type {
   WorkspaceCreate,
   WorkspaceRead,
   WorkspaceUpdate,
-} from './types'
+} from '../types'
 
 export function getWorkspaces(): Promise<WorkspaceRead[]> {
   return get<WorkspaceRead[]>('/workspaces')

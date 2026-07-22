@@ -1,9 +1,9 @@
-import { del, get, patchJson, postJson } from './client'
+import { del, get, patchJson, postJson } from '../client'
 import type {
   CategoryCreate,
   CategoryRead,
   CategoryUpdate,
-} from './types'
+} from '../types'
 
 export function createCategory(
   workspaceId: number,

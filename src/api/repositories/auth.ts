@@ -1,9 +1,9 @@
-import { postJson, postForm } from './client'
+import { postJson, postForm } from '../client'
 import type {
   UserCreate,
   UserRead,
   LoginResponse,
-} from './types'
+} from '../types'
 
 export function register(
   data: UserCreate,

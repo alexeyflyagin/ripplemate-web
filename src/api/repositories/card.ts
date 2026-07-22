@@ -1,10 +1,10 @@
-import { del, get, patchJson, postJson } from './client'
+import { del, get, patchJson, postJson } from '../client'
 import type {
   CardCreate,
   CardListResponse,
   CardRead,
   CardUpdate,
-} from './types'
+} from '../types'
 
 export function createCard(
   workspaceId: number,

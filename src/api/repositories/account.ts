@@ -1,9 +1,9 @@
-import { get, patchJson } from './client'
+import { get, patchJson } from '../client'
 import type {
   AccountRead,
   SettingsRead,
   SettingsUpdate,
-} from './types'
+} from '../types'
 
 export function getAccount(): Promise<AccountRead> {
   return get<AccountRead>('/account')

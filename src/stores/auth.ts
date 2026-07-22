@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import {
   login as loginApi,
   register as registerApi,
-} from '@/api/auth'
+} from '@/api/repositories/auth'
 import type { UserCreate } from '@/api/types'
 import { isJWTTokenExpired } from './utils'
 
