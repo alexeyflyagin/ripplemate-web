@@ -4,16 +4,16 @@ import type { Component } from 'vue'
 withDefaults(
   defineProps<{
     label: string
-    width?: string
     value?: string
     icon?: Component
     showDivider?: boolean
-    colors?: 'default' | 'danger'
+    color?: 'default' | 'danger'
     disabled?: boolean
     selected?: boolean
+    width?: string
   }>(),
   {
-    colors: 'default',
+    color: 'default',
   },
 )
 
@@ -31,8 +31,8 @@ const emit = defineEmits<{
       @click="emit('click')"
       :class="{
         'menu-item__button--selected': selected,
-        [`menu-item__button--${colors}`]:
-          colors !== 'default' && !selected,
+        [`menu-item__button--${color}`]:
+          color !== 'default' && !selected,
       }"
     >
       <span
