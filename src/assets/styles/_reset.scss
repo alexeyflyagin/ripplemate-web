@@ -21,3 +21,8 @@ textarea {
 * {
   -webkit-tap-highlight-color: transparent;
 }
+
+button,
+.clickable {
+  touch-action: manipulation;
+}
