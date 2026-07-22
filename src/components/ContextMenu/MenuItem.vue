@@ -95,8 +95,8 @@ const emit = defineEmits<{
     opacity: 0;
   }
 
-  &:hover {
-    &::after {
+  @media (hover: hover) {
+    &:hover::after {
       opacity: var(--opacity-8);
     }
   }
@@ -118,8 +118,13 @@ const emit = defineEmits<{
   &--selected {
     color: var(--text);
 
+    @media (hover: hover) {
+      &:hover::after {
+        opacity: var(--opacity-20);
+      }
+    }
+
     &::after,
-    &:hover::after,
     &:active::after {
       opacity: var(--opacity-20);
     }
