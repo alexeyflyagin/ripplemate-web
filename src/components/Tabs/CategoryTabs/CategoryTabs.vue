@@ -3,7 +3,13 @@ import type {
   FollowTargetTab,
   Tab,
 } from './CategoryTab.types.ts'
-import { watch, onMounted, ref, onUnmounted } from 'vue'
+import {
+  watch,
+  onMounted,
+  ref,
+  onUnmounted,
+  nextTick,
+} from 'vue'
 import CategoryTab from './CategoryTab.vue'
 import CaretDownIcon from '~icons/icons-12/caret-down'
 import { nextPaint } from '@/utils/nextPaint.ts'
@@ -47,7 +53,14 @@ let startX = 0
 let startOffset = 0
 let offset = 0
 
-watch(selectedIndex, updateListOffset)
+watch(selectedIndex, updateListOffset, { immediate: true })
+watch(
+  () => props.tabs,
+  async () => {
+    await nextTick()
+    updateListOffset()
+  },
+)
 watch(followTarget, (newValue, oldValue) => {
   if (!newValue) {
     if (oldValue && oldValue.progress >= 0.5)
