@@ -24,6 +24,8 @@ export const useAuthStore = defineStore('auth', () => {
     const response = await loginApi(email, password)
     token.value = response.access_token
     localStorage.setItem('token', response.access_token)
+
+    await initializeUserData()
   }
 
   async function registerAndLogin(data: UserCreate) {
