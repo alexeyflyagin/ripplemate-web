@@ -1,5 +1,4 @@
 import i18n from '@/i18n'
-import { getNextInArray } from '@/utils/getNextInArray'
 
 export const LOCALES = ['auto', 'en', 'ru'] as const
 export type Locale = (typeof LOCALES)[number]
@@ -23,8 +22,4 @@ function resolveLocale(
 
 export function applyLocale(locale: Locale) {
   i18n.global.locale.value = resolveLocale(locale)
-}
-
-export function getNextLocale(current: Locale): Locale {
-  return getNextInArray(LOCALES, current)
 }

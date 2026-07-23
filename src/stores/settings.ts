@@ -10,13 +10,15 @@ import {
 } from '@/api/repositories/account'
 import {
   applyTheme,
-  getNextTheme,
+  THEMES,
   watchSystemTheme,
 } from '@/composables/useTheme'
 import {
   applyLocale,
-  getNextLocale,
+  LOCALES,
 } from '@/composables/useLocale'
+import { getNextInArray } from '@/utils/getNextInArray'
+import { applyFont, FONTS } from '@/composables/useFont'
 
 export const useSettingsStore = defineStore(
   'settings',
@@ -32,9 +34,11 @@ export const useSettingsStore = defineStore(
 
         const theme = value?.theme ?? 'auto'
         const language = value?.language ?? 'auto'
+        const font = value?.font ?? 'sans-serif'
 
         applyTheme(theme)
         applyLocale(language)
+        applyFont(font)
 
         if (theme === 'auto') {
           stopWatchingSystemTheme = watchSystemTheme(() =>
@@ -58,7 +62,7 @@ export const useSettingsStore = defineStore(
         throw new Error('Settings were not loaded')
 
       await updateSettings({
-        theme: getNextTheme(settings.value.theme),
+        theme: getNextInArray(THEMES, settings.value.theme),
       })
     }
 
@@ -67,7 +71,19 @@ export const useSettingsStore = defineStore(
         throw new Error('Settings were not loaded')
 
       await updateSettings({
-        language: getNextLocale(settings.value.language),
+        language: getNextInArray(
+          LOCALES,
+          settings.value.language,
+        ),
+      })
+    }
+
+    async function nextFont() {
+      if (!settings.value)
+        throw new Error('Settings were not loaded')
+
+      await updateSettings({
+        font: getNextInArray(FONTS, settings.value.font),
       })
     }
 
@@ -82,6 +98,7 @@ export const useSettingsStore = defineStore(
       nextTheme,
       nextLanguage,
       resetSettings,
+      nextFont,
     }
   },
 )

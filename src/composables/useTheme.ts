@@ -1,9 +1,9 @@
-import { getNextInArray } from '@/utils/getNextInArray'
-
 export const THEMES = ['auto', 'dark', 'light'] as const
 export type Theme = (typeof THEMES)[number]
 
-function resolveTheme(theme: Theme): 'dark' | 'light' {
+export function resolveTheme(
+  theme: Theme,
+): Exclude<Theme, 'auto'> {
   if (theme === 'auto') {
     return window.matchMedia('(prefers-color-scheme: dark)')
       .matches
@@ -32,8 +32,4 @@ export function applyTheme(theme: Theme) {
     'data-theme',
     resolveTheme(theme),
   )
-}
-
-export function getNextTheme(current: Theme): Theme {
-  return getNextInArray(THEMES, current)
 }

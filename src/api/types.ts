@@ -1,3 +1,4 @@
+import type { Font } from '@/composables/useFont'
 import type { Locale } from '@/composables/useLocale'
 import type { Theme } from '@/composables/useTheme'
 
@@ -68,13 +69,13 @@ export interface CategoryUpdate {
 
 // Settings
 export interface SettingsRead {
-  font: string
+  font: Font
   language: Locale
   theme: Theme
 }
 
 export interface SettingsUpdate {
-  font?: string | null
+  font?: Font | null
   language?: Locale | null
   theme?: Theme | null
 }
