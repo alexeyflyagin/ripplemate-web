@@ -24,24 +24,27 @@ export const useSettingsStore = defineStore(
     const settings = ref<SettingsRead>()
     let stopWatchingSystemTheme: (() => void) | null = null
 
-    watch(settings, (value, oldValue) => {
-      if (!value) return
-
-      if (value.theme !== oldValue?.theme) {
-        applyTheme(value.theme)
-
+    watch(
+      settings,
+      (value) => {
+        console.log('watch')
         stopWatchingSystemTheme?.()
-        if (value.theme === 'auto') {
+        stopWatchingSystemTheme = null
+
+        const theme = value?.theme ?? 'auto'
+        const language = value?.language ?? 'auto'
+
+        applyTheme(theme)
+        applyLocale(language)
+
+        if (theme === 'auto') {
           stopWatchingSystemTheme = watchSystemTheme(() =>
-            applyTheme(value.theme),
+            applyTheme('auto'),
           )
         }
-      }
-
-      if (value.language !== oldValue?.language) {
-        applyLocale(value.language)
-      }
-    })
+      },
+      { immediate: true },
+    )
 
     async function getSettings() {
       settings.value = await getSettingsApi()
@@ -69,12 +72,17 @@ export const useSettingsStore = defineStore(
       })
     }
 
+    function resetSettings() {
+      settings.value = undefined
+    }
+
     return {
       settings,
       getSettings,
       updateSettings,
       nextTheme,
       nextLanguage,
+      resetSettings,
     }
   },
 )

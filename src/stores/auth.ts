@@ -48,6 +48,15 @@ export const useAuthStore = defineStore('auth', () => {
   function logout() {
     token.value = null
     localStorage.removeItem('token')
+
+    const settingsStore = useSettingsStore()
+    const accountStore = useAccountStore()
+    const workspaceStore = useWorkspaceStore()
+
+    settingsStore.resetSettings()
+    accountStore.account = undefined
+    workspaceStore.workspaces = []
+    workspaceStore.changeCurrentWorkspace(null)
   }
 
   return {
