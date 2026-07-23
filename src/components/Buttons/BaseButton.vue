@@ -95,7 +95,7 @@ const emit = defineEmits<{
 }
 
 .base-button--accent {
-  color: var(--white);
+  color: var(--bg);
   background-color: var(--accent);
 }
 
