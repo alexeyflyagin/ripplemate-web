@@ -10,15 +10,12 @@ const isOpened = defineModel<boolean>('isOpened', {
   default: true,
 })
 
-const items = defineModel<MenuItemData[]>('items', {
-  required: true,
-})
-
 const props = withDefaults(
   defineProps<{
     width?: string
     x: number
     y: number
+    items: MenuItemData[]
     payload?: object
     anchor?: MenuAnchor
   }>(),

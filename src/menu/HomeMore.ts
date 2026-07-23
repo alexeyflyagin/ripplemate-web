@@ -12,6 +12,7 @@ export interface HomeMoreMenuData {
   workspaceName: string
   font: string
   theme: string
+  language: string
   fontIcon: Component
   themeIcon: Component
 }
@@ -50,7 +51,7 @@ export function createHomeMoreMenu(
       id: 'language',
       label: t('general.label.language'),
       icon: LanguageIcon,
-      value: t('lang'),
+      value: data.language,
     },
     {
       id: 'theme',
