@@ -27,7 +27,6 @@ export const useSettingsStore = defineStore(
     watch(
       settings,
       (value) => {
-        console.log('watch')
         stopWatchingSystemTheme?.()
         stopWatchingSystemTheme = null
 
