@@ -1,3 +1,5 @@
+import { getNextInArray } from '@/utils/getNextInArray'
+
 export const THEMES = ['auto', 'dark', 'light'] as const
 export type Theme = (typeof THEMES)[number]
 
@@ -33,8 +35,5 @@ export function applyTheme(theme: Theme) {
 }
 
 export function getNextTheme(current: Theme): Theme {
-  let index = THEMES.indexOf(current)
-  index = index === -1 ? 0 : index + 1
-  if (index >= THEMES.length) index %= THEMES.length
-  return THEMES[index]!
+  return getNextInArray(THEMES, current)
 }
