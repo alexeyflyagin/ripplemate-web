@@ -12,8 +12,11 @@ import {
   applyTheme,
   getNextTheme,
   watchSystemTheme,
-  type Theme,
 } from '@/composables/useTheme'
+import {
+  applyLocale,
+  getNextLocale,
+} from '@/composables/useLocale'
 
 export const useSettingsStore = defineStore(
   'settings',
@@ -21,16 +24,22 @@ export const useSettingsStore = defineStore(
     const settings = ref<SettingsRead>()
     let stopWatchingSystemTheme: (() => void) | null = null
 
-    watch(settings, (value) => {
+    watch(settings, (value, oldValue) => {
       if (!value) return
-      const theme = value.theme as Theme
-      applyTheme(theme)
 
-      stopWatchingSystemTheme?.()
-      if (theme === 'auto') {
-        stopWatchingSystemTheme = watchSystemTheme(() =>
-          applyTheme(theme),
-        )
+      if (value.theme !== oldValue?.theme) {
+        applyTheme(value.theme)
+
+        stopWatchingSystemTheme?.()
+        if (value.theme === 'auto') {
+          stopWatchingSystemTheme = watchSystemTheme(() =>
+            applyTheme(value.theme),
+          )
+        }
+      }
+
+      if (value.language !== oldValue?.language) {
+        applyLocale(value.language)
       }
     })
 
@@ -43,10 +52,20 @@ export const useSettingsStore = defineStore(
     }
 
     async function nextTheme() {
-      if (!settings.value) return
+      if (!settings.value)
+        throw new Error('Settings were not loaded')
 
       await updateSettings({
-        theme: getNextTheme(settings.value.theme as Theme),
+        theme: getNextTheme(settings.value.theme),
+      })
+    }
+
+    async function nextLanguage() {
+      if (!settings.value)
+        throw new Error('Settings were not loaded')
+
+      await updateSettings({
+        language: getNextLocale(settings.value.language),
       })
     }
 
@@ -55,6 +74,7 @@ export const useSettingsStore = defineStore(
       getSettings,
       updateSettings,
       nextTheme,
+      nextLanguage,
     }
   },
 )
