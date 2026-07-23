@@ -43,7 +43,7 @@ const emit = defineEmits<{
 }
 
 .category-tab--active {
-  color: var(--accent);
+  color: var(--text);
   font-weight: 600;
 }
 </style>

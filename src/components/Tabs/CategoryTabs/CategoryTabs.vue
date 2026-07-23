@@ -426,7 +426,7 @@ onUnmounted(() => {
   bottom: 0;
   transform: translateX(-50%);
   bottom: 6px;
-  color: var(--accent);
+  color: var(--text-muted);
   opacity: var(--opacity-40);
   pointer-events: none;
   transition:
