@@ -1,5 +1,10 @@
 import type { Component } from 'vue'
 
+export type MenuClickHandler = (
+  item: MenuItemData,
+  payload: object | undefined,
+) => boolean | void
+
 export interface MenuPos {
   x: number
   y: number

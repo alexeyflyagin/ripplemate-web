@@ -29,7 +29,10 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  clickItem: [item: MenuItemData, payload?: object]
+  clickItem: [
+    item: MenuItemData,
+    payload: object | undefined,
+  ]
 }>()
 
 const menuEl = ref<HTMLElement>()
