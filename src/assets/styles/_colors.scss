@@ -15,7 +15,7 @@
   --white: #ffffff;
 }
 
-:root.dark {
+:root[data-theme='dark'] {
   --accent: #41c796;
   --error: #f77f71;
   --text: #ffffff;
