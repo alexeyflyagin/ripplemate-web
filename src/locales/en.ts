@@ -1,6 +1,5 @@
 export default {
   appName: 'RippleMate',
-  lang: 'ENG',
   auth: {
     loginHeader: 'Log in to your account',
     signupHeader: 'Sign up',
@@ -46,6 +45,19 @@ export default {
     },
     error: {
       somethingWentWrong: 'Something went wrong',
+    },
+    theme: {
+      auto: 'Auto',
+      light: 'Light',
+      dark: 'Dark',
+    },
+    state: {
+      loading: 'Loading...',
+    },
+    lang: {
+      ru: 'Русский',
+      en: 'English',
+      auto: 'Auto',
     },
   },
 }

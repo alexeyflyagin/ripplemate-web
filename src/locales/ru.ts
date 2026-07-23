@@ -2,7 +2,6 @@ import type en from './en'
 
 const ru: typeof en = {
   appName: 'RippleMate',
-  lang: 'РУС',
   auth: {
     loginHeader: 'Войдите в аккаунт',
     signupHeader: 'Создайте аккаунт',
@@ -46,6 +45,19 @@ const ru: typeof en = {
     },
     error: {
       somethingWentWrong: 'Что-то пошло не так',
+    },
+    theme: {
+      auto: 'Авто',
+      light: 'Светлая',
+      dark: 'Тёмная',
+    },
+    state: {
+      loading: 'Загрузка...',
+    },
+    lang: {
+      ru: 'Русский',
+      en: 'English',
+      auto: 'Авто',
     },
   },
 }
