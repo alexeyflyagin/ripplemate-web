@@ -1,3 +1,6 @@
+import type { Locale } from '@/composables/useLocale'
+import type { Theme } from '@/composables/useTheme'
+
 export interface UserCreate {
   email: string
   password: string
@@ -66,14 +69,14 @@ export interface CategoryUpdate {
 // Settings
 export interface SettingsRead {
   font: string
-  language: string
-  theme: string
+  language: Locale
+  theme: Theme
 }
 
 export interface SettingsUpdate {
   font?: string | null
-  language?: string | null
-  theme?: string | null
+  language?: Locale | null
+  theme?: Theme | null
 }
 
 // Workspace
