@@ -6,6 +6,9 @@ import {
 } from '@/api/repositories/auth'
 import type { UserCreate } from '@/api/types'
 import { isJWTTokenExpired } from './utils'
+import { useAccountStore } from './account'
+import { useSettingsStore } from './settings'
+import { useWorkspaceStore } from './workspace'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(
@@ -28,6 +31,18 @@ export const useAuthStore = defineStore('auth', () => {
     await login(data.email, data.password)
   }
 
+  async function initializeUserData() {
+    const accountStore = useAccountStore()
+    const settingsStore = useSettingsStore()
+    const workspaceStore = useWorkspaceStore()
+
+    await Promise.all([
+      accountStore.getAccount(),
+      settingsStore.getSettings(),
+      workspaceStore.getWorkspaces(),
+    ])
+  }
+
   function logout() {
     token.value = null
     localStorage.removeItem('token')
@@ -39,5 +54,6 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     register: registerAndLogin,
     logout,
+    initializeUserData,
   }
 })
