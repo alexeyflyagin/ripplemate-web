@@ -9,6 +9,7 @@ import { useCategoryStore } from '@/stores/category'
 import { useCategoryTabs } from './useTabs'
 import { useMoreMenu } from './useMoreMenu'
 import { useWorkspaceMenu } from './useWorkspaceMenu'
+import { useCategoryMenu } from './useCategoryMenu'
 
 const { t } = useI18n()
 
@@ -21,6 +22,7 @@ const {
   currentWorkspaceName,
   openWorkspaceMenu,
 } = useWorkspaceMenu(t)
+const { openCategoryMenu } = useCategoryMenu(t)
 
 async function onAddCategoryClick() {
   if (!categoryStore.categories) return
@@ -53,6 +55,7 @@ async function onAddCategoryClick() {
       class="tabs"
       :tabs="tabs"
       v-model:selected-index="currentTab"
+      @contextmenu="openCategoryMenu"
     />
   </div>
 </template>
