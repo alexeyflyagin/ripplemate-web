@@ -9,7 +9,7 @@ import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
+    // vueDevTools(),
     Icons({
       compiler: 'vue3',
       customCollections: {
