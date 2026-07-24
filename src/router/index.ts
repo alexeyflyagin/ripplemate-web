@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '@/views/auth/LoginView.vue'
 import RegisterView from '@/views/auth/RegisterView.vue'
-import HomeView from '@/views/main/HomeView/HomeView.vue'
+import MainView from '@/views/main/MainView/MainView.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
@@ -9,8 +9,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      name: 'main',
+      component: MainView,
       meta: { state: 'authorized' },
     },
     {
@@ -42,7 +42,7 @@ router.beforeEach((to) => {
     to.meta.state === 'guest' &&
     authStore.isAuthenticated
   ) {
-    return { name: 'home' }
+    return { name: 'main' }
   }
 })
 
