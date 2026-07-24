@@ -25,4 +25,5 @@ textarea {
 button,
 .clickable {
   touch-action: manipulation;
+  user-select: none;
 }
