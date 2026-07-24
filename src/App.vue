@@ -23,6 +23,7 @@ onMounted(async () => {
     v-model:is-opened="contextMenuStore.isOpened"
     :x="contextMenuStore.x"
     :y="contextMenuStore.y"
+    :anchor="contextMenuStore.anchor"
     :items="contextMenuStore.items"
     @click-item="contextMenuStore.handleClick"
   />
