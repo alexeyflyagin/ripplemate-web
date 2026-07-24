@@ -29,11 +29,6 @@ export function createHomeMoreMenu(
       disabled: true,
     },
     {
-      id: 'refresh',
-      label: t('general.action.refresh'),
-      icon: RefreshIcon,
-    },
-    {
       id: 'workspaceName',
       label: t('general.label.workspaceName'),
       icon: EditIcon,
