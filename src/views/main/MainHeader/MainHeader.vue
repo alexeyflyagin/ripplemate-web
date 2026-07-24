@@ -16,8 +16,11 @@ const categoryStore = useCategoryStore()
 
 const { tabs, currentTab } = useCategoryTabs(t)
 const { openMoreMenu } = useMoreMenu(t)
-const { currentWorkspaceName, openWorkspaceMenu } =
-  useWorkspaceMenu(t)
+const {
+  isMenuOpened,
+  currentWorkspaceName,
+  openWorkspaceMenu,
+} = useWorkspaceMenu(t)
 
 async function onAddCategoryClick() {
   if (!categoryStore.categories) return
@@ -37,6 +40,7 @@ async function onAddCategoryClick() {
       />
       <WorkspaceDropdown
         :label="currentWorkspaceName"
+        v-model:selected="isMenuOpened"
         class="toolbar__workspace-dropdown"
         @click="openWorkspaceMenu"
       />

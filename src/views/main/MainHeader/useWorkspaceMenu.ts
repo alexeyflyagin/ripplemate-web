@@ -1,7 +1,7 @@
 import type { MenuItemData } from '@/components/ContextMenu/ContextMenu.types'
 import { useWorkspaceStore } from '@/stores/workspace'
 import { getRect } from '@/utils/getRectByMouseEvent'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 import { createAddWorkspaceMenuItem } from './factories'
 import TickIcon from '~icons/icons-16/tick'
@@ -10,6 +10,8 @@ import { useContextMenuStore } from '@/stores/contextMenu'
 export function useWorkspaceMenu(t: ComposerTranslation) {
   const workspaceStore = useWorkspaceStore()
   const menuStore = useContextMenuStore()
+
+  const isMenuOpened = ref<boolean>(false)
 
   const currentWorkspaceName = computed(
     () =>
@@ -54,6 +56,14 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
       ]
     })
 
+    const stop = watch(
+      () => menuStore.isOpened,
+      (value) => {
+        isMenuOpened.value = value
+        if (!value) stop()
+      },
+    )
+
     menuStore.open({
       posX: rect.right - rect.width / 2,
       posY: rect.bottom + 4,
@@ -63,5 +73,9 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
     })
   }
 
-  return { currentWorkspaceName, openWorkspaceMenu }
+  return {
+    isMenuOpened,
+    currentWorkspaceName,
+    openWorkspaceMenu,
+  }
 }
