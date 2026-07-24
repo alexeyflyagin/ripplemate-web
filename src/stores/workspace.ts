@@ -10,7 +10,7 @@ import type {
   WorkspaceUpdate,
 } from '@/api/types'
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const CURRENT_WORKSPACE_ID = 'currentWorkspaceId'
 
@@ -98,6 +98,9 @@ export const useWorkspaceStore = defineStore(
         throw new Error('No current workspace selected')
 
       const deletedId = currentWorkspaceId.value
+      const index = workspaces.value.findIndex(
+        (w) => w.id == deletedId,
+      )
 
       await deleteWorkspaceApi(deletedId)
 
@@ -105,7 +108,14 @@ export const useWorkspaceStore = defineStore(
         (w) => w.id !== deletedId,
       )
 
-      changeCurrentWorkspace(null)
+      const newCurrentWorkspaceId =
+        workspaces.value[
+          index === 0 && workspaces.value.length > 0
+            ? 0
+            : index - 1
+        ]?.id ?? null
+
+      changeCurrentWorkspace(newCurrentWorkspaceId)
     }
 
     return {

@@ -32,6 +32,7 @@ export default {
       refresh: 'Refresh',
       addWorkspace: 'Add workspace',
       selectWorkspace: 'Select workspace',
+      deleteWorkspace: 'Delete workspace',
     },
     label: {
       all: 'All',

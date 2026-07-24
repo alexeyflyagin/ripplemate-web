@@ -22,6 +22,12 @@ export function useMoreMenu(t: ComposerTranslation) {
 
   async function onItemClick(item: MenuItemData) {
     switch (item.id) {
+      case 'editWorkspaceName':
+        //TODO
+        break
+      case 'deleteWorkspace':
+        await workspaceStore.deleteCurrentWorkspace()
+        break
       case 'font':
         await settingsStore.nextFont()
         return false
@@ -68,9 +74,10 @@ export function useMoreMenu(t: ComposerTranslation) {
         userDisplayName: accountStore.account
           ? accountStore.account.display_name
           : t('general.state.loading'),
-        workspaceName: workspaceStore.currentWorkspace
-          ? workspaceStore.currentWorkspace.name
-          : t('general.state.loading'),
+        workspaceName:
+          workspaceStore.currentWorkspace?.name,
+        canDeleteWorkspace:
+          workspaceStore.workspaces.length > 1,
       }),
     )
 

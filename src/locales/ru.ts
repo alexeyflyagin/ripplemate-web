@@ -32,6 +32,7 @@ const ru: typeof en = {
       refresh: 'Обновить',
       addWorkspace: 'Дообавить пространство',
       selectWorkspace: 'Выбрать пространтсво',
+      deleteWorkspace: 'Удалить пространство',
     },
     label: {
       all: 'Все',
