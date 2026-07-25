@@ -11,7 +11,11 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <button class="fab" @click="emit('click', $event)">
+  <button
+    class="fab"
+    @click="emit('click', $event)"
+    @contextmenu.prevent
+  >
     <span class="fab__icon-container">
       <component :is="icon" width="100%" height="100%" />
     </span>

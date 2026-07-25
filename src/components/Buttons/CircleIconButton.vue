@@ -14,6 +14,7 @@ const emit = defineEmits<{
   <button
     class="circle-button"
     @click="emit('click', $event)"
+    @contextmenu.prevent
   >
     <span class="circle-button__icon-container">
       <component :is="icon" width="100%" height="100%" />

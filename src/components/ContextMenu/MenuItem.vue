@@ -27,13 +27,14 @@ const emit = defineEmits<{
     <hr v-if="showDivider" class="menu-item__divider" />
     <button
       class="menu-item__button"
-      :disabled="disabled"
-      @click="emit('click')"
       :class="{
         'menu-item__button--selected': selected,
         [`menu-item__button--${color}`]:
           color !== 'default' && !selected,
       }"
+      :disabled="disabled"
+      @click="emit('click')"
+      @contextmenu.prevent
     >
       <span
         v-if="icon"

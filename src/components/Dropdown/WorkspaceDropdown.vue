@@ -26,6 +26,12 @@ const emit = defineEmits<{
         selected = !selected
       }
     "
+    @contextmenu.prevent="
+      (event) => {
+        emit('click', event, !selected)
+        selected = !selected
+      }
+    "
   >
     <span class="drop-down__label">{{ label }}</span>
     <span class="drop-down__icon">

@@ -24,6 +24,7 @@ const emit = defineEmits<{
       height: NAV_ITEM_SIZE + 'px',
     }"
     @click="emit('click', $event)"
+    @contextmenu.prevent
   >
     <span class="nav-item__icon-container">
       <component

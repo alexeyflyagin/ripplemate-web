@@ -27,6 +27,7 @@ const emit = defineEmits<{
     :disabled="disabled"
     :type="type"
     @click="emit('click', $event)"
+    @contextmenu.prevent
   >
     <span v-if="icon" class="base-button__icon">
       <component :is="icon" width="100%" height="100%" />

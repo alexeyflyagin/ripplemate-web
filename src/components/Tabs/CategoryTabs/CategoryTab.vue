@@ -19,7 +19,7 @@ const emit = defineEmits<{
     @pointerdown="emit('pointerdown', $event)"
     @pointerup="emit('pointerup', $event)"
     @click="emit('click', $event)"
-    @contextmenu="emit('click', $event)"
+    @contextmenu.prevent="emit('click', $event)"
   >
     {{ label }}
   </button>
