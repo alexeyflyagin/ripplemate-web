@@ -268,7 +268,7 @@ function autoResize(event: Event) {
 .text-field__label {
   @include text-label-emphasized;
   position: absolute;
-  top: 20px;
+  top: 22px;
   left: var(--space-8);
   transform-origin: left center;
   transform: translateY(0) scale(1.25);
