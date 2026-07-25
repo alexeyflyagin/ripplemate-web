@@ -16,7 +16,7 @@ const props = withDefaults(
     x: number
     y: number
     items: MenuItemData[]
-    payload?: object
+    payload?: string
     anchor?: MenuAnchor
   }>(),
   {
@@ -28,7 +28,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   clickItem: [
     item: MenuItemData,
-    payload: object | undefined,
+    payload: string | undefined,
   ]
 }>()
 

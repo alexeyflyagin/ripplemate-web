@@ -21,5 +21,5 @@ export interface MenuItemData {
 
 export type MenuClickHandler = (
   item: MenuItemData,
-  payload?: object,
+  payload?: string,
 ) => boolean | void | Promise<boolean | void>

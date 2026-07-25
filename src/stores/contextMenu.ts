@@ -20,6 +20,7 @@ export interface OpenMenuData {
     | ComputedRef<MenuItemData[]>
   menuAnchor?: MenuAnchor
   handler?: MenuClickHandler
+  payload?: string
 }
 
 export const useContextMenuStore = defineStore(
@@ -34,6 +35,7 @@ export const useContextMenuStore = defineStore(
     const x = ref(0)
     const y = ref(0)
     const anchor = ref<MenuAnchor | undefined>()
+    const payload = ref<string | undefined>()
 
     const items = computed<MenuItemData[]>(() => {
       const source = itemsSource.value
@@ -49,6 +51,7 @@ export const useContextMenuStore = defineStore(
       y.value = openData.posY
       anchor.value = openData.menuAnchor
       itemsSource.value = openData.menuItems
+      payload.value = openData.payload
       onItemClick = openData.handler
       isOpened.value = true
     }
@@ -60,7 +63,7 @@ export const useContextMenuStore = defineStore(
 
     async function handleClick(
       item: MenuItemData,
-      payload: object | undefined,
+      payload: string | undefined,
     ) {
       if (!onItemClick) return
 
@@ -74,6 +77,7 @@ export const useContextMenuStore = defineStore(
       x,
       y,
       anchor,
+      payload,
       open,
       close,
       handleClick,

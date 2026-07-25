@@ -25,6 +25,7 @@ onMounted(async () => {
     :y="contextMenuStore.y"
     :anchor="contextMenuStore.anchor"
     :items="contextMenuStore.items"
+    :payload="contextMenuStore.payload"
     @click-item="contextMenuStore.handleClick"
   />
 </template>
