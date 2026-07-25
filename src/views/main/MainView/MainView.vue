@@ -1,33 +1,27 @@
 <script setup lang="ts">
 import FAB from '@/components/NavBar/FAB.vue'
-import type { NavItemData } from '@/components/NavBar/NavBar.types'
+
 import NavBar from '@/components/NavBar/NavBar.vue'
-import { computed, ref } from 'vue'
-import HomeIcon from '~icons/icons-16/home'
-import HomeFilledIcon from '~icons/icons-16/home-filled'
-import PlayIcon from '~icons/icons-16/play'
-import PlayFilledIcon from '~icons/icons-16/play-filled'
+
 import SearchIcon from '~icons/icons-16/search'
 import HomeView from '../HomeView/HomeView.vue'
 import FlowView from '../FlowView/FlowView.vue'
+import { useCardStore } from '@/stores/card.ts'
+import { useCategoryStore } from '@/stores/category.ts'
+import { useNavBar } from './useNavBar.ts'
 
-const items = ref<NavItemData[]>([
-  {
-    id: 'home',
-    icon: HomeIcon,
-    iconSelected: HomeFilledIcon,
-  },
-  {
-    id: 'flow',
-    icon: PlayIcon,
-    iconSelected: PlayFilledIcon,
-  },
-])
+const cardStore = useCardStore()
+const categoryStore = useCategoryStore()
 
-const selectedIndex = ref<number>()
-const selectedNavItemId = computed(() => {
-  return items.value[selectedIndex.value ?? 0]?.id ?? 'home'
-})
+const { items, selectedIndex, selectedNavItemId } =
+  useNavBar()
+
+async function onAddClick() {
+  await cardStore.createCard({
+    term: `Card ${Math.round(Math.random() * 10000)}`,
+    category_id: categoryStore.currentCategoryId,
+  })
+}
 </script>
 
 <template>
@@ -38,6 +32,7 @@ const selectedNavItemId = computed(() => {
       class="nav-bar"
       :nav-items="items"
       v-model:selected-index="selectedIndex"
+      @add-click="onAddClick"
     />
     <FAB :icon="SearchIcon" />
   </div>
