@@ -22,6 +22,10 @@ const ru: typeof en = {
     },
   },
   general: {
+    date: {
+      today: 'Сегодня',
+      yesterday: 'Вчера',
+    },
     action: {
       signup: 'Создать аккаунт',
       login: 'Войти',

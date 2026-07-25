@@ -22,6 +22,10 @@ export default {
     },
   },
   general: {
+    date: {
+      today: 'Today',
+      yesterday: 'Yesterday',
+    },
     action: {
       signup: 'Sign up',
       login: 'Log in',
