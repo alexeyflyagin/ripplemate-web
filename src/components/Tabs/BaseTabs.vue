@@ -12,7 +12,11 @@ import type { TabItemData } from './BaseTabs.types.ts'
 import TabItem from './TabItem.vue'
 import { useLoop } from '@/utils/useLoop.ts'
 
+const AUTO_SCROLL_TIMER = 60000
+
 const isManuallyScrolled = ref<boolean>(false)
+
+let autoScrollTimerId: number | undefined = undefined
 const { startLoop } = useLoop()
 let resizeObserver: ResizeObserver | null = null
 let rafId: number | null = null
@@ -51,6 +55,25 @@ watch(activeId, (id) => {
 })
 
 watch(
+  () => props.selectedTabId,
+  (value) => {
+    if (value) {
+      clearAutoScrollTimeout()
+      return
+    }
+    setAutoScrollTimeout()
+  },
+)
+
+watch(isManuallyScrolled, (value) => {
+  if (value === false) {
+    clearAutoScrollTimeout()
+    return
+  }
+  setAutoScrollTimeout()
+})
+
+watch(
   tabEls,
   async () => {
     updateIndicator()
@@ -61,6 +84,18 @@ watch(
   },
   { deep: true },
 )
+
+function clearAutoScrollTimeout() {
+  clearTimeout(autoScrollTimerId)
+  autoScrollTimerId = undefined
+}
+
+function setAutoScrollTimeout() {
+  clearTimeout(autoScrollTimerId)
+  autoScrollTimerId = setTimeout(() => {
+    scrollToTab(activeId.value)
+  }, AUTO_SCROLL_TIMER)
+}
 
 function setTabRef(
   id: string,
