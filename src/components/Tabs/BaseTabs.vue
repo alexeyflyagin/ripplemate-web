@@ -14,8 +14,6 @@ import { useLoop } from '@/utils/useLoop.ts'
 
 const AUTO_SCROLL_TIMER = 60000
 
-const isManuallyScrolled = ref<boolean>(false)
-
 let autoScrollTimerId: number | undefined = undefined
 const { startLoop } = useLoop()
 let resizeObserver: ResizeObserver | null = null
@@ -65,14 +63,6 @@ watch(
   },
 )
 
-watch(isManuallyScrolled, (value) => {
-  if (value === false) {
-    clearAutoScrollTimeout()
-    return
-  }
-  setAutoScrollTimeout()
-})
-
 watch(
   tabEls,
   async () => {
@@ -118,7 +108,7 @@ function onTabClick(event: MouseEvent, id: string) {
 }
 
 function onScroll() {
-  isManuallyScrolled.value = true
+  setAutoScrollTimeout()
   if (rafId) return
   rafId = requestAnimationFrame(() => {
     updateFade()
@@ -139,7 +129,7 @@ function updateFade() {
 }
 
 function onWheel(event: WheelEvent) {
-  isManuallyScrolled.value = true
+  setAutoScrollTimeout()
   if (!tabListEl.value) return
   event.preventDefault()
   const delta =
@@ -179,7 +169,7 @@ function scrollToTab(id: string, instant?: boolean) {
     block: 'center',
   })
 
-  isManuallyScrolled.value = false
+  clearAutoScrollTimeout()
 }
 
 function updateIndicator() {
@@ -195,7 +185,7 @@ onMounted(async () => {
 
   resizeObserver = new ResizeObserver(async () => {
     updateIndicator()
-    if (!props.selectedTabId && !isManuallyScrolled.value)
+    if (!props.selectedTabId && !autoScrollTimerId)
       scrollToTab(activeId.value)
     startLoop(updateFade, 350, true)
   })
