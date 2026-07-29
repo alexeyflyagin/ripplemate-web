@@ -13,12 +13,12 @@ defineProps<{
 
 <template>
   <button
-    class="toggable-icon-button"
-    :class="{ 'toggable-icon-button--selected': selected }"
+    class="togglable-icon-button"
+    :class="{ 'togglable-icon-button--selected': selected }"
     @click.stop="selected = !selected"
     @contextmenu.prevent
   >
-    <span class="toggable-icon-button__icon-container">
+    <span class="togglable-icon-button__icon-container">
       <component
         :is="selected ? iconSelected : icon"
         width="100%"
@@ -31,7 +31,7 @@ defineProps<{
 <style lang="scss" scoped>
 @use '@/assets/styles/mixins' as *;
 
-.toggable-icon-button {
+.togglable-icon-button {
   position: relative;
   display: inline-flex;
   width: 36px;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CardItemToggableIconButton from './CardItemToggableIconButton.vue'
+import CardItemToggableIconButton from './CardItemTogglableIconButton.vue'
 import HeartIcon from '~icons/icons-16/heart'
 import HeartFilledIcon from '~icons/icons-16/heart-filled'
 import type { CardPosition } from './CardList.types.ts'
