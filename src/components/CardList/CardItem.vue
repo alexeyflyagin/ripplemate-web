@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CardItemToggableIconButton from './CardItemTogglableIconButton.vue'
+import CardItemTogglableIconButton from './CardItemTogglableIconButton.vue'
 import HeartIcon from '~icons/icons-16/heart'
 import HeartFilledIcon from '~icons/icons-16/heart-filled'
 import type { CardPosition } from './CardList.types.ts'
@@ -11,7 +11,7 @@ const isFavorite = defineModel<boolean>('isFavorite', {
 withDefaults(
   defineProps<{
     term: string
-    createdAt: string
+    timeLabel: string
     position?: CardPosition
   }>(),
   {
@@ -34,14 +34,14 @@ const emit = defineEmits<{
     @click="emit('click', $event)"
     @contextmenu.prevent="emit('contextmenu', $event)"
   >
-    <CardItemToggableIconButton
+    <CardItemTogglableIconButton
       :icon="HeartIcon"
       :icon-selected="HeartFilledIcon"
       v-model:selected="isFavorite"
     />
     <span class="card-item__term">{{ term }}</span>
-    <span class="card-item__created-at">{{
-      createdAt
+    <span class="card-item__time-label">{{
+      timeLabel
     }}</span>
   </button>
 </template>
@@ -57,7 +57,6 @@ const emit = defineEmits<{
   width: 100%;
   align-items: center;
   margin: 0;
-  padding: 0;
   border: none;
   color: var(--text);
   background-color: var(--surface);
@@ -105,7 +104,7 @@ const emit = defineEmits<{
     text-align: left;
   }
 
-  &__created-at {
+  &__time-label {
     @include text-label;
     margin-right: var(--space-12);
     color: var(--text-placeholder);
