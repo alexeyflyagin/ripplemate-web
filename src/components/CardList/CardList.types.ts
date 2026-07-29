@@ -7,7 +7,7 @@ export type CardPosition =
 export interface CardItemData {
   id: number
   term: string
-  createdAt: string
+  timeLabel: string
   isFavorite?: boolean
 }
 
