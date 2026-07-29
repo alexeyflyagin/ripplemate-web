@@ -124,26 +124,45 @@ export const useCategoryStore = defineStore(
       changeCurrentCategory(createdCategory.id)
     }
 
-    async function deleteCurrentCategory() {
+    async function deleteCategory(id: number) {
       if (!workspaceStore.currentWorkspaceId)
         throw new Error('No workspace selected')
       if (!categories.value)
         throw new Error('Categories were not loaded')
-      if (!currentCategoryId.value)
-        throw new Error('No category selected')
 
-      const deletedId = currentCategoryId.value
+      const deletedIndex = categories.value.findIndex(
+        (c) => c.id === id,
+      )
 
       await deleteCategoryApi(
         workspaceStore.currentWorkspaceId,
-        deletedId,
+        id,
       )
 
       categories.value = categories.value.filter(
-        (c) => c.id !== deletedId,
+        (c) => c.id !== id,
       )
 
-      changeCurrentCategory(null)
+      if (id === currentCategoryId.value) {
+        const nextIndex =
+          deletedIndex - 1 < 0 ? null : deletedIndex - 1
+        const nextCategory =
+          nextIndex !== null
+            ? categories.value[nextIndex]
+            : null
+
+        console.log(nextCategory)
+        changeCurrentCategory(
+          nextCategory ? nextCategory.id : null,
+        )
+      }
+    }
+
+    async function deleteCurrentCategory() {
+      if (!currentCategoryId.value)
+        throw new Error('No category selected')
+
+      await deleteCategory(currentCategoryId.value)
     }
 
     return {
@@ -154,6 +173,7 @@ export const useCategoryStore = defineStore(
       updateCurrentCategory,
       createCategory,
       deleteCurrentCategory,
+      deleteCategory,
     }
   },
 )
