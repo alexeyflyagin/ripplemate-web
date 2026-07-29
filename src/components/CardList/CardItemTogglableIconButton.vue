@@ -37,6 +37,7 @@ defineProps<{
   width: 36px;
   height: 36px;
   border: none;
+  flex-shrink: 0;
   padding: 0;
   border-radius: var(--corner-full);
   color: var(--text-muted);
