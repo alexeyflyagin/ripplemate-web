@@ -1,3 +1,4 @@
+import type { MenuItemData } from '@/components/ContextMenu/ContextMenu.types'
 import { createCategoryMenu } from '@/menu/Category'
 import { useCategoryStore } from '@/stores/category'
 import { useContextMenuStore } from '@/stores/contextMenu'
@@ -13,6 +14,23 @@ export function useCategoryMenu(t: ComposerTranslation) {
   function isId(id: string): boolean {
     const categoryId = Number(id)
     return !isNaN(categoryId)
+  }
+
+  async function handleMenuClick(
+    item: MenuItemData,
+    payload?: string,
+  ) {
+    const categoryId = Number(payload)
+    if (isNaN(categoryId)) return
+
+    switch (item.id) {
+      case 'edit':
+        // TODO
+        break
+      case 'delete':
+        await categoryStore.deleteCategory(categoryId)
+        break
+    }
   }
 
   function openMenu(event: MouseEvent, categoryId: number) {
@@ -46,6 +64,7 @@ export function useCategoryMenu(t: ComposerTranslation) {
       menuItems: menuItems,
       menuAnchor: 'center-top',
       payload: categoryId.toString(),
+      handler: handleMenuClick,
     })
   }
 
