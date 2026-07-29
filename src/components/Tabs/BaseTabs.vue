@@ -96,7 +96,6 @@ function updateFade() {
     tabListEl.value.scrollWidth -
     tabListEl.value.offsetWidth -
     scrollLeft
-  console.error(scrollRight)
   fadeStart.value = Math.min(maxFade, scrollLeft * 2)
   fadeEnd.value = Math.min(maxFade, scrollRight * 2)
 }
