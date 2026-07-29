@@ -3,16 +3,12 @@
   outline-offset: var(--space-2);
 }
 
-@mixin fade-mask(
-  $direction: to bottom,
-  $startSize: 20px,
-  $endSize: 20px
-) {
+@mixin fade-mask($direction: to bottom) {
   mask-image: linear-gradient(
     #{$direction},
     transparent 0,
-    black #{$startSize},
-    black calc(100% - #{$endSize}),
+    black var(--fade-start, 20px),
+    black calc(100% - var(--fade-end, 20px)),
     transparent 100%
   );
   mask-size: 100% 100%;
@@ -21,8 +17,8 @@
   -webkit-mask-image: linear-gradient(
     #{$direction},
     transparent 0,
-    black #{$startSize},
-    black calc(100% - #{$endSize}),
+    black var(--fade-start, 20px),
+    black calc(100% - var(--fade-end, 20px)),
     transparent 100%
   );
   -webkit-mask-size: 100% 100%;

@@ -34,7 +34,9 @@ const { cardGroups } = useCardGroups(t)
 }
 
 .card-list {
-  @include fade-mask(to bottom, 20px, 200px);
+  @include fade-mask(to bottom);
+  --fade-start: 20px;
+  --fade-end: 200px;
   flex-grow: 1;
 }
 </style>
