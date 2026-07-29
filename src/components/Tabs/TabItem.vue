@@ -21,7 +21,7 @@ const emit = defineEmits<{
       class="tab-item__content"
       :class="{
         'tab-item__content--active': active,
-        'tab-item__content--selected': selected && !active,
+        'tab-item__content--selected': selected,
       }"
     >
       {{ label }}
@@ -70,6 +70,7 @@ const emit = defineEmits<{
     border-radius: inherit;
     background-color: var(--text);
     opacity: 0;
+    transition: opacity 0.1s var(--ease-standard);
   }
 
   &--selected {

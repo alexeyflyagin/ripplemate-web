@@ -12,6 +12,7 @@ import type { TabItemData } from './BaseTabs.types.ts'
 import TabItem from './TabItem.vue'
 import { useLoop } from '@/utils/useLoop.ts'
 
+const isManuallyScrolled = ref<boolean>(false)
 const { startLoop } = useLoop()
 let resizeObserver: ResizeObserver | null = null
 let rafId: number | null = null
@@ -34,6 +35,7 @@ const props = defineProps<{
   isReadyProp?: boolean
   firstButtonIcon?: Component
   lastButtonIcon?: Component
+  selectedTabId?: string
 }>()
 
 const emit = defineEmits<{
@@ -81,6 +83,7 @@ function onTabClick(event: MouseEvent, id: string) {
 }
 
 function onScroll() {
+  isManuallyScrolled.value = true
   if (rafId) return
   rafId = requestAnimationFrame(() => {
     updateFade()
@@ -101,6 +104,7 @@ function updateFade() {
 }
 
 function onWheel(event: WheelEvent) {
+  isManuallyScrolled.value = true
   if (!tabListEl.value) return
   event.preventDefault()
   const delta =
@@ -139,6 +143,8 @@ function scrollToTab(id: string, instant?: boolean) {
     inline: 'center',
     block: 'center',
   })
+
+  isManuallyScrolled.value = false
 }
 
 function updateIndicator() {
@@ -154,7 +160,8 @@ onMounted(async () => {
 
   resizeObserver = new ResizeObserver(async () => {
     updateIndicator()
-    scrollToTab(activeId.value)
+    if (!props.selectedTabId && !isManuallyScrolled.value)
+      scrollToTab(activeId.value)
     startLoop(updateFade, 350, true)
   })
 
@@ -203,8 +210,12 @@ onUnmounted(() => {
             :key="item.id"
             v-bind="item"
             :active="item.id === activeId"
+            :selected="item.id === props.selectedTabId"
             :style="{ 'z-index': 1 }"
             @click="onTabClick($event, item.id)"
+            @contextmenu="
+              emit('contextmenu', $event, item.id)
+            "
           />
         </TransitionGroup>
         <div

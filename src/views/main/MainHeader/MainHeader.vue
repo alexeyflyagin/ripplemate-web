@@ -9,12 +9,18 @@ import PlusIcon from '~icons/icons-16/plus'
 import { useWorkspaceMenu } from './useWorkspaceMenu'
 import BaseTabs from '@/components/Tabs/BaseTabs.vue'
 import { useCategoryTabs } from './useCategoryTabs'
+import { useCategoryMenu } from './useCategoryMenu'
 
 const { t } = useI18n()
 
 const { isLoading, currentTabId, tabs, addCategoryClick } =
   useCategoryTabs(t)
+
+const { selectedId, onTabClick, onTabContextMenu } =
+  useCategoryMenu(t)
+
 const { openMoreMenu } = useMoreMenu(t)
+
 const {
   isMenuOpened,
   currentWorkspaceName,
@@ -43,10 +49,13 @@ const {
       class="category-tabs"
       :isReadyProp="!isLoading"
       :tabs="tabs"
+      :selected-tab-id="selectedId"
       v-model:active-id="currentTabId"
       :last-button-icon="PlusIcon"
       :style="{ display: 'flex' }"
       @last-button-click="addCategoryClick"
+      @click="onTabClick"
+      @contextmenu="onTabContextMenu"
     />
   </div>
 </template>
