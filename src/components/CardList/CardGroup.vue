@@ -15,7 +15,7 @@ const emit = defineEmits<{
   contextmenu: [event: MouseEvent, card: CardItemData]
 }>()
 
-function definePosition(index: number): CardPosition {
+function getPosition(index: number): CardPosition {
   if (props.items.length <= 1) return 'only-one'
   if (index === 0) return 'first'
   if (index === props.items.length - 1) return 'last'
@@ -30,7 +30,7 @@ function definePosition(index: number): CardPosition {
       <CardItem
         v-for="(item, index) in items"
         :key="item.id"
-        :position="definePosition(index)"
+        :position="getPosition(index)"
         v-bind="item"
         @click="emit('click', $event, item)"
         @contextmenu="emit('contextmenu', $event, item)"
