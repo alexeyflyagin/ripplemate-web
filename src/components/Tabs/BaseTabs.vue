@@ -76,8 +76,8 @@ function setTabRef(
 }
 
 function onTabClick(event: MouseEvent, id: string) {
-  activeId.value = id
   emit('click', event, id)
+  activeId.value = id
 }
 
 function onScroll() {
