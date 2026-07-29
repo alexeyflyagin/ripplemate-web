@@ -9,6 +9,7 @@ import FlowView from '../FlowView/FlowView.vue'
 import { useCardStore } from '@/stores/card.ts'
 import { useCategoryStore } from '@/stores/category.ts'
 import { useNavBar } from './useNavBar.ts'
+import MainHeader from '../MainHeader/MainHeader.vue'
 
 const cardStore = useCardStore()
 const categoryStore = useCategoryStore()
@@ -25,6 +26,7 @@ async function onAddClick() {
 </script>
 
 <template>
+  <MainHeader />
   <HomeView v-if="selectedNavItemId === 'home'" />
   <FlowView v-if="selectedNavItemId === 'flow'" />
   <div class="bottom-container">

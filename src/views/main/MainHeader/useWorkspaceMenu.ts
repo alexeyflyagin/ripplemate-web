@@ -65,9 +65,9 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
     )
 
     menuStore.open({
-      posX: rect.right - rect.width / 2,
+      posX: rect.left,
       posY: rect.bottom + 4,
-      menuAnchor: 'center-top',
+      menuAnchor: 'left-top',
       menuItems: items,
       handler: handleItemClick,
     })

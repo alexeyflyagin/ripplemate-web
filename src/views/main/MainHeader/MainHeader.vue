@@ -1,61 +1,52 @@
 <script setup lang="ts">
-import CategoryTabs from '@/components/Tabs/CategoryTabs/CategoryTabs.vue'
 import BaseIconButton from '@/components/Buttons/BaseIconButton.vue'
-import AddFolderIcon from '~icons/icons-16/add-folder'
+import SearchIcon from '~icons/icons-16/search'
 import MoreIcon from '~icons/icons-16/more'
 import WorkspaceDropdown from '@/components/Dropdown/WorkspaceDropdown.vue'
 import { useI18n } from 'vue-i18n'
-import { useCategoryStore } from '@/stores/category'
-import { useCategoryTabs } from './useTabs'
 import { useMoreMenu } from './useMoreMenu'
+import PlusIcon from '~icons/icons-16/plus'
 import { useWorkspaceMenu } from './useWorkspaceMenu'
-import { useCategoryMenu } from './useCategoryMenu'
+import BaseTabs from '@/components/Tabs/BaseTabs.vue'
+import { useCategoryTabs } from './useCategoryTabs'
 
 const { t } = useI18n()
 
-const categoryStore = useCategoryStore()
-
-const { tabs, currentTab } = useCategoryTabs(t)
+const { isLoading, currentTabId, tabs, addCategoryClick } =
+  useCategoryTabs(t)
 const { openMoreMenu } = useMoreMenu(t)
 const {
   isMenuOpened,
   currentWorkspaceName,
   openWorkspaceMenu,
 } = useWorkspaceMenu(t)
-const { openCategoryMenu } = useCategoryMenu(t)
-
-async function onAddCategoryClick() {
-  if (!categoryStore.categories) return
-
-  await categoryStore.createCategory({
-    name: `New Category ${categoryStore.categories.length + 1}`,
-  })
-}
 </script>
 
 <template>
   <div>
     <div class="toolbar">
-      <BaseIconButton
-        :icon="AddFolderIcon"
-        @click="onAddCategoryClick"
-      />
       <WorkspaceDropdown
         :label="currentWorkspaceName"
         v-model:selected="isMenuOpened"
         class="toolbar__workspace-dropdown"
         @click="openWorkspaceMenu"
       />
-      <BaseIconButton
-        :icon="MoreIcon"
-        @click="openMoreMenu"
-      />
+      <div>
+        <BaseIconButton :icon="SearchIcon" />
+        <BaseIconButton
+          :icon="MoreIcon"
+          @click="openMoreMenu"
+        />
+      </div>
     </div>
-    <CategoryTabs
-      class="tabs"
+    <BaseTabs
+      class="category-tabs"
+      :isReadyProp="!isLoading"
       :tabs="tabs"
-      v-model:selected-index="currentTab"
-      @contextmenu="openCategoryMenu"
+      v-model:active-id="currentTabId"
+      :last-button-icon="PlusIcon"
+      :style="{ display: 'flex' }"
+      @last-button-click="addCategoryClick"
     />
   </div>
 </template>
@@ -64,14 +55,14 @@ async function onAddCategoryClick() {
 .toolbar {
   display: flex;
   gap: var(--space-8);
-  padding: var(--space-12) var(--space-16);
+  padding: var(--space-8) var(--space-16);
 
   &__workspace-dropdown {
-    margin: auto;
+    margin-right: auto;
   }
 }
 
-.tabs {
-  margin: 0, var(--space-16);
+.category-tabs {
+  margin: 0 var(--space-16);
 }
 </style>

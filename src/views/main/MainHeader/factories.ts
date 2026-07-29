@@ -1,11 +1,13 @@
 import type { ComposerTranslation } from 'vue-i18n'
-import type { Tab } from '@/components/Tabs/CategoryTabs/CategoryTab.types'
 import type { MenuItemData } from '@/components/ContextMenu/ContextMenu.types'
 import PlusIcon from '~icons/icons-16/plus'
+import type { TabItemData } from '@/components/Tabs/BaseTabs.types'
 
-export function createAllTab(t: ComposerTranslation): Tab {
+export function createAllTab(
+  t: ComposerTranslation,
+): TabItemData {
   return {
-    value: -1,
+    id: 'all',
     label: t('general.label.all'),
   }
 }

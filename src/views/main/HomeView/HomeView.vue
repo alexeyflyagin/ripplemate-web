@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import CardList from '@/components/CardList/CardList.vue'
-import MainHeader from '../MainHeader/MainHeader.vue'
 import { useI18n } from 'vue-i18n'
 import { useCardItemMenu } from './useCardItemMenu.ts'
 import { useCardGroups } from './useCardGroups.ts'
@@ -13,7 +12,6 @@ const { cardGroups } = useCardGroups(t)
 
 <template>
   <div class="content">
-    <MainHeader />
     <CardList
       class="card-list"
       :groups="cardGroups"
@@ -29,7 +27,6 @@ const { cardGroups } = useCardGroups(t)
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100dvh;
   overflow: hidden;
 }
 
