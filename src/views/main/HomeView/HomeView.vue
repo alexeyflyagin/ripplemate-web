@@ -34,5 +34,7 @@ const { cardGroups } = useCardGroups(t)
   --fade-start: var(--space-64);
   --fade-end: var(--bottom-container-height, 100px);
   padding: 80px 0 var(--bottom-container-height, 100px);
+  flex: 1;
+  min-height: 0;
 }
 </style>

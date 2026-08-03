@@ -68,15 +68,17 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .scroll-view {
+  height: 100%;
   position: relative;
-  display: flex;
-  flex-direction: column;
   overflow: auto;
-  margin-top: auto;
   scrollbar-width: none;
 }
 
 .scroll-view__list {
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
   padding: 0 var(--space-16);
+  min-height: 100%;
 }
 </style>
