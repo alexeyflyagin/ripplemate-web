@@ -1,5 +1,4 @@
 body {
-  margin: 0;
   background-color: var(--bg);
 }
 
@@ -26,4 +25,11 @@ button,
 .clickable {
   touch-action: manipulation;
   user-select: none;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
 }
