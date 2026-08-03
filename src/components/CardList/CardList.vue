@@ -1,23 +1,39 @@
 <script setup lang="ts">
+import { nextTick, ref, watch } from 'vue'
 import CardGroup from './CardGroup.vue'
 import type {
   CardGroupData,
   CardItemData,
 } from './CardList.types.ts'
 
-defineProps<{
+const props = defineProps<{
   groups: CardGroupData[]
 }>()
+
+const scrollView = ref<HTMLElement>()
+const scrollListView = ref<HTMLElement>()
 
 const emit = defineEmits<{
   click: [event: MouseEvent, card: CardItemData]
   contextmenu: [event: MouseEvent, card: CardItemData]
 }>()
+
+watch(
+  () => props.groups,
+  async () => {
+    await nextTick()
+
+    if (!scrollView.value || !scrollListView.value) return
+
+    scrollView.value.scrollTop =
+      scrollListView.value.offsetHeight
+  },
+)
 </script>
 
 <template>
-  <div class="scroll-view">
-    <div class="scroll-view__list">
+  <div class="scroll-view" ref="scrollView">
+    <div class="scroll-view__list" ref="scrollListView">
       <CardGroup
         v-for="(group, index) in groups"
         :key="index"
@@ -37,6 +53,7 @@ const emit = defineEmits<{
   display: flex;
   flex-direction: column;
   overflow: auto;
+  margin-top: auto;
   scrollbar-width: none;
 }
 
