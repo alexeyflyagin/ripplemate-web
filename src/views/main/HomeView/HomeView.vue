@@ -11,7 +11,7 @@ const { cardGroups } = useCardGroups(t)
 </script>
 
 <template>
-  <div class="content">
+  <div class="home-view">
     <CardList
       class="card-list"
       :groups="cardGroups"
@@ -23,17 +23,12 @@ const { cardGroups } = useCardGroups(t)
 <style lang="scss" scoped>
 @use '@/assets/styles/mixins' as *;
 
-.content {
+.home-view {
   position: relative;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 .card-list {
-  @include fade-mask(to bottom);
-  --fade-start: 20px;
-  --fade-end: 200px;
-  flex-grow: 1;
 }
 </style>

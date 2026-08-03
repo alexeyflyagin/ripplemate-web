@@ -26,21 +26,46 @@ async function onAddClick() {
 </script>
 
 <template>
-  <MainHeader />
-  <HomeView v-if="selectedNavItemId === 'home'" />
-  <FlowView v-if="selectedNavItemId === 'flow'" />
-  <div class="bottom-container">
-    <NavBar
-      class="nav-bar"
-      :nav-items="items"
-      v-model:selected-index="selectedIndex"
-      @add-click="onAddClick"
+  <div class="main-view">
+    <MainHeader class="main-header" />
+    <HomeView
+      class="home-view"
+      v-if="selectedNavItemId === 'home'"
     />
-    <FAB :icon="SearchIcon" />
+    <FlowView
+      class="flow-view"
+      v-if="selectedNavItemId === 'flow'"
+    />
+    <div class="bottom-container">
+      <NavBar
+        class="nav-bar"
+        :nav-items="items"
+        v-model:selected-index="selectedIndex"
+        @add-click="onAddClick"
+      />
+      <FAB :icon="SearchIcon" />
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.main-view {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.main-header {
+  flex-shrink: 0;
+}
+
+.home-view,
+.flow-view {
+  flex: 1;
+  min-height: 0;
+}
+
 .bottom-container {
   position: absolute;
   display: flex;

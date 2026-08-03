@@ -35,15 +35,12 @@ const emit = defineEmits<{
 .scroll-view {
   position: relative;
   display: flex;
-  overflow-y: auto;
-  scrollbar-width: auto;
-  scrollbar-color: var(--border) transparent;
-  justify-content: center;
+  flex-direction: column;
+  overflow: auto;
+  scrollbar-width: none;
 }
 
 .scroll-view__list {
-  width: 100%;
-  max-width: var(--max-auth-content-width-680);
-  margin: 0 var(--space-16);
+  padding: 0 var(--space-16);
 }
 </style>
