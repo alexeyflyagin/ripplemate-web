@@ -30,5 +30,9 @@ const { cardGroups } = useCardGroups(t)
 }
 
 .card-list {
+  @include fade-mask(to bottom);
+  --fade-start: var(--space-64);
+  --fade-end: var(--bottom-container-height, 100px);
+  padding: 80px 0 var(--bottom-container-height, 100px);
 }
 </style>

@@ -10,9 +10,15 @@ import { useCardStore } from '@/stores/card.ts'
 import { useCategoryStore } from '@/stores/category.ts'
 import { useNavBar } from './useNavBar.ts'
 import MainHeader from '../MainHeader/MainHeader.vue'
+import { onMounted, ref } from 'vue'
 
 const cardStore = useCardStore()
 const categoryStore = useCategoryStore()
+
+let bottomContainerResizeObserver: ResizeObserver | null =
+  null
+const bottomContainer = ref<HTMLElement>()
+const bottomContainerHeight = ref<number>(0)
 
 const { items, selectedIndex, selectedNavItemId } =
   useNavBar()
@@ -23,10 +29,31 @@ async function onAddClick() {
     category_id: categoryStore.currentCategoryId,
   })
 }
+
+onMounted(() => {
+  bottomContainerResizeObserver = new ResizeObserver(() => {
+    bottomContainerHeight.value =
+      document
+        .querySelector('.bottom-container')
+        ?.getBoundingClientRect().height ?? 0
+  })
+
+  if (bottomContainer.value) {
+    bottomContainerResizeObserver.observe(
+      bottomContainer.value,
+    )
+  }
+})
 </script>
 
 <template>
-  <div class="main-view">
+  <div
+    class="main-view"
+    :style="{
+      '--bottom-container-height':
+        bottomContainerHeight + 'px',
+    }"
+  >
     <MainHeader class="main-header" />
     <HomeView
       class="home-view"
@@ -36,7 +63,7 @@ async function onAddClick() {
       class="flow-view"
       v-if="selectedNavItemId === 'flow'"
     />
-    <div class="bottom-container">
+    <div class="bottom-container" ref="bottomContainer">
       <NavBar
         class="nav-bar"
         :nav-items="items"
@@ -74,6 +101,6 @@ async function onAddClick() {
   bottom: 0;
   justify-content: center;
   gap: var(--space-8);
-  padding: 0 var(--space-24) var(--space-24);
+  padding: var(--space-24);
 }
 </style>
