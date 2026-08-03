@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import CardGroup from './CardGroup.vue'
 import type {
   CardGroupData,
@@ -10,8 +10,10 @@ const props = defineProps<{
   groups: CardGroupData[]
 }>()
 
-const scrollView = ref<HTMLElement>()
-const scrollListView = ref<HTMLElement>()
+let scrollListViewResizeObserver: ResizeObserver | null =
+  null
+const scrollViewEl = ref<HTMLElement>()
+const scrollListViewEl = ref<HTMLElement>()
 
 const emit = defineEmits<{
   click: [event: MouseEvent, card: CardItemData]
@@ -20,20 +22,37 @@ const emit = defineEmits<{
 
 watch(
   () => props.groups,
-  async () => {
-    await nextTick()
-
-    if (!scrollView.value || !scrollListView.value) return
-
-    scrollView.value.scrollTop =
-      scrollListView.value.offsetHeight
-  },
+  async () => {},
 )
+
+function onScroll() {}
+
+onMounted(() => {
+  scrollListViewResizeObserver = new ResizeObserver(() => {
+    if (!scrollViewEl.value || !scrollListViewEl.value)
+      return
+
+    console.log(scrollViewEl.value.scrollHeight)
+
+    scrollViewEl.value.scrollTop =
+      scrollViewEl.value.scrollHeight
+  })
+
+  if (scrollListViewEl.value) {
+    scrollListViewResizeObserver.observe(
+      scrollListViewEl.value,
+    )
+  }
+})
 </script>
 
 <template>
-  <div class="scroll-view" ref="scrollView">
-    <div class="scroll-view__list" ref="scrollListView">
+  <div
+    class="scroll-view"
+    ref="scrollViewEl"
+    @scroll="onScroll"
+  >
+    <div class="scroll-view__list" ref="scrollListViewEl">
       <CardGroup
         v-for="(group, index) in groups"
         :key="index"
