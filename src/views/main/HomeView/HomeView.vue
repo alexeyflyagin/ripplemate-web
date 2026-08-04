@@ -7,13 +7,14 @@ import { useCardGroups } from './useCardGroups.ts'
 const { t } = useI18n()
 
 const { openCardMenu } = useCardItemMenu(t)
-const { cardGroups } = useCardGroups(t)
+const { cardGroups, resetScroll } = useCardGroups(t)
 </script>
 
 <template>
   <div class="home-view">
     <CardList
       class="card-list"
+      v-model:reset-scroll="resetScroll"
       :groups="cardGroups"
       @contextmenu="openCardMenu"
     />

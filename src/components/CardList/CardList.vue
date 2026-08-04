@@ -6,7 +6,11 @@ import type {
   CardItemData,
 } from './CardList.types.ts'
 
-const props = defineProps<{
+const resetScroll = defineModel<boolean>('resetScroll', {
+  default: true,
+})
+
+defineProps<{
   groups: CardGroupData[]
 }>()
 
@@ -14,6 +18,7 @@ let scrollListViewResizeObserver: ResizeObserver | null =
   null
 const scrollViewEl = ref<HTMLElement>()
 const scrollListViewEl = ref<HTMLElement>()
+const scrollOffset = ref<number>(0)
 
 const emit = defineEmits<{
   click: [event: MouseEvent, card: CardItemData]
@@ -21,21 +26,48 @@ const emit = defineEmits<{
 }>()
 
 watch(
-  () => props.groups,
-  async () => {},
+  resetScroll,
+  (value) => {
+    if (!value) return
+    scrollToBottom()
+  },
+  { immediate: true },
 )
 
-function onScroll() {}
+function scrollToBottom() {
+  if (!scrollViewEl.value) return
+  scrollOffset.value = 0
+  console.log('setScrollToBottom')
+}
+
+function onScroll() {
+  if (resetScroll.value) return
+  if (!scrollViewEl.value) return
+  console.log('scroll')
+  scrollOffset.value =
+    scrollViewEl.value.scrollHeight -
+    scrollViewEl.value.scrollTop -
+    scrollViewEl.value.offsetHeight
+}
 
 onMounted(() => {
   scrollListViewResizeObserver = new ResizeObserver(() => {
     if (!scrollViewEl.value || !scrollListViewEl.value)
       return
 
-    console.log(scrollViewEl.value.scrollHeight)
-
+    console.log(
+      scrollViewEl.value.scrollHeight,
+      scrollViewEl.value.offsetHeight,
+      scrollOffset.value,
+      scrollViewEl.value.scrollHeight -
+        scrollViewEl.value.offsetHeight -
+        scrollOffset.value,
+    )
     scrollViewEl.value.scrollTop =
-      scrollViewEl.value.scrollHeight
+      scrollViewEl.value.scrollHeight -
+      scrollViewEl.value.offsetHeight -
+      scrollOffset.value
+    resetScroll.value = false
   })
 
   if (scrollListViewEl.value) {

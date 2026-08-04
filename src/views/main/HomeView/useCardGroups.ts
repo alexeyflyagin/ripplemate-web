@@ -1,5 +1,5 @@
 import { useCardStore } from '@/stores/card.ts'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type {
   CardGroupData,
   CardItemData,
@@ -8,11 +8,21 @@ import { useDate } from '@/composables/useDate.ts'
 import { groupByMap } from '@/utils/groupBy.ts'
 import type { CardRead } from '@/api/types.ts'
 import type { ComposerTranslation } from 'vue-i18n'
+import { useCategoryStore } from '@/stores/category'
 
 export function useCardGroups(t: ComposerTranslation) {
   const cardStore = useCardStore()
+  const categoryStore = useCategoryStore()
+  const resetScroll = ref<boolean>(true)
 
   const { formatMonthDay, getLocalTime } = useDate()
+
+  watch(
+    () => categoryStore.currentCategoryId,
+    () => {
+      resetScroll.value = true
+    },
+  )
 
   const cardGroups = computed<CardGroupData[]>(() => {
     const grouped = groupByMap<
@@ -41,5 +51,5 @@ export function useCardGroups(t: ComposerTranslation) {
     )
   })
 
-  return { cardGroups }
+  return { cardGroups, resetScroll }
 }
