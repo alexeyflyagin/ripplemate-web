@@ -53,8 +53,8 @@ const emit = defineEmits<{
   }
 
   &:active {
-    &::after {
-      opacity: var(--opacity-8);
+    .circle-button__icon-container {
+      transform: scale(0.8);
     }
   }
 
@@ -78,5 +78,6 @@ const emit = defineEmits<{
   margin: auto;
   width: 18px;
   height: 18px;
+  transition: transform 0.2s var(--ease-standard);
 }
 </style>

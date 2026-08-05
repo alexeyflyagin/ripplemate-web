@@ -18,7 +18,12 @@ const emit = defineEmits<{
     @contextmenu.prevent="emit('contextmenu', $event)"
   >
     <div class="tab-icon-button__content">
-      <component :is="icon" width="16px" height="16px" />
+      <component
+        class="tab-icon-button__icon"
+        :is="icon"
+        width="16px"
+        height="16px"
+      />
     </div>
   </button>
 </template>
@@ -62,8 +67,12 @@ const emit = defineEmits<{
     }
   }
 
-  &:active .tab-icon-button__content::after {
-    opacity: var(--opacity-8);
+  &__icon {
+    transition: transform 0.2s var(--ease-standard);
+  }
+
+  &:active &__icon {
+    transform: scale(0.8);
   }
 }
 

@@ -54,6 +54,10 @@ const emit = defineEmits<{
     outline-offset: calc(var(--space-4) * -1);
   }
 
+  &:active .nav-item__icon-container {
+    transform: scale(0.8);
+  }
+
   &--selected {
     color: var(--accent);
   }
@@ -65,5 +69,6 @@ const emit = defineEmits<{
   margin: auto;
   width: 18px;
   height: 18px;
+  transition: transform 0.2s var(--ease-standard);
 }
 </style>

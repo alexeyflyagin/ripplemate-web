@@ -24,7 +24,9 @@ const emit = defineEmits<{
         'tab-item__content--selected': selected,
       }"
     >
-      {{ label }}
+      <span class="tab-item__label">
+        {{ label }}
+      </span>
     </div>
   </button>
 </template>
@@ -51,6 +53,15 @@ const emit = defineEmits<{
       outline-offset: 0;
     }
   }
+
+  &:active .tab-item__label {
+    transform: scale(0.9);
+  }
+}
+
+.tab-item__label {
+  display: inline-block;
+  transition: transform 0.2s var(--ease-standard);
 }
 
 .tab-item__content {

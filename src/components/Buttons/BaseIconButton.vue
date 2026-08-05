@@ -47,6 +47,11 @@ const emit = defineEmits<{
 .base-icon-button__icon {
   width: 18px;
   height: 18px;
+  transition: transform 0.2s var(--ease-standard);
+}
+
+.base-icon-button:active .base-icon-button__icon {
+  transform: scale(0.8);
 }
 
 .base-icon-button::after {
@@ -62,10 +67,6 @@ const emit = defineEmits<{
   .base-icon-button:hover::after {
     opacity: var(--opacity-8);
   }
-}
-
-.base-icon-button:active::after {
-  opacity: var(--opacity-8);
 }
 
 .base-icon-button:focus-visible::after {
