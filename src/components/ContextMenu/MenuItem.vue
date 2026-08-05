@@ -79,7 +79,6 @@ const emit = defineEmits<{
   background-color: transparent;
   border: none;
   align-items: center;
-  gap: var(--space-12);
   border-radius: var(--corner-medium);
   margin: 0 var(--space-4) var(--space-4);
   padding: 12px;
@@ -157,6 +156,7 @@ const emit = defineEmits<{
     text-align: start;
     overflow: hidden;
     white-space: nowrap;
+    min-width: fit-content;
     text-overflow: ellipsis;
   }
 
@@ -169,12 +169,14 @@ const emit = defineEmits<{
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    margin-left: var(--space-24);
   }
 
   &__icon-container {
     width: 16px;
     height: 16px;
     flex-shrink: 0;
+    margin-right: var(--space-12);
   }
 }
 </style>
