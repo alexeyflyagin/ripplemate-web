@@ -151,7 +151,6 @@ export const useCategoryStore = defineStore(
             ? categories.value[nextIndex]
             : null
 
-        console.log(nextCategory)
         changeCurrentCategory(
           nextCategory ? nextCategory.id : null,
         )

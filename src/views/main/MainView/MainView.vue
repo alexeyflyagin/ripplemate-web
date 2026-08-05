@@ -85,6 +85,7 @@ onMounted(() => {
 
 .main-header {
   flex-shrink: 0;
+  z-index: 1;
 }
 
 .home-view,
@@ -102,5 +103,6 @@ onMounted(() => {
   justify-content: center;
   gap: var(--space-8);
   padding: var(--space-24);
+  z-index: 1;
 }
 </style>

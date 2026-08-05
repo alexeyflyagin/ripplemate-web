@@ -1,7 +1,8 @@
-import i18n from '@/i18n'
-import type { ComposerTranslation } from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
 
 export function useDate() {
+  const { locale, t } = useI18n()
+
   function parseBackendDate(isoString: string): Date {
     const normalized = isoString.replace(
       /(\.\d{3})\d*$/,
@@ -21,55 +22,41 @@ export function useDate() {
     )
   }
 
-  function getLocalTime(isoString: string): string {
-    const date = parseBackendDate(isoString)
-    return date.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    })
-  }
+  function monthAndDay(date: Date): string {
+    const today = new Date()
+    const yesterday = new Date()
+    yesterday.setDate(today.getDate() - 1)
 
-  function getYear(isoString: string): number {
-    const date = parseBackendDate(isoString)
-    return date.getFullYear()
-  }
-
-  function formatMonthDay(
-    isoString: string,
-    t: ComposerTranslation,
-  ): string {
-    const date = parseBackendDate(isoString)
-    const now = new Date()
-
-    if (isSameDay(date, now)) {
+    if (isSameDay(date, today))
       return t('general.date.today')
-    }
-
-    const yesterday = new Date(now)
-    yesterday.setDate(now.getDate() - 1)
-    if (isSameDay(date, yesterday)) {
+    if (isSameDay(date, yesterday))
       return t('general.date.yesterday')
-    }
 
-    const currentYear = now.getFullYear()
-    const isCurrentYear = date.getFullYear() === currentYear
+    return new Intl.DateTimeFormat(locale.value, {
+      month: 'short',
+      day: 'numeric',
+    }).format(date)
+  }
 
-    return date.toLocaleDateString(
-      i18n.global.locale.value,
-      {
-        month: 'long',
-        day: 'numeric',
-        year: isCurrentYear ? undefined : 'numeric',
-      },
-    )
+  function timeHHmm(date: Date): string {
+    const h = date.getHours()
+    const m = date.getMinutes().toString().padStart(2, '0')
+    return `${h}:${m}`
+  }
+
+  function toISODate(date: Date): string {
+    const y = date.getFullYear()
+    const m = (date.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')
+    const d = date.getDate().toString().padStart(2, '0')
+    return `${y}-${m}-${d}`
   }
 
   return {
     parseBackendDate,
-    getLocalTime,
-    getYear,
-    formatMonthDay,
-    isSameDay,
+    monthAndDay,
+    timeHHmm,
+    toISODate,
   }
 }

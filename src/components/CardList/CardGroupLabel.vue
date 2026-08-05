@@ -25,5 +25,6 @@ defineProps<{
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  user-select: none;
 }
 </style>

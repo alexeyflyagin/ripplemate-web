@@ -26,24 +26,26 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <button
-    class="card-item"
-    :class="{
-      [`card-item--${position}`]: position !== 'middle',
-    }"
-    @click="emit('click', $event)"
-    @contextmenu.prevent="emit('contextmenu', $event)"
-  >
-    <CardItemTogglableIconButton
-      :icon="HeartIcon"
-      :icon-selected="HeartFilledIcon"
-      v-model:selected="isFavorite"
-    />
-    <span class="card-item__term">{{ term }}</span>
-    <span class="card-item__time-label">{{
-      timeLabel
-    }}</span>
-  </button>
+  <div>
+    <button
+      class="card-item"
+      :class="{
+        [`card-item--${position}`]: position !== 'middle',
+      }"
+      @click="emit('click', $event)"
+      @contextmenu.prevent="emit('contextmenu', $event)"
+    >
+      <CardItemTogglableIconButton
+        :icon="HeartIcon"
+        :icon-selected="HeartFilledIcon"
+        v-model:selected="isFavorite"
+      />
+      <span class="card-item__term">{{ term }}</span>
+      <span class="card-item__time-label">{{
+        timeLabel
+      }}</span>
+    </button>
+  </div>
 </template>
 
 <style lang="scss" scoped>
