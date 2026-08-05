@@ -97,7 +97,7 @@ const emit = defineEmits<{
   }
 
   &:active {
-    transform: scale(0.96);
+    transform: scale(0.99);
   }
 
   &__term {
