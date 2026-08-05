@@ -1,24 +1,7 @@
-<script setup lang="ts">
-import CardList from '@/components/CardList/CardList.vue'
-import { useI18n } from 'vue-i18n'
-import { useCardItemMenu } from './useCardItemMenu.ts'
-import { useCardGroups } from './useCardGroups.ts'
-
-const { t } = useI18n()
-
-const { openCardMenu } = useCardItemMenu(t)
-const { cardGroups, resetScroll } = useCardGroups(t)
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <div class="home-view">
-    <CardList
-      class="card-list"
-      v-model:reset-scroll="resetScroll"
-      :groups="cardGroups"
-      @contextmenu="openCardMenu"
-    />
-  </div>
+  <div class="home-view"></div>
 </template>
 
 <style lang="scss" scoped>
