@@ -55,7 +55,7 @@ const emit = defineEmits<{
   }
 
   &:active .nav-item__icon-container {
-    transform: scale(0.8);
+    transform: scale(0.9);
   }
 
   &--selected {

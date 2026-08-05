@@ -3,8 +3,6 @@ import { ref, watch } from 'vue'
 import type { NavItemData } from './NavBar.types.ts'
 import NavItem from './NavItem.vue'
 import { NAV_ITEM_SIZE } from './NavBar.constants.ts'
-import CircleIconButton from '@/components/Buttons/CircleIconButton.vue'
-import PlusIcon from '~icons/icons-16/plus'
 
 const selectedIndex = defineModel<number>('selectedIndex', {
   default: 0,
@@ -12,10 +10,6 @@ const selectedIndex = defineModel<number>('selectedIndex', {
 
 defineProps<{
   navItems: NavItemData[]
-}>()
-
-const emit = defineEmits<{
-  addClick: [event: MouseEvent]
 }>()
 
 const navIndicatorEl = ref<HTMLElement>()

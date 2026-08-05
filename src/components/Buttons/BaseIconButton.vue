@@ -51,7 +51,7 @@ const emit = defineEmits<{
 }
 
 .base-icon-button:active .base-icon-button__icon {
-  transform: scale(0.8);
+  transform: scale(0.9);
 }
 
 .base-icon-button::after {

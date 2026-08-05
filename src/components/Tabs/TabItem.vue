@@ -55,7 +55,7 @@ const emit = defineEmits<{
   }
 
   &:active .tab-item__label {
-    transform: scale(0.9);
+    transform: scale(0.96);
   }
 }
 

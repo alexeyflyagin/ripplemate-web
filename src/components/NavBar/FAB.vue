@@ -57,7 +57,7 @@ const emit = defineEmits<{
 
   &:active {
     .fab__icon-container {
-      transform: scale(0.8);
+      transform: scale(0.9);
     }
   }
 
