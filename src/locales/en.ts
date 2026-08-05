@@ -21,6 +21,13 @@ export default {
       passwordsDoNotMatch: 'Passwords do not match',
     },
   },
+  main: {
+    noCardsYetTitle: 'No cards yet',
+    noCardsYetSubtitle:
+      'Add your first card to get started',
+    noCardsFoundTitle: 'No cards found',
+    noCardsFoundSubtitle: 'Try a different search',
+  },
   general: {
     date: {
       today: 'Today',

@@ -19,6 +19,9 @@ export default defineConfig({
         'icons-16': FileSystemIconLoader(
           './src/assets/icons/16px',
         ),
+        'icons-80': FileSystemIconLoader(
+          './src/assets/icons/80px',
+        ),
       },
     }),
   ],

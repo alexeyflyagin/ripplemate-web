@@ -21,6 +21,12 @@ const ru: typeof en = {
       passwordsDoNotMatch: 'Пароли не совпадают',
     },
   },
+  main: {
+    noCardsYetTitle: 'Пока нет карточек',
+    noCardsYetSubtitle: 'Добавьте первую, чтобы начать',
+    noCardsFoundTitle: 'Ничего не найдено',
+    noCardsFoundSubtitle: 'Попробуйте изменить запрос',
+  },
   general: {
     date: {
       today: 'Сегодня',
