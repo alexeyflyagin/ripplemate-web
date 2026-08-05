@@ -27,6 +27,7 @@ const { openCardMenu } = useCardItemMenu(t)
       :cards="cardStore.cards"
       @load-more="cardStore.loadMore"
       @contextmenu="openCardMenu"
+      @click="openCardMenu"
     />
     <div v-else class="placeholder">
       <div class="placeholder__content">

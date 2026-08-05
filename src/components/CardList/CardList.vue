@@ -164,6 +164,7 @@ onMounted(async () => {
           marginLeft: 'var(--space-16)',
         }"
         @contextmenu="emit('contextmenu', $event, item)"
+        @click="emit('click', $event, item)"
       />
     </Virtualizer>
   </div>
