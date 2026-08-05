@@ -85,6 +85,7 @@ const emit = defineEmits<{
   color: var(--text-muted);
   cursor: pointer;
   user-select: none;
+  transition: transform 0.2s var(--ease-standard);
 
   &::after {
     content: '';
@@ -110,9 +111,7 @@ const emit = defineEmits<{
   }
 
   &:active {
-    &::after {
-      opacity: var(--opacity-8);
-    }
+    transform: scale(0.96);
   }
 
   &--selected {
