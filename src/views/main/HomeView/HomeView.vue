@@ -4,10 +4,12 @@ import { useCardStore } from '@/stores/card'
 import { useCategoryStore } from '@/stores/category'
 import { useCardItemMenu } from './useCardItemMenu'
 import { useI18n } from 'vue-i18n'
+import { useWorkspaceStore } from '@/stores/workspace'
 
 const { t } = useI18n()
 
 const cardStore = useCardStore()
+const workspaceStore = useWorkspaceStore()
 const categoryStore = useCategoryStore()
 
 const { openCardMenu } = useCardItemMenu(t)
@@ -17,7 +19,7 @@ const { openCardMenu } = useCardItemMenu(t)
   <div class="home-view">
     <CardList
       class="card-list"
-      :category-id="categoryStore.currentCategoryId"
+      :list-key="`${workspaceStore.currentWorkspaceId}-${categoryStore.currentCategoryId}`"
       :has-more="cardStore.hasMore"
       :cards="cardStore.cards"
       @load-more="cardStore.loadMore"

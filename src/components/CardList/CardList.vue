@@ -24,7 +24,7 @@ import {
 const dateFormatter = useDate()
 
 const props = defineProps<{
-  categoryId: number | null
+  listKey: string
   cards: CardRead[]
   hasMore: boolean
 }>()
@@ -46,7 +46,7 @@ const initialized = ref(false)
 const THRESHOLD = 200
 
 watch(
-  () => props.categoryId,
+  () => props.listKey,
   () => {
     initialized.value = false
     const stop = watch(
