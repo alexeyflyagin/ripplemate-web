@@ -64,6 +64,7 @@ const emit = defineEmits<{
   background-color: var(--surface);
   border-radius: var(--corner-small);
   padding: var(--space-4);
+  transition: transform 0.2s var(--ease-standard);
   cursor: pointer;
 
   &--first {
@@ -90,13 +91,13 @@ const emit = defineEmits<{
     pointer-events: none;
   }
 
-  &:active::after {
-    opacity: var(--opacity-8);
-  }
-
   &:focus-visible {
     @include focus-outline;
     outline-offset: 0px;
+  }
+
+  &:active {
+    transform: scale(0.96);
   }
 
   &__term {

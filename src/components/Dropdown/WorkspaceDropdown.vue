@@ -52,6 +52,7 @@ const emit = defineEmits<{
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  transition: transform 0.2s var(--ease-standard);
 }
 
 .drop-down__icon {
@@ -107,8 +108,8 @@ const emit = defineEmits<{
       transform: translateY(2px);
     }
 
-    &::after {
-      opacity: var(--opacity-8);
+    & .drop-down__label {
+      transform: scale(0.9);
     }
   }
 
