@@ -109,7 +109,7 @@ const emit = defineEmits<{
     }
 
     & .drop-down__label {
-      transform: scale(0.9);
+      transform: scale(0.96);
     }
   }
 
