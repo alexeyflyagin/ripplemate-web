@@ -5,7 +5,6 @@ import {
   createCard as createCardApi,
   updateCard as updateCardApi,
   deleteCard as deleteCardApi,
-  getRandomCard as getRandomCardApi,
   getCard as getCardApi,
 } from '@/api/repositories/card'
 import type {
@@ -27,15 +26,13 @@ export const useCardStore = defineStore('card', () => {
   const isLoading = ref(false)
   const search = ref<string | null>(null)
 
-  const randomCard = ref<CardRead | null>(null)
-
   let searchTimeout: ReturnType<typeof setTimeout>
 
   const hasMore = computed(
     () => cards.value.length < total.value,
   )
 
-  async function reloadCards() {
+  async function loadCards() {
     const workspaceId = workspaceStore.currentWorkspaceId
     if (!workspaceId) {
       cards.value = []
@@ -90,8 +87,11 @@ export const useCardStore = defineStore('card', () => {
       data,
     )
 
-    cards.value.unshift(createdCard)
-    total.value += 1
+    const cat = categoryStore.currentCategoryId
+    if (cat === null || createdCard.category_id === cat) {
+      cards.value.unshift(createdCard)
+      total.value += 1
+    }
 
     return createdCard
   }
@@ -104,13 +104,27 @@ export const useCardStore = defineStore('card', () => {
     if (!workspaceId)
       throw new Error('No workspace selected')
 
+    const oldCard = cards.value.find((c) => c.id === cardId)
+
     const updatedCard = await updateCardApi(
       workspaceId,
       cardId,
       data,
     )
 
-    await reloadCards()
+    if (oldCard) {
+      if (
+        oldCard.category_id !== updatedCard.category_id &&
+        categoryStore.currentCategoryId !== null
+      ) {
+        cards.value = cards.value.filter(
+          (c) => c.id !== cardId,
+        )
+        total.value -= 1
+      } else {
+        Object.assign(oldCard, updatedCard)
+      }
+    }
 
     return updatedCard
   }
@@ -122,20 +136,8 @@ export const useCardStore = defineStore('card', () => {
 
     await deleteCardApi(workspaceId, cardId)
 
-    await reloadCards()
-  }
-
-  async function getRandomCard() {
-    const workspaceId = workspaceStore.currentWorkspaceId
-    if (!workspaceId)
-      throw new Error('No workspace selected')
-
-    randomCard.value = await getRandomCardApi(
-      workspaceId,
-      categoryStore.currentCategoryId,
-    )
-
-    return randomCard.value
+    cards.value = cards.value.filter((c) => c.id !== cardId)
+    total.value -= 1
   }
 
   async function getCard(cardId: number) {
@@ -160,7 +162,7 @@ export const useCardStore = defineStore('card', () => {
       search.value,
     ],
     () => {
-      reloadCards()
+      loadCards()
     },
     { immediate: true },
   )
@@ -171,14 +173,12 @@ export const useCardStore = defineStore('card', () => {
     isLoading,
     hasMore,
     search,
-    randomCard,
     setSearch,
-    reloadCards,
+    loadCards,
     loadMore,
     createCard,
     updateCard,
     deleteCard,
-    getRandomCard,
     getCard,
   }
 })
