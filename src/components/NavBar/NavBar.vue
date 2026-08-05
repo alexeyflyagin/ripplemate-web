@@ -122,10 +122,6 @@ function onPointerUp() {
         />
       </div>
     </div>
-    <CircleIconButton
-      :icon="PlusIcon"
-      @click="emit('addClick', $event)"
-    />
   </div>
 </template>
 

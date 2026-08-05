@@ -3,7 +3,7 @@ import FAB from '@/components/NavBar/FAB.vue'
 
 import NavBar from '@/components/NavBar/NavBar.vue'
 
-import SearchIcon from '~icons/icons-16/search'
+import PlusIcon from '~icons/icons-16/plus'
 import HomeView from '../HomeView/HomeView.vue'
 import FlowView from '../FlowView/FlowView.vue'
 import { useCardStore } from '@/stores/card.ts'
@@ -70,7 +70,7 @@ onMounted(() => {
         v-model:selected-index="selectedIndex"
         @add-click="onAddClick"
       />
-      <FAB :icon="SearchIcon" />
+      <FAB :icon="PlusIcon" />
     </div>
   </div>
 </template>
