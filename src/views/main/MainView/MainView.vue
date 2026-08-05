@@ -68,9 +68,8 @@ onMounted(() => {
         class="nav-bar"
         :nav-items="items"
         v-model:selected-index="selectedIndex"
-        @add-click="onAddClick"
       />
-      <FAB :icon="PlusIcon" />
+      <FAB :icon="PlusIcon" @click="onAddClick" />
     </div>
   </div>
 </template>
