@@ -303,27 +303,6 @@ onUnmounted(() => {
   padding: 0 var(--space-2);
 }
 
-.tab-item {
-  &-enter-active,
-  &-leave-active {
-    transition: all 0.4s var(--ease-standard);
-  }
-
-  &-enter-from,
-  &-leave-to {
-    --tab-scale: 0.8;
-    opacity: 0;
-  }
-
-  &-leave-active {
-    position: absolute;
-  }
-
-  &-move {
-    transition: transform 0.3s var(--ease-standard);
-  }
-}
-
 .tab-list__indicator {
   position: absolute;
   width: 56px;

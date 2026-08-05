@@ -173,6 +173,7 @@ onMounted(async () => {
 .card-scroll {
   display: flex;
   height: 100%;
+  overscroll-behavior: none;
   flex-direction: column;
   overflow-y: auto;
   overflow-anchor: none;
