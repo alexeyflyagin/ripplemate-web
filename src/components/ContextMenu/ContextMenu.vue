@@ -198,7 +198,9 @@ onUnmounted(() => {
       <div
         ref="menuEl"
         class="context-menu"
-        :class="{ 'context-menu--visible': isPositioned }"
+        :class="{
+          'context-menu--visible': isPositioned,
+        }"
         :style="{
           left: finalX + 'px',
           top: finalY + 'px',
@@ -236,9 +238,14 @@ onUnmounted(() => {
   background-color: var(--surface);
   border: var(--stroke-subtle) solid var(--border-muted);
   border-radius: var(--corner-large);
+  transition:
+    transform 0.16s cubic-bezier(0, 1.6, 0.6, 1.6),
+    opacity 0.16s cubic-bezier(0, 1.6, 0.6, 1.6);
+  transform: scale(0.96);
 }
 
 .context-menu--visible {
   opacity: 1;
+  transform: scale(1);
 }
 </style>
