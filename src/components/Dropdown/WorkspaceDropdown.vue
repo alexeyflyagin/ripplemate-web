@@ -68,7 +68,6 @@ const emit = defineEmits<{
   @include text-caption-emphasized;
   position: relative;
   min-height: 40px;
-  min-width: 100px;
   display: inline-flex;
   background-color: transparent;
   justify-content: center;
