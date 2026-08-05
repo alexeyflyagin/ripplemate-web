@@ -81,7 +81,7 @@ const emit = defineEmits<{
   align-items: center;
   border-radius: var(--corner-medium);
   margin: 0 var(--space-4) var(--space-4);
-  padding: 12px;
+  padding: var(--space-8) var(--space-12);
   color: var(--text-muted);
   cursor: pointer;
   user-select: none;
@@ -151,7 +151,7 @@ const emit = defineEmits<{
 // inner elements (label/value/icon)
 .menu-item__button {
   &__label {
-    @include text-caption-emphasized;
+    @include text-label;
     text-align: start;
     overflow: hidden;
     white-space: nowrap;
@@ -172,8 +172,8 @@ const emit = defineEmits<{
   }
 
   &__icon-container {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     flex-shrink: 0;
     margin-right: var(--space-12);
   }
