@@ -5,6 +5,7 @@ import type {
   MenuItemData,
 } from './ContextMenu.types.ts'
 import MenuItem from './MenuItem.vue'
+import { sleep } from '@/utils/sleep.ts'
 
 const isOpened = defineModel<boolean>('isOpened', {
   default: true,
@@ -53,6 +54,7 @@ watch(isOpened, async (open) => {
     const focusable = menuEl.value
       ? getFocusableElements(menuEl.value)
       : []
+    await sleep(200)
     focusable[0]?.focus()
   } else {
     previouslyFocusedElement?.focus()
