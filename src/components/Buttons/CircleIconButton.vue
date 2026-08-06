@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 
-defineProps<{
-  icon: Component
-}>()
+const props = withDefaults(
+  defineProps<{
+    icon: Component
+    color?: 'default' | 'accent' | 'danger'
+    disabled?: boolean
+  }>(),
+  {
+    color: 'default',
+  },
+)
 
 const emit = defineEmits<{
   click: [event: MouseEvent]
@@ -13,12 +20,19 @@ const emit = defineEmits<{
 <template>
   <button
     class="circle-button"
+    :disabled="disabled"
+    :class="{
+      'circle-button--accent': props.color === 'accent',
+      'circle-button--danger': props.color === 'danger',
+    }"
     @click="emit('click', $event)"
     @contextmenu.prevent
   >
-    <span class="circle-button__icon-container">
-      <component :is="icon" width="100%" height="100%" />
-    </span>
+    <div class="circle-button__content">
+      <span class="circle-button__icon-container">
+        <component :is="icon" width="100%" height="100%" />
+      </span>
+    </div>
   </button>
 </template>
 
@@ -54,7 +68,7 @@ const emit = defineEmits<{
 
   &:active {
     .circle-button__icon-container {
-      transform: scale(0.9);
+      transform: scale(0.8);
     }
   }
 
@@ -67,9 +81,54 @@ const emit = defineEmits<{
     }
   }
 
-  &--selected {
-    color: var(--accent);
+  &--accent {
+    color: var(--bg);
+
+    &::after {
+      background-color: var(--bg);
+    }
+
+    & .circle-button__content {
+      background-color: var(--accent);
+    }
+
+    &:disabled {
+      &::after {
+        background-color: var(--text);
+        opacity: var(--opacity-4);
+      }
+    }
   }
+
+  &--danger {
+    color: var(--error);
+
+    &::after {
+      background-color: var(--error);
+    }
+  }
+
+  &:disabled {
+    color: var(--text);
+    pointer-events: none;
+
+    & .circle-button__content {
+      background-color: transparent;
+    }
+
+    & .circle-button__icon-container {
+      opacity: var(--opacity-30);
+    }
+  }
+}
+
+.circle-button__content {
+  position: relative;
+  display: inline-flex;
+  margin: auto;
+  border-radius: inherit;
+  width: 44px;
+  height: 44px;
 }
 
 .circle-button__icon-container {
