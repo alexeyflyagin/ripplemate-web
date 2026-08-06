@@ -7,8 +7,6 @@ body {
   right: 0;
   bottom: 0;
   overflow: hidden;
-  -webkit-user-select: none;
-  user-select: none;
 }
 
 h1,
@@ -21,18 +19,10 @@ p {
   margin: 0;
 }
 
-input,
-textarea {
-  -webkit-user-select: text;
-  user-select: text;
-}
-
 img,
 svg,
 .icon {
-  -webkit-user-select: none;
   -webkit-touch-callout: none;
-  user-select: none;
   pointer-events: none;
 }
 
@@ -45,17 +35,8 @@ textarea {
   -webkit-tap-highlight-color: transparent;
 }
 
-button,
-.clickable {
-  touch-action: manipulation;
-  user-select: none;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-}
-
 html,
-body,
-#app {
+body {
   height: 100%;
   margin: 0;
 }
