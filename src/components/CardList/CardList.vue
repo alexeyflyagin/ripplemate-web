@@ -147,7 +147,7 @@ onMounted(async () => {
         :key="item.key"
         :label="item.label"
         :style="{
-          maxWidth: 'var(--max-auth-content-width-680)',
+          maxWidth: 'var(--max-content-width-680)',
           marginRight: 'auto',
           marginLeft: 'auto',
           paddingLeft: 'var(--space-16)',
@@ -160,7 +160,7 @@ onMounted(async () => {
         :key="`c-${item.id}`"
         v-bind="item"
         :style="{
-          maxWidth: 'var(--max-auth-content-width-680)',
+          maxWidth: 'var(--max-content-width-680)',
           marginBottom:
             item.position === 'last'
               ? '0'

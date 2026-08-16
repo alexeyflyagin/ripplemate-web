@@ -110,7 +110,7 @@ onMounted(() => {
 
   &--built-in {
     justify-self: center;
-    max-width: var(--max-auth-content-width-400);
+    max-width: var(--max-content-width-400);
   }
 }
 </style>

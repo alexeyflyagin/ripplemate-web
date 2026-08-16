@@ -157,7 +157,7 @@ async function handleSubmit() {
   align-items: center;
   width: 100%;
   margin: var(--space-32) 0;
-  max-width: var(--max-auth-content-width-400);
+  max-width: var(--max-content-width-400);
 }
 
 .login__form {
