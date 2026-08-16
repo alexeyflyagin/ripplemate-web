@@ -7,7 +7,7 @@ import NavBarGroup from './NavBarGroup.vue'
 import TermTextField from '@/components/TextFields/TermTextField.vue'
 import PlusIcon from '~icons/icons-16/plus'
 import CaretLeftIcon from '~icons/icons-16/caret-left'
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { nextPaint } from '@/utils/nextPaint.ts'
 import { useCardStore } from '@/stores/card.ts'
 import { useCategoryStore } from '@/stores/category.ts'
@@ -16,6 +16,7 @@ let bottomContainerResizeObserver: ResizeObserver | null =
   null
 const bottomContainer = ref<HTMLElement>()
 const bottomContainerHeight = ref<number>(0)
+const isKeyboardOpen = ref(false)
 
 const { items, selectedIndex, selectedNavItemId } =
   useNavBar()
@@ -61,6 +62,25 @@ type MainViewState =
   | 'search'
 const termFieldValue = ref<string>('')
 const viewState = ref<MainViewState>('default')
+
+function onViewportResize() {
+  const vv = window.visualViewport
+  if (!vv) return
+  isKeyboardOpen.value = window.innerHeight - vv.height < 0
+}
+
+onMounted(() => {
+  window.visualViewport?.addEventListener(
+    'resize',
+    onViewportResize,
+  )
+})
+onUnmounted(() => {
+  window.visualViewport?.removeEventListener(
+    'resize',
+    onViewportResize,
+  )
+})
 </script>
 
 <template>
@@ -106,6 +126,7 @@ const viewState = ref<MainViewState>('default')
           @submit-click="onSubmitClick"
           @leading-click="viewState = 'default'"
         />
+        <div v-if="isKeyboardOpen" class="scrim" />
       </div>
     </div>
   </div>
@@ -136,6 +157,16 @@ const viewState = ref<MainViewState>('default')
   @include elevation-3;
   align-self: flex-end;
   flex-grow: 1;
+}
+
+.scrim {
+  position: fixed;
+  width: 100dvw;
+  height: 100dvh;
+  inset: 0;
+  background-color: black;
+  opacity: 0.2;
+  z-index: -1;
 }
 
 .bottom-container {
