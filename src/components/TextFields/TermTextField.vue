@@ -15,6 +15,7 @@ defineProps<{
   leadingButton?: CircleIconButtonData
   secondaryButton?: CircleIconButtonData
   submitButton?: CircleIconButtonData
+  maxLength?: number
 }>()
 
 const emit = defineEmits<{
@@ -22,6 +23,8 @@ const emit = defineEmits<{
   secondaryClick: []
   leadingClick: []
 }>()
+
+defineExpose({ focusInput })
 
 const MAX_FADE = 20
 const startFade = ref<number>(0)
@@ -64,8 +67,14 @@ function updateFade() {
     bottomOffset >= MAX_FADE ? MAX_FADE : bottomOffset
 }
 
-async function focusInput() {
+function focusInput() {
   textAreaEl.value?.focus()
+}
+
+function onEnter(e: KeyboardEvent) {
+  if (e.shiftKey) return
+  e.preventDefault()
+  emit('submitClick')
 }
 
 onMounted(async () => {
@@ -109,6 +118,7 @@ onMounted(async () => {
         ref="textAreaEl"
         class="text-area"
         rows="1"
+        :maxlength="maxLength"
         :value="modelValue"
         :placeholder="placeholder"
         :style="{
@@ -117,6 +127,7 @@ onMounted(async () => {
           'padding-left': `${leadingButton ? 'var(--space-8)' : 'var(--space-24)'}`,
           'padding-right': `${secondaryButton || submitButton ? 'var(--space-8)' : 'var(--space-24)'}`,
         }"
+        @keydown.enter="onEnter"
         @input="
           modelValue = (
             $event.target as HTMLTextAreaElement
