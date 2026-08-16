@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import FAB from '@/components/NavBar/FAB.vue'
-
-import NavBar from '@/components/NavBar/NavBar.vue'
-
-import PlusIcon from '~icons/icons-16/plus'
 import HomeView from '../HomeView/HomeView.vue'
 import FlowView from '../FlowView/FlowView.vue'
-import { useCardStore } from '@/stores/card.ts'
-import { useCategoryStore } from '@/stores/category.ts'
 import { useNavBar } from './useNavBar.ts'
 import MainHeader from '../MainHeader/MainHeader.vue'
+import NavBarGroup from './NavBarGroup.vue'
+import TermTextField from '@/components/TextFields/TermTextField.vue'
+import PlusIcon from '~icons/icons-16/plus'
+import CaretLeftIcon from '~icons/icons-16/caret-left'
 import { onMounted, ref } from 'vue'
-
-const cardStore = useCardStore()
-const categoryStore = useCategoryStore()
+import { nextPaint } from '@/utils/nextPaint.ts'
+import { useCardStore } from '@/stores/card.ts'
+import { useCategoryStore } from '@/stores/category.ts'
 
 let bottomContainerResizeObserver: ResizeObserver | null =
   null
@@ -22,13 +19,6 @@ const bottomContainerHeight = ref<number>(0)
 
 const { items, selectedIndex, selectedNavItemId } =
   useNavBar()
-
-async function onAddClick() {
-  await cardStore.createCard({
-    term: `Card ${Math.round(Math.random() * 10000)}`,
-    category_id: categoryStore.currentCategoryId,
-  })
-}
 
 onMounted(() => {
   bottomContainerResizeObserver = new ResizeObserver(() => {
@@ -44,6 +34,33 @@ onMounted(() => {
     )
   }
 })
+
+const cardStore = useCardStore()
+const categoryStore = useCategoryStore()
+
+async function onAddClick() {
+  viewState.value = 'add-card'
+  await nextPaint()
+  termTextFieldRef.value?.focusInput()
+}
+
+async function onSubmitClick() {
+  await cardStore.createCard({
+    term: termFieldValue.value,
+    category_id: categoryStore.currentCategoryId,
+  })
+  termFieldValue.value = ''
+}
+
+const termTextFieldRef =
+  ref<InstanceType<typeof TermTextField>>()
+type MainViewState =
+  | 'default'
+  | 'add-card'
+  | 'edit-card'
+  | 'search'
+const termFieldValue = ref<string>('')
+const viewState = ref<MainViewState>('default')
 </script>
 
 <template>
@@ -64,17 +81,39 @@ onMounted(() => {
       v-if="selectedNavItemId === 'flow'"
     />
     <div class="bottom-container" ref="bottomContainer">
-      <NavBar
-        class="nav-bar"
-        :nav-items="items"
-        v-model:selected-index="selectedIndex"
-      />
-      <FAB :icon="PlusIcon" @click="onAddClick" />
+      <div class="bottom-container__content">
+        <NavBarGroup
+          v-if="viewState === 'default'"
+          :nab-bar-items="items"
+          v-model:selected-index="selectedIndex"
+          @on-add-click="onAddClick"
+        />
+        <TermTextField
+          v-else
+          ref="termTextFieldRef"
+          class="term-text-field"
+          placeholder="Term"
+          v-model:model-value="termFieldValue"
+          :max-length="255"
+          :leading-button="{
+            icon: CaretLeftIcon,
+          }"
+          :submit-button="{
+            icon: PlusIcon,
+            color: 'accent',
+            disabled: !termFieldValue.trim(),
+          }"
+          @submit-click="onSubmitClick"
+          @leading-click="viewState = 'default'"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/shadows' as *;
+
 .main-view {
   position: relative;
   display: flex;
@@ -93,6 +132,12 @@ onMounted(() => {
   min-height: 0;
 }
 
+.term-text-field {
+  @include elevation-3;
+  align-self: flex-end;
+  flex-grow: 1;
+}
+
 .bottom-container {
   position: absolute;
   display: flex;
@@ -100,8 +145,14 @@ onMounted(() => {
   left: 0;
   bottom: 0;
   justify-content: center;
-  gap: var(--space-8);
-  padding: var(--space-24);
+  padding: var(--space-24) var(--space-16);
   z-index: 1;
+
+  &__content {
+    flex: 1;
+    max-width: var(--max-content-width-680);
+    padding: 0 var(--space-16);
+    box-sizing: border-box;
+  }
 }
 </style>
