@@ -26,5 +26,16 @@ export function useNavBar() {
     },
   ])
 
-  return { selectedIndex, selectedNavItemId, items }
+  function setSelectedNavItemId(id: string) {
+    const index = items.value.findIndex((v) => v.id == id)
+    if (index === -1) return
+    selectedIndex.value = index
+  }
+
+  return {
+    selectedIndex,
+    selectedNavItemId,
+    items,
+    setSelectedNavItemId,
+  }
 }

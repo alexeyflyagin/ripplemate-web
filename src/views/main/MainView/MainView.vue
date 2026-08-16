@@ -7,7 +7,7 @@ import NavBarGroup from './NavBarGroup.vue'
 import TermTextField from '@/components/TextFields/TermTextField.vue'
 import PlusIcon from '~icons/icons-16/plus'
 import CaretLeftIcon from '~icons/icons-16/caret-left'
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { nextPaint } from '@/utils/nextPaint.ts'
 import { useCardStore } from '@/stores/card.ts'
 import { useCategoryStore } from '@/stores/category.ts'
@@ -18,8 +18,12 @@ const bottomContainer = ref<HTMLElement>()
 const bottomContainerHeight = ref<number>(0)
 const isKeyboardOpen = ref(false)
 
-const { items, selectedIndex, selectedNavItemId } =
-  useNavBar()
+const {
+  items: navItems,
+  selectedIndex: selectedViewIndex,
+  selectedNavItemId,
+  setSelectedNavItemId,
+} = useNavBar()
 
 onMounted(() => {
   bottomContainerResizeObserver = new ResizeObserver(() => {
@@ -41,6 +45,7 @@ const categoryStore = useCategoryStore()
 
 async function onAddClick() {
   viewState.value = 'add-card'
+  setSelectedNavItemId('home')
   await nextPaint()
   termTextFieldRef.value?.focusInput()
 }
@@ -104,8 +109,8 @@ onUnmounted(() => {
       <div class="bottom-container__content">
         <NavBarGroup
           v-if="viewState === 'default'"
-          :nab-bar-items="items"
-          v-model:selected-index="selectedIndex"
+          :nab-bar-items="navItems"
+          v-model:selected-index="selectedViewIndex"
           @on-add-click="onAddClick"
         />
         <TermTextField
@@ -165,7 +170,7 @@ onUnmounted(() => {
   height: 100dvh;
   inset: 0;
   background-color: black;
-  opacity: 0.2;
+  opacity: var(--opacity-4);
   z-index: -1;
 }
 
