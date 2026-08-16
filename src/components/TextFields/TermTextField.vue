@@ -31,6 +31,8 @@ const startFade = ref<number>(0)
 const endFade = ref<number>(0)
 let textResizeObserver: ResizeObserver | null = null
 const textAreaEl = ref<HTMLTextAreaElement>()
+const isTouchDevice =
+  'ontouchstart' in window || navigator.maxTouchPoints > 0
 
 watch(
   modelValue,
@@ -73,6 +75,7 @@ function focusInput() {
 
 function onEnter(e: KeyboardEvent) {
   if (e.shiftKey) return
+  if (isTouchDevice) return
   e.preventDefault()
   emit('submitClick')
 }
