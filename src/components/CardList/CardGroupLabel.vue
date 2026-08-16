@@ -18,7 +18,7 @@ defineProps<{
 @use '@/assets/styles/text-styles' as *;
 
 .card-group-label__container {
-  padding: var(--space-16) var(--space-4) var(--space-4);
+  padding: var(--space-8) var(--space-4) var(--space-4);
 }
 
 .card-group-label__label {
