@@ -98,14 +98,20 @@ onMounted(() => {
 }
 
 .workspace-dropdown {
+  grid-column: 1;
+  min-width: 0;
+  overflow: hidden;
   justify-self: start;
+  max-width: 100%;
 }
 
 .action-group {
+  grid-column: 3;
   justify-self: end;
 }
 
 .category-tabs {
+  grid-column: 2;
   margin: 0 var(--space-16);
 
   &--built-in {
