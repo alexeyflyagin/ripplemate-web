@@ -5,6 +5,7 @@ import {
   watch,
   nextTick,
   onMounted,
+  onUnmounted,
 } from 'vue'
 import type { CardRead } from '@/api/types'
 import type {
@@ -44,6 +45,7 @@ const scrollEl = ref<HTMLElement>()
 const shift = ref(false)
 const initialized = ref(false)
 const THRESHOLD = 200
+let prevHeight = 0
 
 watch(
   () => props.listKey,
@@ -107,11 +109,26 @@ async function scrollToBottom() {
   })
 }
 
+const observer = new ResizeObserver((entries) => {
+  const newHeight = entries[0]!.contentRect.height
+  console.log(newHeight)
+  if (prevHeight > 0 && newHeight < prevHeight) {
+    const lost = prevHeight - newHeight
+    scrollEl.value?.scrollBy(0, lost)
+  }
+  prevHeight = newHeight
+})
+
 defineExpose({ scrollToBottom })
 
 onMounted(async () => {
   await nextTick()
   scrollToBottomInstantly()
+  if (scrollEl.value) {
+    prevHeight =
+      scrollEl.value.getBoundingClientRect().height
+    observer.observe(scrollEl.value)
+  }
 })
 </script>
 
