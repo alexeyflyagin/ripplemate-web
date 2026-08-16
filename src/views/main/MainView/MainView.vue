@@ -145,7 +145,7 @@ const viewState = ref<MainViewState>('default')
   left: 0;
   bottom: 0;
   justify-content: center;
-  padding: var(--space-24) var(--space-16);
+  padding: var(--space-24) 0;
   z-index: 1;
 
   &__content {
