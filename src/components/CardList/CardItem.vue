@@ -65,6 +65,7 @@ const emit = defineEmits<{
   border-radius: var(--corner-small);
   padding: 0;
   transition: transform 0.2s var(--ease-standard);
+  user-select: none;
   cursor: pointer;
 
   &--first {
