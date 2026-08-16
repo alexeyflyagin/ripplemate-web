@@ -43,6 +43,7 @@ const emit = defineEmits<{
   flex-shrink: 0;
   vertical-align: middle;
   padding: var(--space-4) var(--space-2);
+  user-select: none;
   cursor: pointer;
 
   &:focus-visible {

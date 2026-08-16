@@ -78,6 +78,7 @@ const emit = defineEmits<{
   border-radius: var(--corner-large);
   padding: 0 var(--space-12);
   color: var(--text-muted);
+  user-select: none;
   cursor: pointer;
 
   &::after {
