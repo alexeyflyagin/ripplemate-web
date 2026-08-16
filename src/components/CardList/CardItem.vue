@@ -53,7 +53,7 @@ const emit = defineEmits<{
 @use '@/assets/styles/mixins' as *;
 
 .card-item {
-  @include text-caption;
+  @include text-label;
   position: relative;
   display: flex;
   width: 100%;
@@ -63,7 +63,7 @@ const emit = defineEmits<{
   color: var(--text);
   background-color: var(--surface);
   border-radius: var(--corner-small);
-  padding: var(--space-4);
+  padding: 0;
   transition: transform 0.2s var(--ease-standard);
   cursor: pointer;
 
@@ -102,7 +102,7 @@ const emit = defineEmits<{
 
   &__term {
     margin: var(--space-8) var(--space-16) var(--space-8)
-      var(--space-4);
+      var(--space-2);
     flex-grow: 1;
     text-align: left;
   }

@@ -34,8 +34,8 @@ defineProps<{
 .togglable-icon-button {
   position: relative;
   display: inline-flex;
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border: none;
   flex-shrink: 0;
   padding: 0;
@@ -47,7 +47,7 @@ defineProps<{
   &::after {
     content: '';
     position: absolute;
-    inset: 0;
+    inset: 2px;
     border-radius: inherit;
     background-color: var(--accent);
     opacity: 0;
@@ -61,7 +61,7 @@ defineProps<{
 
   &:focus-visible {
     @include focus-outline;
-    outline-offset: 0;
+    outline-offset: -2px;
 
     &::after {
       opacity: var(--opacity-10);
@@ -77,8 +77,8 @@ defineProps<{
   }
 
   &__icon-container {
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     margin: auto;
   }
 }
