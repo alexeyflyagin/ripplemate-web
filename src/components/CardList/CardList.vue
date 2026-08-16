@@ -147,8 +147,11 @@ onMounted(async () => {
         :key="item.key"
         :label="item.label"
         :style="{
-          marginRight: 'var(--space-16)',
-          marginLeft: 'var(--space-16)',
+          maxWidth: 'var(--max-auth-content-width-680)',
+          marginRight: 'auto',
+          marginLeft: 'auto',
+          paddingLeft: 'var(--space-16)',
+          paddingRight: 'var(--space-16)',
         }"
       />
       <CardItem
@@ -156,12 +159,15 @@ onMounted(async () => {
         :key="`c-${item.id}`"
         v-bind="item"
         :style="{
+          maxWidth: 'var(--max-auth-content-width-680)',
           marginBottom:
             item.position === 'last'
               ? '0'
               : 'var(--space-2)',
-          marginRight: 'var(--space-16)',
-          marginLeft: 'var(--space-16)',
+          marginRight: 'auto',
+          marginLeft: 'auto',
+          paddingLeft: 'var(--space-16)',
+          paddingRight: 'var(--space-16)',
         }"
         @contextmenu="emit('contextmenu', $event, item)"
         @click="emit('click', $event, item)"

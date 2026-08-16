@@ -5,8 +5,12 @@ defineProps<{
 </script>
 
 <template>
-  <div class="card-group-label__container">
-    <span class="card-group-label__label">{{ label }}</span>
+  <div>
+    <div class="card-group-label__container">
+      <span class="card-group-label__label">{{
+        label
+      }}</span>
+    </div>
   </div>
 </template>
 
