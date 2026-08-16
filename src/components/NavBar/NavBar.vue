@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import type { NavItemData } from './NavBar.types.ts'
 import NavItem from './NavItem.vue'
 import { NAV_ITEM_SIZE } from './NavBar.constants.ts'
+import { nextPaint } from '@/utils/nextPaint.ts'
 
 const selectedIndex = defineModel<number>('selectedIndex', {
   default: 0,
@@ -16,6 +17,7 @@ const navIndicatorEl = ref<HTMLElement>()
 const navContainerEl = ref<HTMLElement>()
 const navIndicatorOffset = ref<number>(0)
 const isDragging = ref<boolean>(false)
+const isReady = ref<boolean>(false)
 let startOffset = 0
 let startX = 0
 
@@ -79,6 +81,13 @@ function onPointerUp() {
   selectedIndex.value = getClosestNavItemIndex()
   updateNavIndicatorOffset()
 }
+
+onMounted(async () => {
+  await nextTick()
+  updateNavIndicatorOffset()
+  await nextPaint()
+  isReady.value = true
+})
 </script>
 
 <template>
@@ -96,6 +105,8 @@ function onPointerUp() {
         :class="{
           'nav-bar__active-indicator-container--is-dragging':
             isDragging,
+          'nav-bar__active-indicator-container--is-not-ready':
+            !isReady,
         }"
         ref="navIndicatorEl"
         :style="{
@@ -140,6 +151,10 @@ function onPointerUp() {
   cursor: pointer;
 
   &--is-dragging {
+    transition: none;
+  }
+
+  &--is-not-ready {
     transition: none;
   }
 
