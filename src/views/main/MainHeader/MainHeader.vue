@@ -10,6 +10,7 @@ import { useWorkspaceMenu } from './useWorkspaceMenu'
 import BaseTabs from '@/components/Tabs/BaseTabs.vue'
 import { useCategoryTabs } from './useCategoryTabs'
 import { useCategoryMenu } from './useCategoryMenu'
+import { onMounted, ref } from 'vue'
 
 const { t } = useI18n()
 
@@ -26,18 +27,46 @@ const {
   currentWorkspaceName,
   openWorkspaceMenu,
 } = useWorkspaceMenu(t)
+
+const EXPANDED_MIN_WIDTH = 680
+const isExpanded = ref<boolean>(false)
+const containerEl = ref<HTMLElement>()
+let resizeObserver: ResizeObserver | null = null
+
+onMounted(() => {
+  resizeObserver = new ResizeObserver((entries) => {
+    const width = entries[0]!.contentRect.width
+    isExpanded.value = width >= EXPANDED_MIN_WIDTH
+  })
+
+  if (containerEl.value) {
+    resizeObserver.observe(containerEl.value)
+  }
+})
 </script>
 
 <template>
-  <div>
+  <div ref="containerEl">
     <div class="toolbar">
       <WorkspaceDropdown
+        class="workspace-dropdown"
         :label="currentWorkspaceName"
         v-model:selected="isMenuOpened"
-        class="toolbar__workspace-dropdown"
         @click="openWorkspaceMenu"
       />
-      <div>
+      <BaseTabs
+        v-if="isExpanded"
+        class="category-tabs--built-in"
+        :isReadyProp="!isLoading"
+        :tabs="tabs"
+        :selected-tab-id="selectedId"
+        v-model:active-id="currentTabId"
+        :last-button-icon="PlusIcon"
+        @last-button-click="addCategoryClick"
+        @click="onTabClick"
+        @contextmenu="onTabContextMenu"
+      />
+      <div class="action-group">
         <BaseIconButton :icon="SearchIcon" />
         <BaseIconButton
           :icon="MoreIcon"
@@ -46,13 +75,13 @@ const {
       </div>
     </div>
     <BaseTabs
+      v-if="!isExpanded"
       class="category-tabs"
       :isReadyProp="!isLoading"
       :tabs="tabs"
       :selected-tab-id="selectedId"
       v-model:active-id="currentTabId"
       :last-button-icon="PlusIcon"
-      :style="{ display: 'flex' }"
       @last-button-click="addCategoryClick"
       @click="onTabClick"
       @contextmenu="onTabContextMenu"
@@ -62,16 +91,26 @@ const {
 
 <style lang="scss" scoped>
 .toolbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   gap: var(--space-8);
-  padding: var(--space-8) var(--space-16);
+  padding: var(--space-12) var(--space-16);
+}
 
-  &__workspace-dropdown {
-    margin-right: auto;
-  }
+.workspace-dropdown {
+  justify-self: start;
+}
+
+.action-group {
+  justify-self: end;
 }
 
 .category-tabs {
   margin: 0 var(--space-16);
+
+  &--built-in {
+    justify-self: center;
+    max-width: var(--max-auth-content-width-400);
+  }
 }
 </style>
