@@ -57,7 +57,7 @@ const emit = defineEmits<{
   position: relative;
   display: flex;
   width: 100%;
-  align-items: center;
+  align-items: top;
   margin: 0;
   border: none;
   color: var(--text);
@@ -106,10 +106,14 @@ const emit = defineEmits<{
       var(--space-2);
     flex-grow: 1;
     text-align: left;
+    white-space: pre-wrap;
   }
 
   &__time-label {
     @include text-label;
+    min-height: 34px;
+    align-self: flex-start;
+    align-content: center;
     margin-right: var(--space-12);
     color: var(--text-placeholder);
   }
