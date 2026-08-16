@@ -152,6 +152,7 @@ onMounted(async () => {
           marginLeft: 'auto',
           paddingLeft: 'var(--space-16)',
           paddingRight: 'var(--space-16)',
+          boxSizing: 'border-box',
         }"
       />
       <CardItem
@@ -168,6 +169,7 @@ onMounted(async () => {
           marginLeft: 'auto',
           paddingLeft: 'var(--space-16)',
           paddingRight: 'var(--space-16)',
+          boxSizing: 'border-box',
         }"
         @contextmenu="emit('contextmenu', $event, item)"
         @click="emit('click', $event, item)"
