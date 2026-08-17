@@ -5,18 +5,33 @@ import { useNavBar } from './useNavBar.ts'
 import MainHeader from '../MainHeader/MainHeader.vue'
 import NavBarGroup from './NavBarGroup.vue'
 import TermTextField from '@/components/TextFields/TermTextField.vue'
-import PlusIcon from '~icons/icons-16/plus'
-import CaretLeftIcon from '~icons/icons-16/caret-left'
 import { onMounted, onUnmounted, ref } from 'vue'
-import { nextPaint } from '@/utils/nextPaint.ts'
-import { useCardStore } from '@/stores/card.ts'
-import { useCategoryStore } from '@/stores/category.ts'
 
-let bottomContainerResizeObserver: ResizeObserver | null =
-  null
-const bottomContainer = ref<HTMLElement>()
-const bottomContainerHeight = ref<number>(0)
-const isKeyboardOpen = ref(false)
+import { useI18n } from 'vue-i18n'
+import { useTermTextField } from './useTermTextField.ts'
+import { nextPaint } from '@/utils/nextPaint.ts'
+import { useMainViewStates } from './useMainViewState.ts'
+import { useKeyboardObserver } from '@/composables/useKeyboardObserver.ts'
+import { useBottomContainer } from './useBottomContainer.ts'
+
+const { t } = useI18n()
+
+const {
+  isKeyboardOpen,
+  addKeyboardObserver,
+  removeKeyboardObserver,
+} = useKeyboardObserver()
+
+const {
+  bottomContainerEl,
+  bottomContainerHeight,
+  observeBottomContainerHeight,
+} = useBottomContainer()
+
+const termTextFieldRef =
+  ref<InstanceType<typeof TermTextField>>()
+
+const { currentView, mode } = useMainViewStates()
 
 const {
   items: navItems,
@@ -25,66 +40,37 @@ const {
   setSelectedNavItemId,
 } = useNavBar()
 
-onMounted(() => {
-  bottomContainerResizeObserver = new ResizeObserver(() => {
-    bottomContainerHeight.value =
-      document
-        .querySelector('.bottom-container')
-        ?.getBoundingClientRect().height ?? 0
-  })
-
-  if (bottomContainer.value) {
-    bottomContainerResizeObserver.observe(
-      bottomContainer.value,
-    )
-  }
-})
-
-const cardStore = useCardStore()
-const categoryStore = useCategoryStore()
+const {
+  placeholder,
+  actionCaptionData,
+  leadingButtonData,
+  onSubmitClick,
+  secondaryButtonData,
+  sumbitButtonData,
+  termFieldValue,
+} = useTermTextField(t, mode)
 
 async function onAddClick() {
-  viewState.value = 'add-card'
+  mode.value = 'add-card'
   setSelectedNavItemId('home')
   await nextPaint()
   termTextFieldRef.value?.focusInput()
 }
 
-async function onSubmitClick() {
-  await cardStore.createCard({
-    term: termFieldValue.value,
-    category_id: categoryStore.currentCategoryId,
-  })
-  termFieldValue.value = ''
-}
-
-const termTextFieldRef =
-  ref<InstanceType<typeof TermTextField>>()
-type MainViewState =
-  | 'default'
-  | 'add-card'
-  | 'edit-card'
-  | 'search'
-const termFieldValue = ref<string>('')
-const viewState = ref<MainViewState>('default')
-
-function onViewportResize() {
-  const vv = window.visualViewport
-  if (!vv) return
-  isKeyboardOpen.value = window.innerHeight - vv.height < 0
+async function onSearch() {
+  mode.value = 'search'
+  setSelectedNavItemId('home')
+  await nextPaint()
+  termTextFieldRef.value?.focusInput()
 }
 
 onMounted(() => {
-  window.visualViewport?.addEventListener(
-    'resize',
-    onViewportResize,
-  )
+  addKeyboardObserver()
+  observeBottomContainerHeight()
 })
+
 onUnmounted(() => {
-  window.visualViewport?.removeEventListener(
-    'resize',
-    onViewportResize,
-  )
+  removeKeyboardObserver()
 })
 </script>
 
@@ -96,7 +82,11 @@ onUnmounted(() => {
         bottomContainerHeight + 'px',
     }"
   >
-    <MainHeader class="main-header" />
+    <MainHeader
+      class="main-header"
+      :show-search-button="mode !== 'search'"
+      @search="onSearch"
+    />
     <HomeView
       class="home-view"
       v-if="selectedNavItemId === 'home'"
@@ -105,10 +95,10 @@ onUnmounted(() => {
       class="flow-view"
       v-if="selectedNavItemId === 'flow'"
     />
-    <div class="bottom-container" ref="bottomContainer">
+    <div class="bottom-container" ref="bottomContainerEl">
       <div class="bottom-container__content">
         <NavBarGroup
-          v-if="viewState === 'default'"
+          v-if="mode === 'default'"
           :nab-bar-items="navItems"
           v-model:selected-index="selectedViewIndex"
           @on-add-click="onAddClick"
@@ -117,19 +107,18 @@ onUnmounted(() => {
           v-else
           ref="termTextFieldRef"
           class="term-text-field"
-          placeholder="Term"
+          :placeholder="placeholder"
+          :action-caption="actionCaptionData"
           v-model:model-value="termFieldValue"
           :max-length="255"
-          :leading-button="{
-            icon: CaretLeftIcon,
-          }"
-          :submit-button="{
-            icon: PlusIcon,
-            color: 'accent',
-            disabled: !termFieldValue.trim(),
-          }"
+          :leading-button="leadingButtonData"
+          :submit-button="sumbitButtonData"
+          :secondary-button="secondaryButtonData"
           @submit-click="onSubmitClick"
-          @leading-click="viewState = 'default'"
+          @secondary-click="termFieldValue = ''"
+          @leading-click="
+            ((mode = 'default'), (termFieldValue = ''))
+          "
         />
         <div v-if="isKeyboardOpen" class="scrim" />
       </div>

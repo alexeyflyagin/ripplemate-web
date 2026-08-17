@@ -40,6 +40,7 @@ const ru: typeof en = {
       edit: 'Редактировать',
       delete: 'Удалить',
       refresh: 'Обновить',
+      search: 'Поиск',
       addWorkspace: 'Дообавить пространство',
       selectWorkspace: 'Выбрать пространтсво',
       deleteWorkspace: 'Удалить пространство',
@@ -54,6 +55,8 @@ const ru: typeof en = {
       font: 'Шрифт',
       language: 'Язык',
       theme: 'Тема',
+      term: 'Термин',
+      results: 'Найдено',
     },
     error: {
       somethingWentWrong: 'Что-то пошло не так',

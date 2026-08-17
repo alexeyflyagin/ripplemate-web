@@ -28,10 +28,18 @@ const {
   openWorkspaceMenu,
 } = useWorkspaceMenu(t)
 
+defineProps<{
+  showSearchButton?: boolean
+}>()
+
 const EXPANDED_MIN_WIDTH = 680
 const isExpanded = ref<boolean>(false)
 const containerEl = ref<HTMLElement>()
 let resizeObserver: ResizeObserver | null = null
+
+const emit = defineEmits<{
+  search: []
+}>()
 
 onMounted(() => {
   resizeObserver = new ResizeObserver((entries) => {
@@ -67,7 +75,11 @@ onMounted(() => {
         @contextmenu="onTabContextMenu"
       />
       <div class="action-group">
-        <BaseIconButton :icon="SearchIcon" />
+        <BaseIconButton
+          v-if="showSearchButton"
+          :icon="SearchIcon"
+          @click="emit('search')"
+        />
         <BaseIconButton
           :icon="MoreIcon"
           @click="openMoreMenu"

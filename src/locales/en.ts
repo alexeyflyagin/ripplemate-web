@@ -41,6 +41,7 @@ export default {
       edit: 'Edit',
       delete: 'Delete',
       refresh: 'Refresh',
+      search: 'Search',
       addWorkspace: 'Add workspace',
       selectWorkspace: 'Select workspace',
       deleteWorkspace: 'Delete workspace',
@@ -55,6 +56,8 @@ export default {
       font: 'Font',
       language: 'Language',
       theme: 'Theme',
+      term: 'Term',
+      results: 'Results',
     },
     error: {
       somethingWentWrong: 'Something went wrong',

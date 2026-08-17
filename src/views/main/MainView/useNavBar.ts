@@ -3,7 +3,7 @@ import HomeIcon from '~icons/icons-16/home'
 import HomeFilledIcon from '~icons/icons-16/home-filled'
 import PlayIcon from '~icons/icons-16/play'
 import PlayFilledIcon from '~icons/icons-16/play-filled'
-import { computed, ref } from 'vue'
+import { computed, ref, type Ref } from 'vue'
 
 export function useNavBar() {
   const selectedIndex = ref<number>()
