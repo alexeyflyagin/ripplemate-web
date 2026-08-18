@@ -31,7 +31,7 @@ export function useTermTextField(
         return {
           icon: SearchIcon,
           caption: t('general.label.results') + ':',
-          value: String(cardStore.cards.length),
+          value: String(cardStore.total),
         }
       default:
         return undefined
