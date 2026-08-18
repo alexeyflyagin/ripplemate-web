@@ -33,12 +33,8 @@ const termTextFieldRef =
 
 const { currentView, mode } = useMainViewStates()
 
-const {
-  items: navItems,
-  selectedIndex: selectedViewIndex,
-  selectedNavItemId,
-  setSelectedNavItemId,
-} = useNavBar()
+const { items: navItems, setSelectedNavItemId } =
+  useNavBar(currentView)
 
 const {
   placeholder,
@@ -89,18 +85,18 @@ onUnmounted(() => {
     />
     <HomeView
       class="home-view"
-      v-if="selectedNavItemId === 'home'"
+      v-if="currentView === 'home'"
     />
     <FlowView
       class="flow-view"
-      v-if="selectedNavItemId === 'flow'"
+      v-if="currentView === 'flow'"
     />
     <div class="bottom-container" ref="bottomContainerEl">
       <div class="bottom-container__content">
         <NavBarGroup
           v-if="mode === 'default'"
           :nab-bar-items="navItems"
-          v-model:selected-index="selectedViewIndex"
+          v-model:selected-id="currentView"
           @on-add-click="onAddClick"
         />
         <TermTextField

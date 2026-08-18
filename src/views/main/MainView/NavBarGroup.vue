@@ -4,8 +4,8 @@ import type { NavItemData } from '@/components/NavBar/NavBar.types'
 import NavBar from '@/components/NavBar/NavBar.vue'
 import PlusIcon from '~icons/icons-16/plus'
 
-const selectedIndex = defineModel('selectedIndex', {
-  default: 0,
+const selectedId = defineModel<string>('selectedId', {
+  required: true,
 })
 
 defineProps<{
@@ -22,7 +22,7 @@ const emit = defineEmits<{
     <NavBar
       class="nav-bar"
       :nav-items="nabBarItems"
-      v-model:selected-index="selectedIndex"
+      v-model:selectedId="selectedId"
     />
     <FAB
       class="fab"

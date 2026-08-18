@@ -1,27 +1,38 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from 'vue'
+import {
+  computed,
+  nextTick,
+  onMounted,
+  ref,
+  watch,
+} from 'vue'
 import type { NavItemData } from './NavBar.types.ts'
 import NavItem from './NavItem.vue'
 import { NAV_ITEM_SIZE } from './NavBar.constants.ts'
 import { nextPaint } from '@/utils/nextPaint.ts'
 
-const selectedIndex = defineModel<number>('selectedIndex', {
-  default: 0,
+const selectedId = defineModel<string>('selectedId', {
+  required: true,
 })
 
-defineProps<{
+const props = defineProps<{
   navItems: NavItemData[]
 }>()
 
 const navIndicatorEl = ref<HTMLElement>()
 const navContainerEl = ref<HTMLElement>()
 const navIndicatorOffset = ref<number>(0)
+const selectedIndex = computed<number>(() => {
+  return props.navItems.findIndex(
+    (v) => v.id === selectedId.value,
+  )
+})
 const isDragging = ref<boolean>(false)
 const isReady = ref<boolean>(false)
 let startOffset = 0
 let startX = 0
 
-watch(selectedIndex, () => {
+watch(selectedId, () => {
   if (isDragging.value) return
   updateNavIndicatorOffset()
 })
@@ -47,14 +58,15 @@ function checkBoundaries(offset: number): number {
   return offset
 }
 
-function getClosestNavItemIndex(): number {
+function getClosestNavItemId(): string {
   if (!navIndicatorEl.value || !navContainerEl.value)
-    return selectedIndex.value
+    return selectedId.value
 
-  return Math.round(
+  const index = Math.round(
     navIndicatorOffset.value /
       navIndicatorEl.value.offsetWidth,
   )
+  return props.navItems[index]?.id ?? selectedId.value
 }
 
 function onPointerDown(event: PointerEvent) {
@@ -78,7 +90,7 @@ function onPointerMove(event: PointerEvent) {
 function onPointerUp() {
   if (!isDragging.value) return
   isDragging.value = false
-  selectedIndex.value = getClosestNavItemIndex()
+  selectedId.value = getClosestNavItemId()
   updateNavIndicatorOffset()
 }
 
@@ -94,11 +106,11 @@ onMounted(async () => {
   <div class="nav-bar">
     <div ref="navContainerEl" class="nav-bar__nav-items">
       <NavItem
-        v-for="(item, index) in navItems"
+        v-for="item in navItems"
         :key="item.id"
         v-bind="item"
-        :selected="index === selectedIndex"
-        @click="selectedIndex = index"
+        :selected="item.id === selectedId"
+        @click="selectedId = item.id"
       />
       <div
         class="nav-bar__active-indicator-container"

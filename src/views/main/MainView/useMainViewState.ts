@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 
-export type MainViews = 'home' | 'flow'
+export const VIEWS = ['home', 'flow'] as const
+export type MainViewTypes = (typeof VIEWS)[number]
 
 export type NavBarMode =
   | 'default'
@@ -9,7 +10,7 @@ export type NavBarMode =
   | 'search'
 
 export function useMainViewStates() {
-  const currentView = ref<MainViews>('home')
+  const currentView = ref<MainViewTypes>('home')
   const mode = ref<NavBarMode>('default')
 
   return { currentView, mode }
