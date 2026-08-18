@@ -24,7 +24,11 @@ const emit = defineEmits<{
       :nav-items="nabBarItems"
       v-model:selected-index="selectedIndex"
     />
-    <FAB :icon="PlusIcon" @click="emit('onAddClick')" />
+    <FAB
+      class="fab"
+      :icon="PlusIcon"
+      @click="emit('onAddClick')"
+    />
   </div>
 </template>
 
@@ -33,5 +37,13 @@ const emit = defineEmits<{
   display: flex;
   gap: var(--space-8);
   justify-content: center;
+}
+
+.nav-bar {
+  pointer-events: auto;
+}
+
+.fab {
+  pointer-events: auto;
 }
 </style>

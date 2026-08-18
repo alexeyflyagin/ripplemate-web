@@ -151,6 +151,7 @@ onUnmounted(() => {
   @include elevation-3;
   align-self: flex-end;
   flex-grow: 1;
+  pointer-events: auto;
 }
 
 .scrim {
@@ -161,6 +162,7 @@ onUnmounted(() => {
   background-color: black;
   opacity: var(--opacity-4);
   z-index: -1;
+  pointer-events: auto;
 }
 
 .bottom-container {
@@ -172,6 +174,7 @@ onUnmounted(() => {
   justify-content: center;
   padding: var(--space-24) 0;
   z-index: 1;
+  pointer-events: none;
 
   &__content {
     flex: 1;
