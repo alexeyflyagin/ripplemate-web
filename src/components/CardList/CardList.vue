@@ -177,7 +177,7 @@ onUnmounted(() => {
         #default="{ item }"
       >
         <div
-          v-if="item.type === 'top-spacer' && !hasMore"
+          v-if="item.type === 'top-spacer'"
           :key="'top-spacer'"
           :style="{
             height: 'var(--top-spacer, var(--space-24))',
@@ -192,7 +192,7 @@ onUnmounted(() => {
             maxWidth: 'var(--max-content-width-680)',
             marginRight: 'auto',
             marginLeft: 'auto',
-            padding: 'var(--space-24) var(--space-16) 0',
+            padding: '0 var(--space-16)',
             boxSizing: 'border-box',
           }"
         />

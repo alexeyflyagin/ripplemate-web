@@ -55,6 +55,7 @@ const { openCardMenu } = useCardItemMenu(t)
 
 .empty-state {
   flex: 1;
+  margin-top: var(--main-header-height);
   margin-bottom: var(--bottom-container-height);
 }
 
@@ -67,10 +68,14 @@ const { openCardMenu } = useCardItemMenu(t)
 
 .card-list {
   @include fade-mask(to bottom);
-  --fade-start: var(--space-24);
+  --fade-start: calc(
+    var(--main-header-height, 100px) + 80px
+  );
   --fade-end: var(--bottom-container-height, 100px);
   --bottom-spacer: var(--bottom-container-height);
-  --top-spacer: var(--space-80);
+  --top-spacer: calc(
+    var(--main-header-height, 200px) + 50px
+  );
   flex: 1;
 }
 </style>

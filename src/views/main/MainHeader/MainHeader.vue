@@ -35,20 +35,21 @@ defineProps<{
 const EXPANDED_MIN_WIDTH = 680
 const isExpanded = ref<boolean>(false)
 const containerEl = ref<HTMLElement>()
-let resizeObserver: ResizeObserver | null = null
+const containerRO = new ResizeObserver((entries) => {
+  const width = entries[0]!.contentRect.width
+  const height = entries[0]!.contentRect.height
+  isExpanded.value = width >= EXPANDED_MIN_WIDTH
+  emit('heightChanged', height)
+})
 
 const emit = defineEmits<{
   search: []
+  heightChanged: [height: number]
 }>()
 
 onMounted(() => {
-  resizeObserver = new ResizeObserver((entries) => {
-    const width = entries[0]!.contentRect.width
-    isExpanded.value = width >= EXPANDED_MIN_WIDTH
-  })
-
   if (containerEl.value) {
-    resizeObserver.observe(containerEl.value)
+    containerRO.observe(containerEl.value)
   }
 })
 </script>

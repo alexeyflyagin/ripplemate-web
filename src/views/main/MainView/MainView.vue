@@ -25,6 +25,7 @@ const {
 const termTextFieldRef =
   ref<InstanceType<typeof TermTextField>>()
 const bottomContainerEl = ref<HTMLElement>()
+const mainHeaderHeight = ref<number>(0)
 
 const {
   bottomContainerHeight,
@@ -76,12 +77,19 @@ onUnmounted(() => {
     :style="{
       '--bottom-container-height':
         bottomContainerHeight + 'px',
+      '--main-header-height': mainHeaderHeight + 'px',
     }"
   >
     <MainHeader
       class="main-header"
       :show-search-button="mode !== 'search'"
       @search="onSearch"
+      @height-changed="
+        (height) => {
+          mainHeaderHeight = height
+          console.log(height)
+        }
+      "
     />
     <HomeView
       class="home-view"
@@ -123,6 +131,7 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/mixins' as *;
 @use '@/assets/styles/shadows' as *;
 
 .main-view {
@@ -133,6 +142,10 @@ onUnmounted(() => {
 }
 
 .main-header {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
   flex-shrink: 0;
   z-index: 1;
 }
