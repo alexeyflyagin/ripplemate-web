@@ -1,7 +1,8 @@
-import { ref } from 'vue'
+import { ref, type Ref } from 'vue'
 
-export function useBottomContainer() {
-  const bottomContainerEl = ref<HTMLElement>()
+export function useBottomContainer(
+  bottomContainerEl: Ref<HTMLElement | undefined>,
+) {
   const bottomContainerHeight = ref<number>(0)
 
   const bottomContainerResizeObserver: ResizeObserver =
@@ -21,7 +22,6 @@ export function useBottomContainer() {
   }
 
   return {
-    bottomContainerEl,
     bottomContainerHeight,
     observeBottomContainerHeight,
   }

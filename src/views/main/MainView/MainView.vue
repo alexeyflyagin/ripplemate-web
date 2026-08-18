@@ -22,14 +22,14 @@ const {
   removeKeyboardObserver,
 } = useKeyboardObserver()
 
-const {
-  bottomContainerEl,
-  bottomContainerHeight,
-  observeBottomContainerHeight,
-} = useBottomContainer()
-
 const termTextFieldRef =
   ref<InstanceType<typeof TermTextField>>()
+const bottomContainerEl = ref<HTMLElement>()
+
+const {
+  bottomContainerHeight,
+  observeBottomContainerHeight,
+} = useBottomContainer(bottomContainerEl)
 
 const { currentView, mode } = useMainViewStates()
 
