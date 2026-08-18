@@ -84,12 +84,7 @@ onUnmounted(() => {
       class="main-header"
       :show-search-button="mode !== 'search'"
       @search="onSearch"
-      @height-changed="
-        (height) => {
-          mainHeaderHeight = height
-          console.log(height)
-        }
-      "
+      @height-changed="(h) => (mainHeaderHeight = h)"
     />
     <HomeView
       class="home-view"
