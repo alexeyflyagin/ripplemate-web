@@ -168,6 +168,12 @@ onMounted(async () => {
   outline: var(--stroke-subtle) solid var(--border-muted);
   transition: outline-color 0.2s var(--ease-standard);
 
+  @media (hover: hover) {
+    &:hover {
+      outline-color: var(--border);
+    }
+  }
+
   &:focus-within {
     outline-color: var(--border);
   }
