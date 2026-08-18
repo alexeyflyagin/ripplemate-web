@@ -39,6 +39,7 @@ const emit = defineEmits<{
         :icon="HeartIcon"
         :icon-selected="HeartFilledIcon"
         v-model:selected="isFavorite"
+        :style="{ 'margin-top': '2px' }"
       />
       <span class="card-item__term">{{ term }}</span>
       <span class="card-item__time-label">{{
@@ -53,7 +54,7 @@ const emit = defineEmits<{
 @use '@/assets/styles/mixins' as *;
 
 .card-item {
-  @include text-label;
+  @include text-caption;
   position: relative;
   display: flex;
   width: 100%;
@@ -111,7 +112,7 @@ const emit = defineEmits<{
 
   &__time-label {
     @include text-label;
-    min-height: 34px;
+    min-height: 38px;
     align-self: flex-start;
     align-content: center;
     margin-right: var(--space-12);

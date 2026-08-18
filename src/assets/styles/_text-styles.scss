@@ -24,10 +24,10 @@
 
 @mixin text-caption {
   font-family: var(--font-current);
-  font-size: 15px;
-  line-height: 20px;
+  font-size: 14px;
+  line-height: 22px;
   font-weight: 400;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.4px;
 }
 
 @mixin text-caption-emphasized {
