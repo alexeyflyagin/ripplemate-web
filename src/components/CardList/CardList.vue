@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import {
-  ref,
   computed,
-  watch,
   nextTick,
   onMounted,
+  onUnmounted,
+  ref,
+  watch,
 } from 'vue'
 import type { CardRead } from '@/api/types'
 import type {
@@ -20,6 +21,13 @@ import {
   Virtualizer,
   type VirtualizerHandle,
 } from 'virtua/vue'
+import CircleProgressBar from '../ProgressBar/Circle/CircleProgressBar.vue'
+
+const SMOOTH_SCROLL_MAX_DISTANCE = 2000
+const TOP_THRESHOLD = 200
+const BOTTOM_THRESHOLD = 100
+const SMALL_BOTTOM_THRESHOLD = 10
+let initialized = false
 
 const dateFormatter = useDate()
 
@@ -33,99 +41,121 @@ const emit = defineEmits<{
   loadMore: []
   click: [event: MouseEvent, card: CardItemData]
   contextmenu: [event: MouseEvent, card: CardItemData]
+  scroll: [event: Event, isNearBottom: boolean]
 }>()
+
+const scrollEl = ref<HTMLElement>()
+const wrapEl = ref<HTMLElement>()
+const listRef = ref<VirtualizerHandle>()
+const shift = ref<boolean>(false)
+const distanceToTop = ref<number>(0)
+const distanceToBottom = ref<number>(0)
+
+const isNearBottom = computed<boolean>(
+  () => distanceToBottom.value <= BOTTOM_THRESHOLD,
+)
 
 const items = computed<
   (CardItemData | CardGroupLabelData | SpacerData)[]
 >(() => convertCards(props.cards, dateFormatter))
 
-const listRef = ref<VirtualizerHandle>()
-const scrollEl = ref<HTMLElement>()
-const shift = ref(false)
-const initialized = ref(false)
-const isAtBottom = ref(true)
-const THRESHOLD = 200
-const BOTTOM_THRESHOLD = 100
+function getDistanceToBottom(): number {
+  const el = scrollEl.value
+  if (!el) return 0
+  return el.scrollHeight - el.scrollTop - el.offsetHeight
+}
+
+function onScroll(event: Event) {
+  distanceToBottom.value = getDistanceToBottom()
+  distanceToTop.value = scrollEl.value?.scrollTop ?? 0
+  emit('scroll', event, isNearBottom.value)
+}
+
+function scrollToBottom(options?: { smooth: boolean }) {
+  if (
+    options?.smooth &&
+    distanceToBottom.value > SMOOTH_SCROLL_MAX_DISTANCE
+  ) {
+    const offset =
+      distanceToBottom.value - SMOOTH_SCROLL_MAX_DISTANCE
+    listRef.value?.scrollBy(offset)
+  }
+
+  listRef.value?.scrollToIndex(items.value.length - 1, {
+    align: 'end',
+    smooth: options?.smooth,
+  })
+}
+
+async function loadMore() {
+  shift.value = true
+  const timer = setTimeout(() => {
+    stop()
+    shift.value = false
+  }, 5000)
+
+  const stop = watch(items, async () => {
+    await nextTick()
+    shift.value = false
+    clearTimeout(timer)
+    stop()
+  })
+
+  emit('loadMore')
+}
 
 watch(
   () => props.listKey,
   () => {
-    initialized.value = false
-    const stop = watch(
-      () => props.cards,
-      async () => {
-        await nextTick()
-        scrollToBottomInstantly()
-        stop()
-      },
-    )
+    initialized = false
+    const stop = watch(items, () => {
+      scrollToBottom()
+      stop()
+    })
   },
-  { immediate: true },
 )
 
 watch(
-  () => props.cards.length,
-  (newLen, oldLen) => {
-    if (!initialized.value) {
-      initialized.value = true
+  () => [...props.cards],
+  async (value, oldValue) => {
+    if (!initialized) {
+      initialized = true
       return
     }
-    if (oldLen && newLen > oldLen && !shift.value) {
-      nextTick(() => scrollToBottom())
+
+    if (
+      value.length > oldValue.length &&
+      oldValue[0] !== value[0]
+    ) {
+      await nextTick()
+      scrollToBottom({ smooth: true })
     }
   },
-  { immediate: true },
+  { deep: true },
 )
 
-function onScroll() {
-  const el = scrollEl.value
-  if (!el) return
-  if (el.scrollTop <= THRESHOLD && props.hasMore) {
-    shift.value = true
-    emit('loadMore')
-  } else {
-    shift.value = false
-  }
-  const distanceFromBottom =
-    el.scrollHeight - el.scrollTop - el.clientHeight
-  isAtBottom.value = distanceFromBottom <= BOTTOM_THRESHOLD
-}
-
-function scrollToBottomInstantly() {
-  listRef.value?.scrollToIndex(items.value.length - 1)
-}
-
-async function scrollToBottom() {
-  const el = scrollEl.value
-  if (!el || !listRef.value) return
-
-  const distanceFromBottom =
-    el.scrollHeight - el.scrollTop - el.clientHeight
-
-  if (distanceFromBottom >= 2000) {
-    el.scrollTop = el.scrollHeight - el.clientHeight - 300
-  }
-
-  await nextTick()
-  listRef.value?.scrollToIndex(items.value.length - 1, {
-    smooth: true,
-  })
-}
-
-const observer = new ResizeObserver(async () => {
-  await nextTick()
-  if (!isAtBottom.value) return
-  scrollToBottomInstantly()
+watch(distanceToTop, async (v) => {
+  if (v < TOP_THRESHOLD) await loadMore()
 })
 
-defineExpose({ scrollToBottom })
+const wrapRO = new ResizeObserver(() => {
+  if (distanceToBottom.value < SMALL_BOTTOM_THRESHOLD)
+    scrollToBottom()
+})
 
-onMounted(async () => {
-  await nextTick()
-  scrollToBottomInstantly()
-  if (scrollEl.value) {
-    observer.observe(scrollEl.value)
-  }
+const scrollRO = new ResizeObserver(() => {
+  if (distanceToBottom.value < BOTTOM_THRESHOLD)
+    scrollToBottom()
+})
+
+onMounted(() => {
+  scrollToBottom()
+  if (wrapEl.value) wrapRO.observe(wrapEl.value)
+  if (scrollEl.value) scrollRO.observe(scrollEl.value)
+})
+
+onUnmounted(() => {
+  wrapRO.disconnect()
 })
 </script>
 
@@ -137,58 +167,76 @@ onMounted(async () => {
   >
     <div :style="{ flexGrow: 1 }" />
 
-    <Virtualizer
-      ref="listRef"
-      :data="items"
-      :shift="shift"
-      #default="{ item }"
-    >
-      <div
-        v-if="item.type === 'top-spacer'"
-        :key="'top-spacer'"
-        :style="{ height: 'var(--space-80)' }"
-      />
-      <div
-        v-else-if="item.type === 'bottom-spacer'"
-        :key="'bottom-spacer'"
-        :style="{
-          height:
-            'var(--bottom-container-height, var(--space-24))',
-        }"
-      />
-      <CardGroupLabel
-        v-else-if="item.type === 'label'"
-        :key="item.key"
-        :label="item.label"
-        :style="{
-          maxWidth: 'var(--max-content-width-680)',
-          marginRight: 'auto',
-          marginLeft: 'auto',
-          paddingLeft: 'var(--space-16)',
-          paddingRight: 'var(--space-16)',
-          boxSizing: 'border-box',
-        }"
-      />
-      <CardItem
-        v-else-if="item.type === 'card'"
-        :key="`c-${item.id}`"
-        v-bind="item"
-        :style="{
-          maxWidth: 'var(--max-content-width-680)',
-          marginBottom:
-            item.position === 'last'
-              ? '0'
-              : 'var(--space-2)',
-          marginRight: 'auto',
-          marginLeft: 'auto',
-          paddingLeft: 'var(--space-16)',
-          paddingRight: 'var(--space-16)',
-          boxSizing: 'border-box',
-        }"
-        @contextmenu="emit('contextmenu', $event, item)"
-        @click="emit('click', $event, item)"
-      />
-    </Virtualizer>
+    <div ref="wrapEl">
+      <Virtualizer
+        ref="listRef"
+        :data="items"
+        :buffer-size="600"
+        :shift="shift"
+        :scroll-ref="scrollEl"
+        #default="{ item }"
+      >
+        <div
+          v-if="item.type === 'top-spacer' && !hasMore"
+          :key="'top-spacer'"
+          :style="{
+            height: 'var(--top-spacer, var(--space-24))',
+          }"
+        />
+        <CircleProgressBar
+          v-if="item.type === 'top-spacer' && hasMore"
+          :key="'progress-bar'"
+          :style="{
+            display: 'flex',
+            'justify-content': 'center',
+            maxWidth: 'var(--max-content-width-680)',
+            marginRight: 'auto',
+            marginLeft: 'auto',
+            padding: 'var(--space-24) var(--space-16) 0',
+            boxSizing: 'border-box',
+          }"
+        />
+        <div
+          v-if="item.type === 'bottom-spacer'"
+          :key="'bottom-spacer'"
+          :style="{
+            height: 'var(--bottom-spacer, var(--space-24))',
+          }"
+        />
+        <CardGroupLabel
+          v-if="item.type === 'label'"
+          :key="item.key"
+          :label="item.label"
+          :style="{
+            maxWidth: 'var(--max-content-width-680)',
+            marginRight: 'auto',
+            marginLeft: 'auto',
+            paddingLeft: 'var(--space-16)',
+            paddingRight: 'var(--space-16)',
+            boxSizing: 'border-box',
+          }"
+        />
+        <CardItem
+          v-if="item.type === 'card'"
+          :key="`c-${item.id}`"
+          v-bind="item"
+          :style="{
+            maxWidth: 'var(--max-content-width-680)',
+            marginBottom:
+              item.position === 'last'
+                ? '0'
+                : 'var(--space-2)',
+            marginRight: 'auto',
+            marginLeft: 'auto',
+            paddingLeft: 'var(--space-16)',
+            paddingRight: 'var(--space-16)',
+            boxSizing: 'border-box',
+          }"
+          @contextmenu="emit('contextmenu', $event, item)"
+          @click="emit('click', $event, item)"
+        />
+      </Virtualizer>
+    </div>
   </div>
 </template>
 
