@@ -102,6 +102,8 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/shadows' as *;
+
 .toolbar {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -123,10 +125,12 @@ onMounted(() => {
 }
 
 .category-tabs {
+  @include elevation-3;
   grid-column: 2;
   margin: 0 var(--space-16);
 
   &--built-in {
+    @include elevation-3;
     justify-self: center;
     max-width: var(--max-content-width-400);
   }

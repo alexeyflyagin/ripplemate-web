@@ -265,10 +265,8 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 @use '@/assets/styles/mixins' as *;
-@use '@/assets/styles/shadows' as *;
 
 .base-tabs {
-  @include elevation-2;
   position: relative;
   display: flex;
   overflow: hidden;
