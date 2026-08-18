@@ -24,7 +24,7 @@ import {
 import CircleProgressBar from '../ProgressBar/Circle/CircleProgressBar.vue'
 
 const SMOOTH_SCROLL_MAX_DISTANCE = 2000
-const TOP_THRESHOLD = 200
+const TOP_THRESHOLD = 600
 const BOTTOM_THRESHOLD = 100
 const SMALL_BOTTOM_THRESHOLD = 10
 let initialized = false
