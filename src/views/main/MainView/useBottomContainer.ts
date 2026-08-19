@@ -1,11 +1,11 @@
-import { ref, type Ref } from 'vue'
+import { onMounted, onUnmounted, ref, type Ref } from 'vue'
 
 export function useBottomContainer(
   bottomContainerEl: Ref<HTMLElement | undefined>,
 ) {
   const bottomContainerHeight = ref<number>(0)
 
-  const bottomContainerResizeObserver: ResizeObserver =
+  const bottomContainerRO: ResizeObserver =
     new ResizeObserver(() => {
       bottomContainerHeight.value =
         document
@@ -15,14 +15,19 @@ export function useBottomContainer(
 
   function observeBottomContainerHeight() {
     if (bottomContainerEl.value) {
-      bottomContainerResizeObserver.observe(
-        bottomContainerEl.value,
-      )
+      bottomContainerRO.observe(bottomContainerEl.value)
     }
   }
 
+  onMounted(() => {
+    observeBottomContainerHeight()
+  })
+
+  onUnmounted(() => {
+    bottomContainerRO.disconnect()
+  })
+
   return {
     bottomContainerHeight,
-    observeBottomContainerHeight,
   }
 }

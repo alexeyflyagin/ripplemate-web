@@ -11,26 +11,21 @@ import { useI18n } from 'vue-i18n'
 import { useTermTextField } from './useTermTextField.ts'
 import { nextPaint } from '@/utils/nextPaint.ts'
 import { useMainViewStates } from './useMainViewState.ts'
-import { useKeyboardObserver } from '@/composables/useKeyboardObserver.ts'
 import { useBottomContainer } from './useBottomContainer.ts'
+import { useKeyboardObserver } from '@/composables/useKeyboardObserver.ts'
 
 const { t } = useI18n()
 
-const {
-  isKeyboardOpen,
-  addKeyboardObserver,
-  removeKeyboardObserver,
-} = useKeyboardObserver()
+const { isKeyboardOpen } = useKeyboardObserver()
 
 const termTextFieldRef =
   ref<InstanceType<typeof TermTextField>>()
 const bottomContainerEl = ref<HTMLElement>()
 const mainHeaderHeight = ref<number>(0)
 
-const {
-  bottomContainerHeight,
-  observeBottomContainerHeight,
-} = useBottomContainer(bottomContainerEl)
+const { bottomContainerHeight } = useBottomContainer(
+  bottomContainerEl,
+)
 
 const { currentView, mode } = useMainViewStates()
 
@@ -60,15 +55,6 @@ async function onSearch() {
   await nextPaint()
   termTextFieldRef.value?.focusInput()
 }
-
-onMounted(() => {
-  addKeyboardObserver()
-  observeBottomContainerHeight()
-})
-
-onUnmounted(() => {
-  removeKeyboardObserver()
-})
 </script>
 
 <template>
