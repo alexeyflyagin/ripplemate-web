@@ -27,6 +27,7 @@ export const useCardStore = defineStore('card', () => {
   const search = ref<string | null>(null)
 
   let searchTimeout: ReturnType<typeof setTimeout>
+  let requestId = 0
 
   const hasMore = computed(
     () => cards.value.length < total.value,
@@ -40,7 +41,9 @@ export const useCardStore = defineStore('card', () => {
       return
     }
 
+    cards.value = []
     isLoading.value = true
+    const currentRequestId = ++requestId
     try {
       const response = await getCardsApi(
         workspaceId,
@@ -49,9 +52,11 @@ export const useCardStore = defineStore('card', () => {
         PAGE_SIZE,
         0,
       )
+      if (currentRequestId !== requestId) return
       cards.value = response.items
       total.value = response.total
     } finally {
+      if (currentRequestId !== requestId) return
       isLoading.value = false
     }
   }
@@ -62,6 +67,7 @@ export const useCardStore = defineStore('card', () => {
       return
 
     isLoading.value = true
+    const currentRequestId = ++requestId
     try {
       const response = await getCardsApi(
         workspaceId,
@@ -70,9 +76,11 @@ export const useCardStore = defineStore('card', () => {
         PAGE_SIZE,
         cards.value.length,
       )
+      if (currentRequestId !== requestId) return
       cards.value.push(...response.items)
       total.value = response.total
     } finally {
+      if (currentRequestId !== requestId) return
       isLoading.value = false
     }
   }

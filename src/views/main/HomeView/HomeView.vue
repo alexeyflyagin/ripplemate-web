@@ -8,6 +8,7 @@ import NoCardsFoundIcon from '~icons/icons-80/no-cards-found'
 import NoCardsYetIcon from '~icons/icons-80/no-cards-yet'
 import { useWorkspaceStore } from '@/stores/workspace'
 import EmptyState from '../../../components/EmptyState.vue'
+import CircleProgressBar from '@/components/ProgressBar/Circle/CircleProgressBar.vue'
 
 const { t } = useI18n()
 
@@ -29,6 +30,11 @@ const { openCardMenu } = useCardItemMenu(t)
       @load-more="cardStore.loadMore"
       @contextmenu="openCardMenu"
       @click="openCardMenu"
+    />
+    <CircleProgressBar
+      v-else-if="cardStore.isLoading"
+      class="circle-progress"
+      :delay="1000"
     />
     <EmptyState
       v-else
@@ -64,6 +70,14 @@ const { openCardMenu } = useCardItemMenu(t)
   display: flex;
   flex-direction: column;
   flex: 1;
+}
+
+.circle-progress {
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--main-header-height);
+  margin-bottom: var(--bottom-container-height);
 }
 
 .card-list {

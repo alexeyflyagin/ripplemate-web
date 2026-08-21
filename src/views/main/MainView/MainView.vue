@@ -5,7 +5,7 @@ import { useNavBar } from './useNavBar.ts'
 import MainHeader from '../MainHeader/MainHeader.vue'
 import NavBarGroup from './NavBarGroup.vue'
 import TermTextField from '@/components/TextFields/TermTextField.vue'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { ref } from 'vue'
 
 import { useI18n } from 'vue-i18n'
 import { useTermTextField } from './useTermTextField.ts'
