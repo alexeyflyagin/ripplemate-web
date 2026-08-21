@@ -20,7 +20,8 @@ export function useTermTextField(
   const termFieldValue = ref<string>('')
 
   watch(termFieldValue, (v) => {
-    if (mode.value === 'search') cardStore.setSearch(v)
+    if (mode.value === 'search')
+      cardStore.setSearch(v.trim())
   })
 
   const actionCaptionData = computed<
