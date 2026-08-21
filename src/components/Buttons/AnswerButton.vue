@@ -16,19 +16,36 @@ const emit = defineEmits<{
   click: []
 }>()
 
+let buttonEl: HTMLElement | null = null
+
 function onPointerDown(e: PointerEvent) {
-  const el = e.target as HTMLElement
-  if (!el) return
-  el.addEventListener('pointerup', onPointerUp, {
-    once: true,
-  })
+  buttonEl = e.currentTarget as HTMLElement
+  window.addEventListener('pointerup', onPointerUp)
+  window.addEventListener('pointercancel', onPointerCancel)
 }
 
 function onPointerUp(e: PointerEvent) {
-  const el = e.target as HTMLElement
-  if (!el) return
-  emit('click')
-  el.removeEventListener('pointerup', onPointerUp)
+  const under = document.elementFromPoint(
+    e.clientX,
+    e.clientY,
+  )
+  if (buttonEl && under && buttonEl.contains(under)) {
+    emit('click')
+  }
+  cleanup()
+}
+
+function onPointerCancel() {
+  cleanup()
+}
+
+function cleanup() {
+  window.removeEventListener('pointerup', onPointerUp)
+  window.removeEventListener(
+    'pointercancel',
+    onPointerCancel,
+  )
+  buttonEl = null
 }
 </script>
 
