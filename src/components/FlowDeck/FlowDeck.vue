@@ -4,11 +4,16 @@ import FlowCard from './FlowCard.vue'
 import type {
   AnswerType,
   CardState,
+  DeckState,
   FlowCardData,
 } from './FlowDeck.types.ts'
 import { useDeckBehavior } from './useDeckBehavior.ts'
 import { sleep } from '@/utils/sleep.ts'
 import { nextPaint } from '@/utils/nextPaint.ts'
+import EmptyState from '../EmptyState.vue'
+import NoCardsYetIcon from '~icons/icons-80/no-cards-yet'
+import { useI18n } from 'vue-i18n'
+import CircleProgressBar from '../ProgressBar/Circle/CircleProgressBar.vue'
 
 const {
   cardOffset,
@@ -18,6 +23,17 @@ const {
   reset,
   flowCardRef,
 } = useDeckBehavior(answer)
+
+const { t } = useI18n()
+
+withDefaults(
+  defineProps<{
+    state?: DeckState
+  }>(),
+  {
+    state: 'card',
+  },
+)
 
 const emit = defineEmits<{
   answer: [cardData: FlowCardData, answerType: AnswerType]
@@ -85,7 +101,7 @@ onUnmounted(() => {
     :draggable="false"
   >
     <FlowCard
-      v-if="cardData"
+      v-if="state === 'card' && cardData"
       ref="flowCardRef"
       class="flow-card"
       :class="{
@@ -106,6 +122,18 @@ onUnmounted(() => {
       }"
       @answer="answer"
     />
+    <CircleProgressBar
+      v-else-if="state === 'card' && !cardData"
+      class="circle-progress"
+      :delay="1000"
+    />
+    <EmptyState
+      v-else-if="state === 'empty'"
+      class="empty-state"
+      :icon="NoCardsYetIcon"
+      :title="t('main.noCardsYetTitle')"
+      :subtitle="t('main.noCardsYetSubtitle')"
+    />
   </div>
 </template>
 
@@ -118,6 +146,22 @@ onUnmounted(() => {
   min-width: 300px;
   min-height: 300px;
   background-color: var(--bg);
+}
+
+.circle-progress {
+  position: absolute;
+  inset: 0;
+  justify-content: center;
+  align-items: center;
+  padding-top: var(--main-header-height);
+  padding-bottom: var(--bottom-container-height);
+}
+
+.empty-state {
+  position: absolute;
+  inset: 0;
+  padding-top: var(--main-header-height);
+  padding-bottom: var(--bottom-container-height);
 }
 
 .flow-card,

@@ -1,38 +1,41 @@
 <script setup lang="ts">
+import type { DeckState } from '@/components/FlowDeck/FlowDeck.types'
 import FlowDeck from '@/components/FlowDeck/FlowDeck.vue'
 import { useCardFlowStore } from '@/stores/cardFlow'
 import { useCategoryStore } from '@/stores/category'
+import { useWorkspaceStore } from '@/stores/workspace'
 import { onMounted, ref, watch } from 'vue'
 
+const workspaceStore = useWorkspaceStore()
 const categoryStore = useCategoryStore()
 const cardFlowStore = useCardFlowStore()
 
 const cardFlowRef = ref<InstanceType<typeof FlowDeck>>()
 
+const deckState = ref<DeckState>('card')
+let requestId = 0
+
 watch(
-  () => categoryStore.currentCategory,
+  [
+    () => workspaceStore.currentWorkspaceId,
+    () => categoryStore.currentCategoryId,
+  ],
   async () => {
-    await showFirstCard()
+    await nextCard(true)
   },
 )
 
-async function showFirstCard() {
-  {
-    const card = await cardFlowStore.getNextCard()
-    cardFlowRef.value?.showNextCard(
-      card
-        ? {
-            card_id: card.id,
-            term: card.term,
-          }
-        : undefined,
-      { animation: false },
-    )
-  }
-}
+async function nextCard(first: boolean = false) {
+  deckState.value = 'card'
+  cardFlowRef.value?.showNextCard(undefined)
 
-async function nextCard() {
+  const currentId = ++requestId
   const card = await cardFlowStore.getNextCard()
+  if (currentId !== requestId) return
+
+  if (!card) deckState.value = 'empty'
+  else deckState.value = 'card'
+
   cardFlowRef.value?.showNextCard(
     card
       ? {
@@ -40,11 +43,12 @@ async function nextCard() {
           term: card.term,
         }
       : undefined,
+    { animation: !first },
   )
 }
 
 onMounted(async () => {
-  await showFirstCard()
+  await nextCard(true)
 })
 </script>
 
@@ -53,6 +57,7 @@ onMounted(async () => {
     <FlowDeck
       class="flow-deck"
       ref="cardFlowRef"
+      :state="deckState"
       @nextcard="nextCard"
     />
   </div>
