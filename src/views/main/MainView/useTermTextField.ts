@@ -97,11 +97,15 @@ export function useTermTextField(
   })
 
   async function onSubmitClick() {
-    await cardStore.createCard({
-      term: termFieldValue.value,
-      category_id: categoryStore.currentCategoryId,
-    })
-    termFieldValue.value = ''
+    switch (mode.value) {
+      case 'add-card':
+        await cardStore.createCard({
+          term: termFieldValue.value,
+          category_id: categoryStore.currentCategoryId,
+        })
+        termFieldValue.value = ''
+        break
+    }
   }
 
   return {
