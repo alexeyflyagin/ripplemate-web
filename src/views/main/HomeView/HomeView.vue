@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n'
 import NoCardsFoundIcon from '~icons/icons-80/no-cards-found'
 import NoCardsYetIcon from '~icons/icons-80/no-cards-yet'
 import { useWorkspaceStore } from '@/stores/workspace'
-import EmptyState from './EmptyState.vue'
+import EmptyState from '../../../components/EmptyState.vue'
 
 const { t } = useI18n()
 
