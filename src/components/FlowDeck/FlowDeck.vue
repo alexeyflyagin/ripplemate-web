@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-  nextTick,
-  onMounted,
-  onUnmounted,
-  ref,
-  watch,
-} from 'vue'
+import { nextTick, onMounted, onUnmounted, ref } from 'vue'
 import FlowCard from './FlowCard.vue'
 import type {
   AnswerType,
@@ -29,8 +23,6 @@ const emit = defineEmits<{
   answer: [cardData: FlowCardData, answerType: AnswerType]
   nextcard: []
 }>()
-
-const dbg = ref('')
 
 const flowDeckEl = ref<HTMLElement>()
 
