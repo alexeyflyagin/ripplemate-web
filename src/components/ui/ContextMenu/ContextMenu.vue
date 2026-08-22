@@ -149,7 +149,7 @@ function close() {
 
 .context-menu {
   @include elevation-4;
-  @include background-blur-30;
+  @include background-blur-10;
   position: fixed;
   min-width: 180px;
   opacity: 0;

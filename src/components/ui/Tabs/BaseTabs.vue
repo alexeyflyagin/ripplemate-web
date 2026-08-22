@@ -268,7 +268,7 @@ onUnmounted(() => {
 @use '@/assets/styles/blur' as *;
 
 .base-tabs {
-  @include background-blur-30;
+  @include background-blur-10;
   position: relative;
   display: flex;
   overflow: hidden;
