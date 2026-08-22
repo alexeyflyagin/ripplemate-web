@@ -15,38 +15,6 @@ withDefaults(
 const emit = defineEmits<{
   click: []
 }>()
-
-let buttonEl: HTMLElement | null = null
-
-function onPointerDown(e: PointerEvent) {
-  buttonEl = e.currentTarget as HTMLElement
-  window.addEventListener('pointerup', onPointerUp)
-  window.addEventListener('pointercancel', onPointerCancel)
-}
-
-function onPointerUp(e: PointerEvent) {
-  const under = document.elementFromPoint(
-    e.clientX,
-    e.clientY,
-  )
-  if (buttonEl && under && buttonEl.contains(under)) {
-    emit('click')
-  }
-  cleanup()
-}
-
-function onPointerCancel() {
-  cleanup()
-}
-
-function cleanup() {
-  window.removeEventListener('pointerup', onPointerUp)
-  window.removeEventListener(
-    'pointercancel',
-    onPointerCancel,
-  )
-  buttonEl = null
-}
 </script>
 
 <template>
@@ -57,7 +25,7 @@ function cleanup() {
       [`answer-button--${color}`]: color !== 'green',
       'answer-button--non-clickable': !clickable,
     }"
-    @pointerdown="onPointerDown"
+    @click="emit('click')"
   >
     {{ label }}
   </button>
