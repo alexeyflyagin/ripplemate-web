@@ -35,7 +35,6 @@ export function createHomeMoreMenu(
             id: 'editWorkspaceName',
             label: t('general.label.workspaceName'),
             icon: EditIcon,
-            value: data.workspaceName,
             showDivider: true,
           },
           ...(data.canDeleteWorkspace
