@@ -3,10 +3,12 @@ withDefaults(
   defineProps<{
     label: string
     color?: 'green' | 'yellow' | 'red'
+    pos?: 'first' | 'middle' | 'last' | 'single'
     disabled?: boolean
     clickable?: boolean
   }>(),
   {
+    pos: 'single',
     color: 'green',
     clickable: true,
   },
@@ -22,6 +24,7 @@ const emit = defineEmits<{
     class="answer-button"
     :disabled="disabled"
     :class="{
+      [`answer-button--${pos}`]: pos !== 'single',
       [`answer-button--${color}`]: color !== 'green',
       'answer-button--non-clickable': !clickable,
     }"
@@ -40,7 +43,7 @@ const emit = defineEmits<{
   position: relative;
   padding: var(--space-16);
   border: none;
-  border-radius: var(--corner-large);
+  border-radius: var(--corner-xxlarge);
   background-color: var(--easy);
   color: var(--white);
   transition:
@@ -65,6 +68,20 @@ const emit = defineEmits<{
 
   &--red {
     background-color: var(--hard);
+  }
+
+  &--first {
+    border-radius: var(--corner-xxlarge) var(--corner-large)
+      var(--corner-large) var(--corner-xxlarge);
+  }
+
+  &--middle {
+    border-radius: var(--corner-large);
+  }
+
+  &--last {
+    border-radius: var(--corner-large) var(--corner-xxlarge)
+      var(--corner-xxlarge) var(--corner-large);
   }
 
   @media (hover: hover) {

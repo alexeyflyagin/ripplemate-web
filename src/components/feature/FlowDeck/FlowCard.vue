@@ -99,6 +99,7 @@ defineExpose({ reset })
             :disabled="hardDisabled"
             :clickable="letAnswer"
             color="red"
+            pos="first"
             @click="answer('hard')"
           />
           <AnswerButton
@@ -107,6 +108,7 @@ defineExpose({ reset })
             :disabled="goodDisabled"
             :clickable="letAnswer"
             color="yellow"
+            pos="middle"
             @click="answer('good')"
           />
           <AnswerButton
@@ -115,6 +117,7 @@ defineExpose({ reset })
             :disabled="easyDisabled"
             :clickable="letAnswer"
             color="green"
+            pos="last"
             @click="answer('easy')"
           />
         </div>
