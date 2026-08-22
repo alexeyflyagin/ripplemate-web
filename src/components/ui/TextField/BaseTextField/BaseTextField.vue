@@ -235,7 +235,7 @@ function autoResize(event: Event) {
   box-shadow: inset 0 0 0 var(--stroke-subtle) var(--border);
   min-height: 60px;
   background-color: var(--surface);
-  border-radius: var(--corner-large);
+  border-radius: var(--corner-xlarge);
   padding: 0 var(--space-8);
   cursor: text;
 }

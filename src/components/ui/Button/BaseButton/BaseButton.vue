@@ -47,7 +47,7 @@ const emit = defineEmits<{
   justify-content: center;
   background-color: transparent;
   padding: var(--space-12) var(--space-16);
-  border-radius: var(--corner-large);
+  border-radius: var(--corner-xlarge);
   border: none;
   color: var(--text-muted);
   user-select: none;
