@@ -156,13 +156,19 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 @use '@/assets/styles/text-styles' as *;
+@use '@/assets/styles/blur' as *;
 @use '@/assets/styles/mixins' as *;
 
 .term-text-field {
+  @include background-blur-6;
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: var(--surface);
+  background-color: color-mix(
+    in srgb,
+    var(--surface) 60%,
+    transparent
+  );
   border-radius: 26px;
   overflow: hidden;
   min-height: 52px;
@@ -223,11 +229,15 @@ onMounted(async () => {
     margin: var(--space-8) var(--space-8) 0;
     padding: var(--space-12) var(--space-16);
     border-radius: var(--corner-full);
-    background-color: var(--bg);
+    background-color: color-mix(
+      in srgb,
+      var(--accent) 10%,
+      transparent
+    );
     flex: 1;
     overflow: hidden;
     align-items: center;
-    color: var(--text-placeholder);
+    color: var(--accent);
   }
 
   &__icon {
@@ -245,7 +255,7 @@ onMounted(async () => {
 
   &__value {
     @include text-label-emphasized;
-    color: var(--text-muted);
+    color: var(--text);
     margin-left: var(--space-4);
     overflow: hidden;
     flex: 1;
