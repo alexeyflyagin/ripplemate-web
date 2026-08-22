@@ -3,7 +3,6 @@ import {
   computed,
   nextTick,
   onMounted,
-  onUnmounted,
   ref,
   watch,
 } from 'vue'
@@ -22,6 +21,10 @@ import {
   type VirtualizerHandle,
 } from 'virtua/vue'
 import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgressBar'
+import {
+  useResizeObserver,
+  useThrottleFn,
+} from '@vueuse/core'
 
 const SMOOTH_SCROLL_MAX_DISTANCE = 2000
 const TOP_THRESHOLD = 600
@@ -65,11 +68,11 @@ function getDistanceToBottom(): number {
   return el.scrollHeight - el.scrollTop - el.offsetHeight
 }
 
-function onScroll(event: Event) {
+const onScroll = useThrottleFn((event: Event) => {
   distanceToBottom.value = getDistanceToBottom()
   distanceToTop.value = scrollEl.value?.scrollTop ?? 0
   emit('scroll', event, isNearBottom.value)
-}
+}, 100)
 
 function scrollToBottom(options?: { smooth: boolean }) {
   if (
@@ -88,6 +91,8 @@ function scrollToBottom(options?: { smooth: boolean }) {
 }
 
 async function loadMore() {
+  if (shift.value) return
+
   shift.value = true
   const timer = setTimeout(() => {
     stop()
@@ -135,27 +140,20 @@ watch(
 )
 
 watch(distanceToTop, async (v) => {
-  if (v < TOP_THRESHOLD) await loadMore()
+  if (v < TOP_THRESHOLD && props.hasMore) await loadMore()
 })
 
-const wrapRO = new ResizeObserver(() => {
+useResizeObserver(wrapEl, () => {
   if (distanceToBottom.value < SMALL_BOTTOM_THRESHOLD)
     scrollToBottom()
 })
-
-const scrollRO = new ResizeObserver(() => {
+useResizeObserver(scrollEl, () => {
   if (distanceToBottom.value < BOTTOM_THRESHOLD)
     scrollToBottom()
 })
 
 onMounted(() => {
   scrollToBottom()
-  if (wrapEl.value) wrapRO.observe(wrapEl.value)
-  if (scrollEl.value) scrollRO.observe(scrollEl.value)
-})
-
-onUnmounted(() => {
-  wrapRO.disconnect()
 })
 </script>
 
