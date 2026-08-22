@@ -19,17 +19,17 @@ const emit = defineEmits<{
 
 <template>
   <button
-    class="circle-button"
+    class="round-button"
     :disabled="disabled"
     :class="{
-      'circle-button--accent': props.color === 'accent',
-      'circle-button--danger': props.color === 'danger',
+      'round-button--accent': props.color === 'accent',
+      'round-button--danger': props.color === 'danger',
     }"
     @click="emit('click', $event)"
     @contextmenu.prevent
   >
-    <div class="circle-button__content">
-      <span class="circle-button__icon-container">
+    <div class="round-button__content">
+      <span class="round-button__icon-container">
         <component :is="icon" width="100%" height="100%" />
       </span>
     </div>
@@ -39,7 +39,7 @@ const emit = defineEmits<{
 <style lang="scss" scoped>
 @use '@/assets/styles/mixins' as *;
 
-.circle-button {
+.round-button {
   position: relative;
   display: inline-flex;
   width: 52px;
@@ -67,7 +67,7 @@ const emit = defineEmits<{
   }
 
   &:active {
-    .circle-button__icon-container {
+    .round-button__icon-container {
       transform: scale(0.8);
     }
   }
@@ -88,7 +88,7 @@ const emit = defineEmits<{
       background-color: var(--bg);
     }
 
-    & .circle-button__content {
+    & .round-button__content {
       background-color: var(--accent);
     }
 
@@ -112,17 +112,17 @@ const emit = defineEmits<{
     color: var(--text);
     pointer-events: none;
 
-    & .circle-button__content {
+    & .round-button__content {
       background-color: transparent;
     }
 
-    & .circle-button__icon-container {
+    & .round-button__icon-container {
       opacity: var(--opacity-30);
     }
   }
 }
 
-.circle-button__content {
+.round-button__content {
   position: relative;
   display: inline-flex;
   margin: auto;
@@ -131,7 +131,7 @@ const emit = defineEmits<{
   height: 44px;
 }
 
-.circle-button__icon-container {
+.round-button__icon-container {
   position: relative;
   flex-shrink: 0;
   margin: auto;

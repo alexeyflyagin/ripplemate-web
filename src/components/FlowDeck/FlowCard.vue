@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AnswerButton from '../Buttons/AnswerButton.vue'
+import AnswerButton from '../Buttons/AnswerButton'
 import CaretUpIcon from '~icons/icons-16/caret-up'
 import type {
   AnswerType,

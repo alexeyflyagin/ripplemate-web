@@ -1,4 +1,4 @@
-import type { CircleIconButtonData } from '@/components/Buttons/CircleIconButton.types'
+import type { RoundIconButtonData } from '@/components/Buttons/RoundIconButton'
 import type { ActionCaptionData } from '@/components/TextFields/TermTextField.types'
 import { useCardStore } from '@/stores/card'
 import { useCategoryStore } from '@/stores/category'
@@ -51,7 +51,7 @@ export function useTermTextField(
   })
 
   const leadingButtonData = computed<
-    CircleIconButtonData | undefined
+    RoundIconButtonData | undefined
   >(() => {
     switch (mode.value) {
       case 'add-card':
@@ -68,7 +68,7 @@ export function useTermTextField(
   })
 
   const sumbitButtonData = computed<
-    CircleIconButtonData | undefined
+    RoundIconButtonData | undefined
   >(() => {
     switch (mode.value) {
       case 'add-card':
@@ -83,7 +83,7 @@ export function useTermTextField(
   })
 
   const secondaryButtonData = computed<
-    CircleIconButtonData | undefined
+    RoundIconButtonData | undefined
   >(() => {
     switch (mode.value) {
       case 'search':

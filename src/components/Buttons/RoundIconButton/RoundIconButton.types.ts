@@ -1,6 +1,6 @@
 import type { Component } from 'vue'
 
-export interface CircleIconButtonData {
+export interface RoundIconButtonData {
   icon: Component
   color?: 'default' | 'accent' | 'danger'
   disabled?: boolean

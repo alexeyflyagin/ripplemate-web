@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseIconButton from '@/components/Buttons/BaseIconButton.vue'
+import BaseIconButton from '@/components/Buttons/BaseIconButton'
 import {
   ref,
   computed,

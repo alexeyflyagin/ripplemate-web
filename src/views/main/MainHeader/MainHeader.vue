@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseIconButton from '@/components/Buttons/BaseIconButton.vue'
+import BaseIconButton from '@/components/Buttons/BaseIconButton'
 import SearchIcon from '~icons/icons-16/search'
 import MoreIcon from '~icons/icons-16/more'
 import WorkspaceDropdown from '@/components/Dropdown/WorkspaceDropdown.vue'

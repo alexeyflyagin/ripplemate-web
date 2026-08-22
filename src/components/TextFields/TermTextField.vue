@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import CircleIconButton from '../Buttons/CircleIconButton.vue'
+import RoundIconButton, {
+  type RoundIconButtonData,
+} from '../Buttons/RoundIconButton'
 import { onMounted, ref, watch } from 'vue'
 import { nextTick } from 'vue'
-import type { CircleIconButtonData } from '../Buttons/CircleIconButton.types.ts'
 import type { ActionCaptionData } from './TermTextField.types.ts'
 
 const modelValue = defineModel<string>('modelValue', {
@@ -12,9 +13,9 @@ const modelValue = defineModel<string>('modelValue', {
 defineProps<{
   placeholder?: string
   actionCaption?: ActionCaptionData
-  leadingButton?: CircleIconButtonData
-  secondaryButton?: CircleIconButtonData
-  submitButton?: CircleIconButtonData
+  leadingButton?: RoundIconButtonData
+  secondaryButton?: RoundIconButtonData
+  submitButton?: RoundIconButtonData
   maxLength?: number
 }>()
 
@@ -112,7 +113,7 @@ onMounted(async () => {
       </div>
     </div>
     <div class="main-content">
-      <CircleIconButton
+      <RoundIconButton
         v-if="leadingButton"
         v-bind="leadingButton"
         @click="emit('leadingClick')"
@@ -138,12 +139,12 @@ onMounted(async () => {
         "
         @scroll="onScroll"
       />
-      <CircleIconButton
+      <RoundIconButton
         v-if="secondaryButton"
         v-bind="secondaryButton"
         @click="emit('secondaryClick')"
       />
-      <CircleIconButton
+      <RoundIconButton
         v-if="submitButton"
         v-bind="submitButton"
         @click="emit('submitClick')"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import BaseTextField from '@/components/TextFields/BaseTextField.vue'
-import BaseButton from '@/components/Buttons/BaseButton.vue'
+import BaseButton from '@/components/Buttons/BaseButton'
 import AuthHeader from './AuthHeader.vue'
 import { useI18n } from 'vue-i18n'
 import ShowIcon from '~icons/icons-16/show'
