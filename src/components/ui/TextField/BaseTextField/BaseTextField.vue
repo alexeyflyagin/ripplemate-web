@@ -88,40 +88,29 @@ function autoResize(event: Event) {
 </script>
 
 <template>
-  <div class="text-field-wrapper">
-    <div
-      class="text-field"
-      :class="{
-        'text-field--focused': isFocused,
-        'text-field--error': error,
-        'text-field--disabled': disabled,
-      }"
-      @click="focusInput"
-    >
+  <div
+    class="text-field-wrapper"
+    :class="{
+      'text-field-wrapper--focused': isFocused,
+      'text-field-wrapper--error': error,
+      'text-field-wrapper--disabled': disabled,
+    }"
+  >
+    <div class="text-field" @click="focusInput">
       <BaseIconButton
         v-if="leadingIcon && leadingIsButton"
+        class="text-field__leading-button"
         :icon="leadingIcon"
-        style="margin-top: 10px; align-self: flex-start"
         :disabled="disabled"
         @mousedown.prevent
         @click.stop="emit('leadingClick')"
       />
       <span
         v-else-if="leadingIcon"
-        style="
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          margin-top: 10px;
-          width: 40px;
-          height: 40px;
-        "
+        class="text-field__icon-container"
       >
         <component
           class="text-field__icon"
-          :class="{
-            'text-field__icon--disabled': disabled,
-          }"
           :is="leadingIcon"
         />
       </span>
@@ -185,9 +174,9 @@ function autoResize(event: Event) {
       </div>
       <BaseIconButton
         v-if="trailingIcon"
+        class="text-field__trailing-icon"
         :icon="trailingIcon"
         :disabled="disabled"
-        style="margin-top: 10px; align-self: flex-start; pointer"
         @mousedown.prevent
         @click.stop="emit('trailingClick')"
       />
@@ -195,10 +184,6 @@ function autoResize(event: Event) {
     <span
       v-if="supportingText"
       class="text-field__supporting"
-      :class="{
-        'text-field__supporting--error': error,
-        'text-field__supporting--disabled': disabled,
-      }"
     >
       {{ supportingText }}
     </span>
@@ -208,10 +193,86 @@ function autoResize(event: Event) {
 <style lang="scss" scoped>
 @use '@/assets/styles/text-styles' as *;
 
+.text-field {
+  display: inline-flex;
+  vertical-align: middle;
+  position: relative;
+  box-shadow: inset 0 0 0 var(--stroke-subtle) var(--border);
+  min-height: 60px;
+  background-color: var(--surface);
+  border-radius: var(--corner-xlarge);
+  padding: 0 var(--space-8);
+  cursor: text;
+  transition: box-shadow 0.1s var(--ease-emphasized);
+
+  @media (hover: hover) {
+    &:hover {
+      box-shadow: inset 0 0 0 var(--stroke-default)
+        var(--border);
+    }
+  }
+}
+
 .text-field-wrapper {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+
+  &--focused {
+    .text-field {
+      box-shadow: inset 0 0 0 var(--stroke-strong)
+        var(--accent);
+    }
+
+    .text-field__label {
+      color: var(--accent);
+    }
+  }
+
+  &--error {
+    .text-field {
+      box-shadow: inset 0 0 0 var(--stroke-subtle)
+        var(--error);
+    }
+
+    & .text-field__label {
+      color: var(--error);
+    }
+
+    & .text-field__supporting {
+      color: var(--error);
+    }
+
+    &.text-field-wrapper--focused {
+      .text-field {
+        box-shadow: inset 0 0 0 var(--stroke-strong)
+          var(--error);
+      }
+    }
+  }
+
+  &--disabled {
+    & .text-field {
+      opacity: var(--opacity-40);
+      box-shadow: inset 0 0 0 var(--stroke-subtle)
+        var(--border);
+      background-color: transparent;
+      pointer-events: none;
+    }
+
+    & .text-field__label {
+      color: var(--text);
+    }
+
+    & .text-field__content {
+      opacity: var(--opacity-30);
+    }
+
+    & .text-field__supporting {
+      color: var(--text);
+      opacity: var(--opacity-30);
+    }
+  }
 }
 
 .text-field__supporting {
@@ -228,18 +289,6 @@ function autoResize(event: Event) {
   flex-direction: column;
 }
 
-.text-field {
-  display: inline-flex;
-  vertical-align: middle;
-  position: relative;
-  box-shadow: inset 0 0 0 var(--stroke-subtle) var(--border);
-  min-height: 60px;
-  background-color: var(--surface);
-  border-radius: var(--corner-xlarge);
-  padding: 0 var(--space-8);
-  cursor: text;
-}
-
 .text-field__input {
   @include text-body;
   vertical-align: top;
@@ -248,10 +297,22 @@ function autoResize(event: Event) {
   margin-top: 26px;
   box-sizing: border-box;
   background: transparent;
+  min-width: 0;
+  width: 100%;
   white-space: normal;
   padding: 0 var(--space-8) var(--space-8);
   color: var(--text);
   resize: none;
+}
+
+.text-field__icon-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
 }
 
 .text-field__icon {
@@ -261,8 +322,16 @@ function autoResize(event: Event) {
   color: var(--text-muted);
 }
 
-.text-field__icon--disabled {
-  opacity: var(--opacity-40);
+.text-field__leading-button {
+  margin-top: 10px;
+  align-self: flex-start;
+  flex-shrink: 0;
+}
+
+.text-field__trailing-icon {
+  margin-top: 10px;
+  align-self: flex-start;
+  flex-shrink: 0;
 }
 
 .text-field__label {
@@ -274,55 +343,12 @@ function autoResize(event: Event) {
   transform: translateY(0) scale(1.25);
   color: var(--text-muted);
   pointer-events: none;
-  transition: transform 0.1s cubic-bezier(0.2, 0, 0, 1);
-}
+  transition: transform 0.2s var(--ease-emphasized);
 
-.text-field__label--floating,
-.text-field:has(.text-field__input:autofill)
-  .text-field__label {
-  transform: translateY(-12px) scale(1);
-}
-
-.text-field--focused {
-  box-shadow: inset 0 0 0 var(--stroke-strong) var(--accent);
-}
-
-.text-field--focused .text-field__label {
-  color: var(--accent);
-}
-
-.text-field--error {
-  box-shadow: inset 0 0 0 var(--stroke-subtle) var(--error);
-}
-
-.text-field--error .text-field__label {
-  color: var(--error);
-}
-
-.text-field__supporting--error {
-  color: var(--error);
-}
-
-.text-field--error.text-field--focused {
-  box-shadow: inset 0 0 0 var(--stroke-strong) var(--error);
-}
-
-.text-field--disabled {
-  box-shadow: inset 0 0 0 var(--stroke-subtle) var(--border);
-  background-color: transparent;
-  pointer-events: none;
-}
-
-.text-field__content--disabled .text-field__label {
-  color: var(--text);
-}
-
-.text-field__content--disabled {
-  opacity: var(--opacity-30);
-}
-
-.text-field__supporting--disabled {
-  color: var(--text);
-  opacity: var(--opacity-30);
+  &--floating,
+  .text-field:has(.text-field__input:autofill)
+    .text-field__label {
+    transform: translateY(-12px) scale(1);
+  }
 }
 </style>
