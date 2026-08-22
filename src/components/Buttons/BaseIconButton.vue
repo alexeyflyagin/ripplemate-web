@@ -47,7 +47,7 @@ const emit = defineEmits<{
 .base-icon-button__icon {
   width: 18px;
   height: 18px;
-  transition: transform 0.2s var(--ease-standard);
+  transition: transform 0.2s var(--ease-emphasized);
 }
 
 .base-icon-button:active .base-icon-button__icon {

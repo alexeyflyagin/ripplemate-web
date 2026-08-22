@@ -166,7 +166,7 @@ onMounted(async () => {
   min-height: 52px;
   margin: 1px;
   outline: var(--stroke-subtle) solid var(--border-muted);
-  transition: outline-color 0.2s var(--ease-standard);
+  transition: outline-color 0.2s var(--ease-emphasized);
 
   @media (hover: hover) {
     &:hover {

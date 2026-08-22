@@ -47,8 +47,8 @@ onUnmounted(() => {
   width: 24px;
   height: 24px;
   transition:
-    transform 0.5s var(--ease-standard),
-    opacity 0.5s var(--ease-standard);
+    transform 0.5s var(--ease-emphasized),
+    opacity 0.5s var(--ease-emphasized);
   transform: scale(0.8);
   opacity: 0;
 

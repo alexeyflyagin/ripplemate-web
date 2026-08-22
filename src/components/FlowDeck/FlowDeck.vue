@@ -189,8 +189,8 @@ onUnmounted(() => {
 
   &--animated {
     transition:
-      transform 0.4s var(--ease-standard),
-      border-radius 0.2s var(--ease-standard);
+      transform 0.4s var(--ease-emphasized),
+      border-radius 0.2s var(--ease-emphasized);
   }
 
   &--initial {

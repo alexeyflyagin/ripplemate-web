@@ -68,7 +68,7 @@ const emit = defineEmits<{
   }
 
   &__icon {
-    transition: transform 0.2s var(--ease-standard);
+    transition: transform 0.2s var(--ease-emphasized);
   }
 
   &:active &__icon {

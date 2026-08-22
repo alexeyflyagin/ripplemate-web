@@ -280,7 +280,7 @@ onUnmounted(() => {
   display: flex;
   overflow: hidden;
   flex-grow: 1;
-  transition: opacity 0.3s var(--ease-standard);
+  transition: opacity 0.3s var(--ease-emphasized);
 
   &--is-not-ready {
     opacity: 0;
@@ -311,8 +311,8 @@ onUnmounted(() => {
   border-radius: var(--corner-full);
   pointer-events: none;
   transition:
-    width 0.2s var(--ease-standard),
-    transform 0.2s var(--ease-standard);
+    width 0.2s var(--ease-emphasized),
+    transform 0.2s var(--ease-emphasized);
 
   &--is-not-ready {
     transition: none;

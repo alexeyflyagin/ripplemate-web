@@ -69,6 +69,6 @@ const emit = defineEmits<{
   margin: auto;
   width: 18px;
   height: 18px;
-  transition: transform 0.2s var(--ease-standard);
+  transition: transform 0.2s var(--ease-emphasized);
 }
 </style>

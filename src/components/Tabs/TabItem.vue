@@ -62,7 +62,7 @@ const emit = defineEmits<{
 
 .tab-item__label {
   display: inline-block;
-  transition: transform 0.2s var(--ease-standard);
+  transition: transform 0.2s var(--ease-emphasized);
 }
 
 .tab-item__content {
@@ -72,8 +72,8 @@ const emit = defineEmits<{
   color: var(--text-muted);
   transform: scale(var(--tab-scale, 1));
   transition:
-    color 0.2s var(--ease-standard),
-    transform 0.4s var(--ease-standard);
+    color 0.2s var(--ease-emphasized),
+    transform 0.4s var(--ease-emphasized);
 
   &::after {
     content: '';
@@ -82,7 +82,7 @@ const emit = defineEmits<{
     border-radius: inherit;
     background-color: var(--text);
     opacity: 0;
-    transition: opacity 0.1s var(--ease-standard);
+    transition: opacity 0.1s var(--ease-emphasized);
   }
 
   &--selected {

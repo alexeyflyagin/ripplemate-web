@@ -137,18 +137,18 @@ defineExpose({ reset })
   -webkit-user-drag: none;
 
   &--animated {
-    transition: border-radius 0.2s var(--ease-standard);
+    transition: border-radius 0.2s var(--ease-emphasized);
 
     .flow-card__forgot-hint {
       transition:
-        transform 0.2s var(--ease-standard),
-        opacity 0.2s var(--ease-standard);
+        transform 0.2s var(--ease-emphasized),
+        opacity 0.2s var(--ease-emphasized);
     }
 
     .flow-card__button-group {
       transition:
-        opacity 0.2s var(--ease-standard),
-        transform 0.2s var(--ease-standard);
+        opacity 0.2s var(--ease-emphasized),
+        transform 0.2s var(--ease-emphasized);
     }
   }
 

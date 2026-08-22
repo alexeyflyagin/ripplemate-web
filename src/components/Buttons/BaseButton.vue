@@ -29,14 +29,14 @@ const emit = defineEmits<{
     @click="emit('click', $event)"
     @contextmenu.prevent
   >
-    <span v-if="icon" class="base-button__icon">
-      <component :is="icon" width="100%" height="100%" />
-    </span>
-    <span class="base-button__label">{{ label }}</span>
+    <div class="base-button__content">
+      <component class="base-button__icon" :is="icon" />
+      <span class="base-button__label">{{ label }}</span>
+    </div>
   </button>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/styles/text-styles' as *;
 @use '@/assets/styles/mixins' as *;
 
@@ -45,82 +45,88 @@ const emit = defineEmits<{
   position: relative;
   display: inline-flex;
   justify-content: center;
-  align-items: center;
   background-color: transparent;
-  gap: var(--space-8);
   padding: var(--space-12) var(--space-16);
   border-radius: var(--corner-large);
   border: none;
   color: var(--text-muted);
+  user-select: none;
   cursor: pointer;
-}
 
-.base-button::after {
-  content: ' ';
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  background-color: var(--accent);
-  opacity: 0;
-}
-@media (hover: hover) {
-  .base-button:hover::after {
-    opacity: var(--opacity-8);
+  &::after {
+    content: ' ';
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background-color: var(--accent);
+    opacity: 0;
   }
-}
 
-.base-button:active::after {
-  opacity: var(--opacity-8);
-}
+  &__content {
+    display: inline-flex;
+    gap: var(--space-8);
+    align-items: center;
+    z-index: 1;
+    transition: transform 0.35s var(--ease-bounce);
+  }
 
-.base-button:focus-visible::after {
-  opacity: var(--opacity-10);
-}
+  &__icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    align-self: center;
+  }
 
-.base-button:focus-visible {
-  @include focus-outline;
-}
+  &__label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
 
-.base-button:disabled {
-  opacity: var(--opacity-40);
-  pointer-events: none;
-}
+  @media (hover: hover) {
+    &:hover::after {
+      opacity: var(--opacity-8);
+    }
+  }
 
-.base-button__icon {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-  align-self: center;
+  &:focus-visible {
+    @include focus-outline;
+
+    &::after {
+      opacity: var(--opacity-10);
+    }
+  }
+
+  &:active {
+    .base-button__content {
+      transform: scale(0.94);
+      transition: transform 0.08s ease-out;
+    }
+  }
+
+  &:disabled {
+    opacity: var(--opacity-40);
+    pointer-events: none;
+  }
 }
 
 .base-button--accent {
   color: var(--bg);
   background-color: var(--accent);
-}
 
-@media (hover: hover) {
-  .base-button--accent:hover::after {
-    background-color: var(--white);
-    opacity: var(--opacity-8);
+  @media (hover: hover) {
+    &:hover::after {
+      background-color: var(--white);
+      opacity: var(--opacity-8);
+    }
   }
-}
 
-.base-button--accent:active::after {
-  background-color: var(--white);
-  opacity: var(--opacity-8);
-}
-
-.base-button--accent:focus-visible::after {
-  background-color: var(--white);
-  opacity: var(--opacity-10);
-}
-
-.base-button__label {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  min-width: 0;
+  &:focus-visible::after {
+    background-color: var(--white);
+    opacity: var(--opacity-10);
+  }
 }
 </style>
