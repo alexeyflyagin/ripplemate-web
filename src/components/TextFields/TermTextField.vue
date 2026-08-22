@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import RoundIconButton, {
   type RoundIconButtonData,
-} from '../Buttons/RoundIconButton'
+} from '@/components/ui/Buttons/RoundIconButton'
 import { onMounted, ref, watch } from 'vue'
 import { nextTick } from 'vue'
 import type { ActionCaptionData } from './TermTextField.types.ts'

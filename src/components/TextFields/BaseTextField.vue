@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseIconButton from '@/components/Buttons/BaseIconButton'
+import BaseIconButton from '@/components/ui/Buttons/BaseIconButton'
 import {
   ref,
   computed,
