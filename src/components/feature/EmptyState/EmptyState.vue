@@ -33,11 +33,18 @@ defineProps<{
 
   &__content {
     display: flex;
-    width: 280px;
+    width: 210px;
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
     padding: var(--space-24);
+    background-color: color-mix(
+      in srgb,
+      var(--surface) 60%,
+      transparent
+    );
+    border-radius: var(--corner-xxlarge);
+    border: var(--stroke-subtle) solid var(--border-muted);
     color: var(--text-placeholder);
     text-align: center;
   }
