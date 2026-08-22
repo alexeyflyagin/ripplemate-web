@@ -79,13 +79,13 @@ const emit = defineEmits<{
   background-color: transparent;
   border: none;
   align-items: center;
-  border-radius: var(--corner-medium);
+  border-radius: var(--corner-large);
   margin: 0 var(--space-4) var(--space-4);
   padding: var(--space-8) var(--space-12);
-  color: var(--text-muted);
+  color: var(--text);
   cursor: pointer;
   user-select: none;
-  transition: transform 0.2s var(--ease-emphasized);
+  transition: transform 0.3s var(--ease-bounce);
 
   &::after {
     content: '';
@@ -112,6 +112,7 @@ const emit = defineEmits<{
 
   &:active {
     transform: scale(0.96);
+    transition: transform 0.08s ease-out;
   }
 
   &--selected {

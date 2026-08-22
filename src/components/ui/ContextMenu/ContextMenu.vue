@@ -19,7 +19,7 @@ const props = withDefaults(
   }>(),
   {
     anchor: 'left-top',
-    width: '260px',
+    width: '200px',
   },
 )
 
@@ -139,6 +139,7 @@ function close() {
 
 <style lang="scss" scoped>
 @use '@/assets/styles/shadows' as *;
+@use '@/assets/styles/blur' as *;
 
 .context-menu-overlay {
   position: fixed;
@@ -148,13 +149,17 @@ function close() {
 
 .context-menu {
   @include elevation-4;
+  @include background-blur-30;
   position: fixed;
   min-width: 180px;
   opacity: 0;
   padding-top: var(--space-4);
-  background-color: var(--surface);
-  border: var(--stroke-subtle) solid var(--border-muted);
-  border-radius: var(--corner-large);
+  background-color: color-mix(
+    in srgb,
+    var(--surface) 60%,
+    transparent
+  );
+  border-radius: var(--corner-xlarge);
   transition:
     transform 0.16s cubic-bezier(0, 1.6, 0.6, 1.6),
     opacity 0.16s cubic-bezier(0, 1.6, 0.6, 1.6);
