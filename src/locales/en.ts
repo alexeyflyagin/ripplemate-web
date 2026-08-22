@@ -70,7 +70,7 @@ export default {
     },
   },
   main: {
-    noCardsYetTitle: 'No cards yet',
+    noCardsYetTitle: 'It’s empty',
     noCardsYetSubtitle:
       'Add your first card to get started',
     noCardsFoundTitle: 'No cards found',

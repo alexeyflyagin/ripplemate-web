@@ -70,9 +70,9 @@ const ru: typeof en = {
     },
   },
   main: {
-    noCardsYetTitle: 'Пока нет карточек',
-    noCardsYetSubtitle: 'Добавьте первую, чтобы начать',
-    noCardsFoundTitle: 'Ничего не найдено',
+    noCardsYetTitle: 'Пусто',
+    noCardsYetSubtitle: 'Добавьте карточку, чтобы начать',
+    noCardsFoundTitle: 'Не найдено',
     noCardsFoundSubtitle: 'Попробуйте изменить запрос',
   },
   flow: {
