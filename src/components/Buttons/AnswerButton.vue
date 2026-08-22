@@ -44,8 +44,8 @@ const emit = defineEmits<{
   background-color: var(--easy);
   color: var(--white);
   transition:
-    transform 0.16s var(--ease-standard),
-    opacity 0.2s var(--ease-standard);
+    transform 0.16s var(--ease-emphasized),
+    opacity 0.2s var(--ease-emphasized);
   user-select: none;
   cursor: pointer;
 
@@ -55,7 +55,7 @@ const emit = defineEmits<{
     inset: 0;
     border-radius: inherit;
     background-color: var(--white);
-    transition: opacity 0.2s var(--ease-standard);
+    transition: opacity 0.2s var(--ease-emphasized);
     opacity: 0;
   }
 
