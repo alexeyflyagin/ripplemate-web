@@ -75,9 +75,10 @@ const emit = defineEmits<{
 
 .menu-item__button {
   position: relative;
-  display: inline-flex;
+  display: flex;
   background-color: transparent;
   border: none;
+  overflow: hidden;
   align-items: center;
   border-radius: var(--corner-large);
   margin: 0 var(--space-4) var(--space-4);
@@ -156,7 +157,6 @@ const emit = defineEmits<{
     text-align: start;
     overflow: hidden;
     white-space: nowrap;
-    min-width: fit-content;
     text-overflow: ellipsis;
   }
 
