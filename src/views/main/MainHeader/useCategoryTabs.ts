@@ -1,6 +1,6 @@
-import type { TabItemData } from '@/components/Tabs/BaseTabs.types'
-import { useCategoryStore } from '@/stores/category'
-import { computed, nextTick, ref, watch } from 'vue'
+import type { TabItemData } from '@/components/ui/Tabs'
+import { useCategoryStore } from '@/stores/domain/category'
+import { computed } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 import { createAllTab } from './factories'
 

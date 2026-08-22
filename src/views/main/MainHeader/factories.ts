@@ -1,7 +1,7 @@
 import type { ComposerTranslation } from 'vue-i18n'
-import type { MenuItemData } from '@/components/ContextMenu/ContextMenu.types'
+import type { MenuItemData } from '@/components/ui/ContextMenu'
 import PlusIcon from '~icons/icons-16/plus'
-import type { TabItemData } from '@/components/Tabs/BaseTabs.types'
+import type { TabItemData } from '@/components/ui/Tabs'
 
 export function createAllTab(
   t: ComposerTranslation,

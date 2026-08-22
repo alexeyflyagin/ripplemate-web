@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import type { DeckState } from '@/components/FlowDeck/FlowDeck.types'
-import FlowDeck from '@/components/FlowDeck/FlowDeck.vue'
-import { useCardFlowStore } from '@/stores/cardFlow'
-import { useCategoryStore } from '@/stores/category'
-import { useWorkspaceStore } from '@/stores/workspace'
+import {
+  FlowDeck,
+  type DeckState,
+} from '@/components/feature/FlowDeck'
+import { useCardFlowStore } from '@/stores/domain/cardFlow'
+import { useCategoryStore } from '@/stores/domain/category'
+import { useWorkspaceStore } from '@/stores/domain/workspace'
 import { onMounted, ref, watch } from 'vue'
 
 const workspaceStore = useWorkspaceStore()

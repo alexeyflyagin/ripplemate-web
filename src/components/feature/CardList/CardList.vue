@@ -1,0 +1,258 @@
+<script setup lang="ts">
+import {
+  computed,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+} from 'vue'
+import type { CardRead } from '@/api/types'
+import type {
+  CardItemData,
+  CardGroupLabelData,
+  SpacerData,
+} from './CardList.types'
+import CardItem from './CardItem.vue'
+import CardGroupLabel from './CardGroupLabel.vue'
+import { convertCards } from './CardList.utils.ts'
+import { useDate } from '@/composables/useDate.ts'
+import {
+  Virtualizer,
+  type VirtualizerHandle,
+} from 'virtua/vue'
+import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgressBar'
+
+const SMOOTH_SCROLL_MAX_DISTANCE = 2000
+const TOP_THRESHOLD = 600
+const BOTTOM_THRESHOLD = 100
+const SMALL_BOTTOM_THRESHOLD = 10
+let initialized = false
+
+const dateFormatter = useDate()
+
+const props = defineProps<{
+  listKey: string
+  cards: CardRead[]
+  hasMore: boolean
+}>()
+
+const emit = defineEmits<{
+  loadMore: []
+  click: [event: MouseEvent, card: CardItemData]
+  contextmenu: [event: MouseEvent, card: CardItemData]
+  scroll: [event: Event, isNearBottom: boolean]
+}>()
+
+const scrollEl = ref<HTMLElement>()
+const wrapEl = ref<HTMLElement>()
+const listRef = ref<VirtualizerHandle>()
+const shift = ref<boolean>(false)
+const distanceToTop = ref<number>(0)
+const distanceToBottom = ref<number>(0)
+
+const isNearBottom = computed<boolean>(
+  () => distanceToBottom.value <= BOTTOM_THRESHOLD,
+)
+
+const items = computed<
+  (CardItemData | CardGroupLabelData | SpacerData)[]
+>(() => convertCards(props.cards, dateFormatter))
+
+function getDistanceToBottom(): number {
+  const el = scrollEl.value
+  if (!el) return 0
+  return el.scrollHeight - el.scrollTop - el.offsetHeight
+}
+
+function onScroll(event: Event) {
+  distanceToBottom.value = getDistanceToBottom()
+  distanceToTop.value = scrollEl.value?.scrollTop ?? 0
+  emit('scroll', event, isNearBottom.value)
+}
+
+function scrollToBottom(options?: { smooth: boolean }) {
+  if (
+    options?.smooth &&
+    distanceToBottom.value > SMOOTH_SCROLL_MAX_DISTANCE
+  ) {
+    const offset =
+      distanceToBottom.value - SMOOTH_SCROLL_MAX_DISTANCE
+    listRef.value?.scrollBy(offset)
+  }
+
+  listRef.value?.scrollToIndex(items.value.length - 1, {
+    align: 'end',
+    smooth: options?.smooth,
+  })
+}
+
+async function loadMore() {
+  shift.value = true
+  const timer = setTimeout(() => {
+    stop()
+    shift.value = false
+  }, 5000)
+
+  const stop = watch(items, async () => {
+    await nextTick()
+    shift.value = false
+    clearTimeout(timer)
+    stop()
+  })
+
+  emit('loadMore')
+}
+
+watch(
+  () => props.listKey,
+  () => {
+    initialized = false
+    const stop = watch(items, () => {
+      scrollToBottom()
+      stop()
+    })
+  },
+)
+
+watch(
+  () => [...props.cards],
+  async (value, oldValue) => {
+    if (!initialized) {
+      initialized = true
+      return
+    }
+
+    if (
+      value.length > oldValue.length &&
+      oldValue[0] !== value[0]
+    ) {
+      await nextTick()
+      scrollToBottom({ smooth: true })
+    }
+  },
+  { deep: true },
+)
+
+watch(distanceToTop, async (v) => {
+  if (v < TOP_THRESHOLD) await loadMore()
+})
+
+const wrapRO = new ResizeObserver(() => {
+  if (distanceToBottom.value < SMALL_BOTTOM_THRESHOLD)
+    scrollToBottom()
+})
+
+const scrollRO = new ResizeObserver(() => {
+  if (distanceToBottom.value < BOTTOM_THRESHOLD)
+    scrollToBottom()
+})
+
+onMounted(() => {
+  scrollToBottom()
+  if (wrapEl.value) wrapRO.observe(wrapEl.value)
+  if (scrollEl.value) scrollRO.observe(scrollEl.value)
+})
+
+onUnmounted(() => {
+  wrapRO.disconnect()
+})
+</script>
+
+<template>
+  <div
+    ref="scrollEl"
+    class="card-scroll"
+    @scroll="onScroll"
+  >
+    <div :style="{ flexGrow: 1 }" />
+
+    <div ref="wrapEl">
+      <Virtualizer
+        ref="listRef"
+        :data="items"
+        :buffer-size="600"
+        :shift="shift"
+        :scroll-ref="scrollEl"
+        #default="{ item }"
+      >
+        <div
+          v-if="item.type === 'top-spacer'"
+          :key="'top-spacer'"
+          :style="{
+            height: 'var(--top-spacer, var(--space-24))',
+          }"
+        />
+        <CircularProgressBar
+          v-if="item.type === 'top-spacer' && hasMore"
+          :key="'progress-bar'"
+          :style="{
+            display: 'flex',
+            'justify-content': 'center',
+            maxWidth: 'var(--max-content-width-680)',
+            marginRight: 'auto',
+            marginLeft: 'auto',
+            padding: '0 var(--space-16)',
+            boxSizing: 'border-box',
+          }"
+        />
+        <div
+          v-if="item.type === 'bottom-spacer'"
+          :key="'bottom-spacer'"
+          :style="{
+            height: 'var(--bottom-spacer, var(--space-24))',
+          }"
+        />
+        <CardGroupLabel
+          v-if="item.type === 'label'"
+          :key="item.key"
+          :label="item.label"
+          :style="{
+            maxWidth: 'var(--max-content-width-680)',
+            marginRight: 'auto',
+            marginLeft: 'auto',
+            paddingLeft: 'var(--space-16)',
+            paddingRight: 'var(--space-16)',
+            boxSizing: 'border-box',
+          }"
+        />
+        <CardItem
+          v-if="item.type === 'card'"
+          :key="`c-${item.id}`"
+          v-bind="item"
+          :style="{
+            maxWidth: 'var(--max-content-width-680)',
+            marginBottom:
+              item.position === 'last'
+                ? '0'
+                : 'var(--space-2)',
+            marginRight: 'auto',
+            marginLeft: 'auto',
+            paddingLeft: 'var(--space-16)',
+            paddingRight: 'var(--space-16)',
+            boxSizing: 'border-box',
+          }"
+          @contextmenu="emit('contextmenu', $event, item)"
+          @click="emit('click', $event, item)"
+        />
+      </Virtualizer>
+    </div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.card-scroll {
+  display: flex;
+  height: 100%;
+  overscroll-behavior: none;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-anchor: none;
+  scrollbar-width: none;
+  min-height: 0;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+</style>

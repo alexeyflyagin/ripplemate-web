@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import CardList from '@/components/CardList/CardList.vue'
-import { useCardStore } from '@/stores/card'
-import { useCategoryStore } from '@/stores/category'
+import { CardList } from '@/components/feature/CardList'
+import { useCardStore } from '@/stores/domain/card'
+import { useCategoryStore } from '@/stores/domain/category'
 import { useCardItemMenu } from './useCardItemMenu'
 import { useI18n } from 'vue-i18n'
 import NoCardsFoundIcon from '~icons/icons-80/no-cards-found'
 import NoCardsYetIcon from '~icons/icons-80/no-cards-yet'
-import { useWorkspaceStore } from '@/stores/workspace'
-import EmptyState from '../../../components/EmptyState.vue'
-import CircleProgressBar from '@/components/ProgressBar/Circle/CircleProgressBar.vue'
+import { useWorkspaceStore } from '@/stores/domain/workspace'
+import { EmptyState } from '@/components/feature/EmptyState'
+import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgressBar'
 
 const { t } = useI18n()
 
@@ -31,7 +31,7 @@ const { openCardMenu } = useCardItemMenu(t)
       @contextmenu="openCardMenu"
       @click="openCardMenu"
     />
-    <CircleProgressBar
+    <CircularProgressBar
       v-else-if="cardStore.isLoading"
       class="circle-progress"
       :delay="1000"

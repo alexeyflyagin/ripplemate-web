@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import FAB from '@/components/NavBar/FAB.vue'
-import type { NavItemData } from '@/components/NavBar/NavBar.types'
-import NavBar from '@/components/NavBar/NavBar.vue'
+import {
+  FAB,
+  NavBar,
+  type NavItemData,
+} from '@/components/ui/NavBar'
 import PlusIcon from '~icons/icons-16/plus'
 
 const selectedId = defineModel<string>('selectedId', {

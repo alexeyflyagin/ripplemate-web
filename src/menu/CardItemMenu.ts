@@ -1,4 +1,4 @@
-import type { MenuItemData } from '@/components/ContextMenu/ContextMenu.types'
+import type { MenuItemData } from '@/components/ui/ContextMenu'
 import type { ComposerTranslation } from 'vue-i18n'
 import EditIcon from '~icons/icons-16/edit'
 import DeleteIcon from '~icons/icons-16/delete'

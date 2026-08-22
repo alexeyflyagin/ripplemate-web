@@ -1,11 +1,11 @@
-import type { MenuItemData } from '@/components/ContextMenu/ContextMenu.types'
-import { useWorkspaceStore } from '@/stores/workspace'
+import type { MenuItemData } from '@/components/ui/ContextMenu'
+import { useWorkspaceStore } from '@/stores/domain/workspace'
 import { getRect } from '@/utils/getRectByMouseEvent'
 import { computed, ref, watch } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 import { createAddWorkspaceMenuItem } from './factories'
 import TickIcon from '~icons/icons-16/tick'
-import { useContextMenuStore } from '@/stores/contextMenu'
+import { useContextMenuStore } from '@/stores/ui/contextMenu'
 
 export function useWorkspaceMenu(t: ComposerTranslation) {
   const workspaceStore = useWorkspaceStore()

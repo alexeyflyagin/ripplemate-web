@@ -1,4 +1,4 @@
-import type { NavItemData } from '@/components/NavBar/NavBar.types'
+import type { NavItemData } from '@/components/ui/NavBar'
 import HomeIcon from '~icons/icons-16/home'
 import HomeFilledIcon from '~icons/icons-16/home-filled'
 import PlayIcon from '~icons/icons-16/play'

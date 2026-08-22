@@ -1,4 +1,4 @@
-import type { MenuItemData } from '@/components/ContextMenu/ContextMenu.types'
+import type { MenuItemData } from '@/components/ui/ContextMenu'
 import FolderIcon from '~icons/icons-16/folder'
 import EditIcon from '~icons/icons-16/edit'
 import DeleteIcon from '~icons/icons-16/delete'

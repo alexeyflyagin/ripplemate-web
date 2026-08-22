@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import BaseTextField from '@/components/TextFields/BaseTextField.vue'
-import BaseButton from '@/components/ui/Buttons/BaseButton'
+import { BaseTextField } from '@/components/ui/TextField/BaseTextField'
+import { BaseButton } from '@/components/ui/Button/BaseButton'
 import AuthHeader from './AuthHeader.vue'
 import { useI18n } from 'vue-i18n'
 import ShowIcon from '~icons/icons-16/show'
 import HideIcon from '~icons/icons-16/hide'
 import EmailIcon from '~icons/icons-16/email'
 import AuthSecondaryAction from './AuthSecondaryAction.vue'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/domain/auth'
 import { useRouter } from 'vue-router'
 import { ApiError } from '@/api/client'
 

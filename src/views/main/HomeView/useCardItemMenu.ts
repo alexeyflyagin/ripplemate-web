@@ -1,8 +1,8 @@
-import type { CardItemData } from '@/components/CardList/CardList.types'
-import type { MenuItemData } from '@/components/ContextMenu/ContextMenu.types'
+import type { CardItemData } from '@/components/feature/CardList'
+import type { MenuItemData } from '@/components/ui/ContextMenu'
 import { createCardItemMenu } from '@/menu/CardItemMenu'
-import { useCardStore } from '@/stores/card'
-import { useContextMenuStore } from '@/stores/contextMenu'
+import { useCardStore } from '@/stores/domain/card'
+import { useContextMenuStore } from '@/stores/ui/contextMenu'
 import { computed } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 

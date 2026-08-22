@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import HomeView from '../HomeView/HomeView.vue'
-import FlowView from '../FlowView/FlowView.vue'
+import HomeView from '@/views/main/HomeView/HomeView.vue'
+import FlowView from '@/views/main/FlowView/FlowView.vue'
 import { useNavBar } from './useNavBar.ts'
-import MainHeader from '../MainHeader/MainHeader.vue'
+import MainHeader from '@/views/main/MainHeader/MainHeader.vue'
 import NavBarGroup from './NavBarGroup.vue'
-import TermTextField from '@/components/TextFields/TermTextField.vue'
+import { TermTextField } from '@/components/ui/TextField/TermTextField'
 import { ref } from 'vue'
 
 import { useI18n } from 'vue-i18n'

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
-import { useSettingsStore } from './stores/settings'
-import { useContextMenuStore } from './stores/contextMenu'
-import ContextMenu from './components/ContextMenu/ContextMenu.vue'
+import { useAuthStore } from '@/stores/domain/auth'
+import { useSettingsStore } from './stores/domain/settings.ts'
+import { useContextMenuStore } from './stores/ui/contextMenu.ts'
+import { ContextMenu } from './components/ui/ContextMenu'
 
 const contextMenuStore = useContextMenuStore()
 const authStore = useAuthStore()

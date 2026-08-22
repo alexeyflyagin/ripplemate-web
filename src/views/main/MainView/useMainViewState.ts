@@ -1,4 +1,4 @@
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 
 export const VIEWS = ['home', 'flow'] as const
 export type MainViewTypes = (typeof VIEWS)[number]

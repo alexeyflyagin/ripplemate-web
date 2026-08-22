@@ -1,4 +1,4 @@
-import type { MenuItemData } from '@/components/ContextMenu/ContextMenu.types'
+import type { MenuItemData } from '@/components/ui/ContextMenu'
 import ProfileIcon from '~icons/icons-16/profile'
 import EditIcon from '~icons/icons-16/edit'
 import LanguageIcon from '~icons/icons-16/language'
