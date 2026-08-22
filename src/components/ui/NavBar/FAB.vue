@@ -16,24 +16,28 @@ const emit = defineEmits<{
     @click="emit('click', $event)"
     @contextmenu.prevent
   >
-    <span class="fab__icon-container">
-      <component :is="icon" width="100%" height="100%" />
-    </span>
+    <component class="fab__icon" :is="icon" />
   </button>
 </template>
 
 <style lang="scss" scoped>
 @use '@/assets/styles/mixins' as *;
 @use '@/assets/styles/shadows' as *;
+@use '@/assets/styles/blur' as *;
 
 .fab {
   @include elevation-2;
+  @include background-blur-6;
   position: relative;
   display: inline-flex;
   width: 52px;
   height: 52px;
   padding: 0;
-  background-color: var(--surface);
+  background-color: color-mix(
+    in srgb,
+    var(--surface) 60%,
+    transparent
+  );
   border: none;
   outline: var(--stroke-subtle) solid var(--border-muted);
   border-radius: var(--corner-full);
@@ -56,8 +60,9 @@ const emit = defineEmits<{
   }
 
   &:active {
-    .fab__icon-container {
-      transform: scale(0.9);
+    .fab__icon {
+      transform: scale(0.86);
+      transition: transform 0.08s ease-out;
     }
   }
 
@@ -76,12 +81,12 @@ const emit = defineEmits<{
   }
 }
 
-.fab__icon-container {
+.fab__icon {
   position: relative;
   flex-shrink: 0;
   margin: auto;
   width: 18px;
   height: 18px;
-  transition: transform 0.2s var(--ease-emphasized);
+  transition: transform 0.3s var(--ease-bounce);
 }
 </style>

@@ -26,13 +26,10 @@ const emit = defineEmits<{
     @click="emit('click', $event)"
     @contextmenu.prevent
   >
-    <span class="nav-item__icon-container">
-      <component
-        :is="selected ? iconSelected : icon"
-        width="100%"
-        height="100%"
-      />
-    </span>
+    <component
+      class="nav-item__icon"
+      :is="selected ? iconSelected : icon"
+    />
   </button>
 </template>
 
@@ -51,11 +48,12 @@ const emit = defineEmits<{
 
   &:focus-visible {
     @include focus-outline;
-    outline-offset: calc(var(--space-4) * -1);
+    outline-offset: -4px;
   }
 
-  &:active .nav-item__icon-container {
-    transform: scale(0.9);
+  &:active .nav-item__icon {
+    transform: scale(0.86);
+    transition: transform 0.08s ease-out;
   }
 
   &--selected {
@@ -63,12 +61,12 @@ const emit = defineEmits<{
   }
 }
 
-.nav-item__icon-container {
+.nav-item__icon {
   position: relative;
   flex-shrink: 0;
   margin: auto;
   width: 18px;
   height: 18px;
-  transition: transform 0.2s var(--ease-emphasized);
+  transition: transform 0.3s var(--ease-bounce);
 }
 </style>

@@ -144,14 +144,21 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 @use '@/assets/styles/shadows' as *;
+@use '@/assets/styles/blur' as *;
 
 .nav-bar {
   @include elevation-2;
+  @include background-blur-6;
   position: relative;
   display: inline-flex;
   border-radius: var(--corner-full);
-  background-color: var(--surface);
+  background-color: color-mix(
+    in srgb,
+    var(--surface) 60%,
+    transparent
+  );
   outline: var(--stroke-subtle) solid var(--border-muted);
+  overflow: hidden;
 }
 
 .nav-bar__active-indicator-container {
