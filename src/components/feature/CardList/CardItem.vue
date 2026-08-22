@@ -65,7 +65,7 @@ const emit = defineEmits<{
   background-color: var(--surface);
   border-radius: var(--corner-small);
   padding: 0;
-  transition: transform 0.2s var(--ease-emphasized);
+  transition: transform 0.3s var(--ease-bounce);
   user-select: none;
   cursor: pointer;
 
@@ -100,6 +100,7 @@ const emit = defineEmits<{
 
   &:active {
     transform: scale(0.98);
+    transition: transform 0.08s ease-out;
   }
 
   &__term {
