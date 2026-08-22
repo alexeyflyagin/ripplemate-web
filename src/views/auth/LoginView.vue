@@ -126,7 +126,6 @@ async function handleSubmit() {
           class="submit-button"
           variant="accent"
           type="submit"
-          :icon="EmailIcon"
           :label="t('general.action.letsGo')"
         />
       </form>
