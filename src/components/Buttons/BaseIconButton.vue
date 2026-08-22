@@ -19,9 +19,7 @@ const emit = defineEmits<{
     @click="emit('click', $event)"
     @contextmenu.prevent
   >
-    <span class="base-icon-button__icon">
-      <component :is="icon" width="100%" height="100%" />
-    </span>
+    <component class="base-icon-button__icon" :is="icon" />
   </button>
 </template>
 
@@ -42,43 +40,44 @@ const emit = defineEmits<{
   border-radius: var(--corner-large);
   background-color: transparent;
   cursor: pointer;
-}
 
-.base-icon-button__icon {
-  width: 18px;
-  height: 18px;
-  transition: transform 0.2s var(--ease-emphasized);
-}
-
-.base-icon-button:active .base-icon-button__icon {
-  transform: scale(0.9);
-}
-
-.base-icon-button::after {
-  content: '';
-  position: absolute;
-  border-radius: inherit;
-  inset: 0;
-  background-color: var(--text);
-  opacity: 0;
-}
-
-@media (hover: hover) {
-  .base-icon-button:hover::after {
-    opacity: var(--opacity-8);
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: inherit;
+    inset: 0;
+    background-color: var(--text);
+    opacity: 0;
   }
-}
 
-.base-icon-button:focus-visible::after {
-  opacity: var(--opacity-8);
-}
+  &__icon {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s var(--ease-bounce);
+  }
 
-.base-icon-button:focus-visible {
-  @include focus-outline;
-}
+  @media (hover: hover) {
+    &:hover::after {
+      opacity: var(--opacity-8);
+    }
+  }
 
-.base-icon-button:disabled {
-  opacity: var(--opacity-40);
-  pointer-events: none;
+  &:focus-visible {
+    @include focus-outline;
+
+    &::after {
+      opacity: var(--opacity-8);
+    }
+  }
+
+  &:active .base-icon-button__icon {
+    transform: scale(0.86);
+    transition: transform 0.08s ease-out;
+  }
+
+  &:disabled {
+    opacity: var(--opacity-40);
+    pointer-events: none;
+  }
 }
 </style>
