@@ -265,12 +265,18 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 @use '@/assets/styles/mixins' as *;
+@use '@/assets/styles/blur' as *;
 
 .base-tabs {
+  @include background-blur-30;
   position: relative;
   display: flex;
   overflow: hidden;
-  background-color: var(--surface);
+  background-color: color-mix(
+    in srgb,
+    var(--surface) 60%,
+    transparent
+  );
   border-radius: var(--corner-full);
   outline: var(--stroke-subtle) solid var(--border-muted);
 }
