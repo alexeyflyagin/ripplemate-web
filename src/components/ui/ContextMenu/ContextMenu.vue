@@ -161,9 +161,9 @@ function close() {
   );
   border-radius: var(--corner-xlarge);
   transition:
-    transform 0.16s cubic-bezier(0, 1.6, 0.6, 1.6),
-    opacity 0.16s cubic-bezier(0, 1.6, 0.6, 1.6);
-  transform: scale(0.96);
+    transform 0.2s var(--ease-bounce),
+    opacity 0.2s var(--ease-bounce);
+  transform: scale(0.94);
 }
 
 .context-menu--visible {
