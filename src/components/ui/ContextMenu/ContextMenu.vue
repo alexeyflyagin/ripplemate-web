@@ -154,11 +154,7 @@ function close() {
   min-width: 180px;
   opacity: 0;
   padding-top: var(--space-4);
-  background-color: color-mix(
-    in srgb,
-    var(--surface) 60%,
-    transparent
-  );
+  background-color: var(--surface-60);
   border-radius: var(--corner-xlarge);
   transition:
     transform 0.2s var(--ease-bounce),

@@ -38,11 +38,7 @@ defineProps<{
     align-items: center;
     box-sizing: border-box;
     padding: var(--space-24);
-    background-color: color-mix(
-      in srgb,
-      var(--surface) 60%,
-      transparent
-    );
+    background-color: var(--surface-60);
     border-radius: var(--corner-xxlarge);
     border: var(--stroke-subtle) solid var(--border-muted);
     color: var(--text-placeholder);

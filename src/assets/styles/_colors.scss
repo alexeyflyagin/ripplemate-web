@@ -13,6 +13,18 @@
   --easy: #52c99e;
   --black: #000000;
   --white: #ffffff;
+
+  --accent-10: color-mix(
+    in srgb,
+    var(--accent) 10%,
+    transparent
+  );
+
+  --surface-60: color-mix(
+    in srgb,
+    var(--surface) 60%,
+    transparent
+  );
 }
 
 :root[data-theme='dark'] {

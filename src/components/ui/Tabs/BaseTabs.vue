@@ -272,11 +272,7 @@ onUnmounted(() => {
   position: relative;
   display: flex;
   overflow: hidden;
-  background-color: color-mix(
-    in srgb,
-    var(--surface) 60%,
-    transparent
-  );
+  background-color: var(--surface-60);
   border-radius: var(--corner-full);
   outline: var(--stroke-subtle) solid var(--border-muted);
 }

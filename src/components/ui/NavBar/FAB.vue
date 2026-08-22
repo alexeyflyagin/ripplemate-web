@@ -33,11 +33,7 @@ const emit = defineEmits<{
   width: 52px;
   height: 52px;
   padding: 0;
-  background-color: color-mix(
-    in srgb,
-    var(--surface) 60%,
-    transparent
-  );
+  background-color: var(--surface-60);
   border: none;
   outline: var(--stroke-subtle) solid var(--border-muted);
   border-radius: var(--corner-full);

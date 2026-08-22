@@ -164,11 +164,7 @@ onMounted(async () => {
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: color-mix(
-    in srgb,
-    var(--surface) 60%,
-    transparent
-  );
+  background-color: var(--surface-60);
   border-radius: 26px;
   overflow: hidden;
   min-height: 52px;
@@ -229,11 +225,7 @@ onMounted(async () => {
     margin: var(--space-8) var(--space-8) 0;
     padding: var(--space-12) var(--space-16);
     border-radius: var(--corner-full);
-    background-color: color-mix(
-      in srgb,
-      var(--accent) 10%,
-      transparent
-    );
+    background-color: var(--accent-10);
     flex: 1;
     overflow: hidden;
     align-items: center;
