@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import CaretDown from '~icons/icons-12/caret-down'
 
-const selected = defineModel<boolean>('selected', {
-  default: false,
-})
-
 defineProps<{
   label: string
   disabled?: boolean
@@ -13,6 +9,15 @@ defineProps<{
 const emit = defineEmits<{
   click: [event: MouseEvent, isSelected: boolean]
 }>()
+
+const selected = defineModel<boolean>('selected', {
+  default: false,
+})
+
+function onClick(e: MouseEvent) {
+  selected.value = !selected.value
+  emit('click', e, !selected.value)
+}
 </script>
 
 <template>
@@ -20,27 +25,13 @@ const emit = defineEmits<{
     class="drop-down"
     :class="{ 'drop-down--selected': selected }"
     :disabled="disabled"
-    @click="
-      (event) => {
-        emit('click', event, !selected)
-        selected = !selected
-      }
-    "
-    @contextmenu.prevent="
-      (event) => {
-        emit('click', event, !selected)
-        selected = !selected
-      }
-    "
+    @click="onClick"
+    @contextmenu.prevent="onClick"
   >
-    <span class="drop-down__label">{{ label }}</span>
-    <span class="drop-down__icon">
-      <CaretDown
-        class="drop-down__icon__caret"
-        width="100%"
-        height="100%"
-      />
-    </span>
+    <div class="drop-down__content">
+      <span class="drop-down__label">{{ label }}</span>
+      <CaretDown class="drop-down__icon" />
+    </div>
   </button>
 </template>
 
@@ -48,31 +39,13 @@ const emit = defineEmits<{
 @use '@/assets/styles/text-styles' as *;
 @use '@/assets/styles/mixins' as *;
 
-.drop-down__label {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  transition: transform 0.2s var(--ease-emphasized);
-}
-
-.drop-down__icon {
-  display: inline-flex;
-  flex-shrink: 0;
-  width: 12px;
-  height: 12px;
-  color: var(--text-placeholder);
-  transition: transform 0.15s ease;
-}
-
 .drop-down {
   @include text-caption-emphasized;
   position: relative;
-  min-height: 40px;
+  height: 40px;
   display: inline-flex;
   background-color: transparent;
   justify-content: center;
-  align-items: center;
-  gap: var(--space-4);
   border: none;
   overflow: hidden;
   border-radius: var(--corner-large);
@@ -99,18 +72,13 @@ const emit = defineEmits<{
     @include focus-outline;
 
     &::after {
-      opacity: var(--opacity-10);
+      opacity: var(--opacity-8);
     }
   }
 
-  &:active {
-    & .drop-down__icon {
-      transform: translateY(2px);
-    }
-
-    & .drop-down__label {
-      transform: scale(0.96);
-    }
+  &:active .drop-down__content {
+    transform: scale(0.94);
+    transition: transform 0.08s ease-out;
   }
 
   &--selected {
@@ -126,20 +94,32 @@ const emit = defineEmits<{
       }
     }
 
-    &:focus-visible::after,
-    &:active::after {
-      opacity: var(--opacity-8);
-    }
-
     & .drop-down__icon {
       transform: rotate(180deg);
     }
   }
+}
 
-  &:disabled {
-    opacity: var(--opacity-40);
-    color: var(--text);
-    pointer-events: none;
-  }
+.drop-down__content {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-4);
+  transition: transform 0.3s var(--ease-bounce);
+}
+
+.drop-down__label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.drop-down__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  color: var(--text-placeholder);
+  transition: transform 0.1s var(--ease-emphasized);
 }
 </style>
