@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     icon: Component
     color?: 'default' | 'accent' | 'danger'
@@ -22,16 +22,13 @@ const emit = defineEmits<{
     class="round-button"
     :disabled="disabled"
     :class="{
-      'round-button--accent': props.color === 'accent',
-      'round-button--danger': props.color === 'danger',
+      [`round-button--${color}`]: color !== 'default',
     }"
     @click="emit('click', $event)"
     @contextmenu.prevent
   >
     <div class="round-button__content">
-      <span class="round-button__icon-container">
-        <component :is="icon" width="100%" height="100%" />
-      </span>
+      <component class="round-button__icon" :is="icon" />
     </div>
   </button>
 </template>
@@ -67,14 +64,15 @@ const emit = defineEmits<{
   }
 
   &:active {
-    .round-button__icon-container {
-      transform: scale(0.8);
+    .round-button__icon {
+      transform: scale(0.84);
+      transition: transform 0.08s ease-out;
     }
   }
 
   &:focus-visible {
     @include focus-outline;
-    outline-offset: calc(var(--space-2) * -1);
+    outline-offset: -2px;
 
     &::after {
       opacity: var(--opacity-10);
@@ -116,7 +114,7 @@ const emit = defineEmits<{
       background-color: transparent;
     }
 
-    & .round-button__icon-container {
+    & .round-button__icon {
       opacity: var(--opacity-30);
     }
   }
@@ -131,12 +129,12 @@ const emit = defineEmits<{
   height: 44px;
 }
 
-.round-button__icon-container {
+.round-button__icon {
   position: relative;
   flex-shrink: 0;
   margin: auto;
   width: 18px;
   height: 18px;
-  transition: transform 0.2s var(--ease-emphasized);
+  transition: transform 0.3s var(--ease-bounce);
 }
 </style>
