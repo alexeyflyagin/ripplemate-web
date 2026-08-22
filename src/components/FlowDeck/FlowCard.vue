@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AnswerButton from '../Buttons/AnswerButton'
+import AnswerButton from '@/components/ui/Buttons/AnswerButton'
 import CaretUpIcon from '~icons/icons-16/caret-up'
 import type {
   AnswerType,

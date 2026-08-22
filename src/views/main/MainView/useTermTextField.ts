@@ -1,4 +1,4 @@
-import type { RoundIconButtonData } from '@/components/Buttons/RoundIconButton'
+import type { RoundIconButtonData } from '@/components/ui/Buttons/RoundIconButton'
 import type { ActionCaptionData } from '@/components/TextFields/TermTextField.types'
 import { useCardStore } from '@/stores/card'
 import { useCategoryStore } from '@/stores/category'
