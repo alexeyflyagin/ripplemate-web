@@ -19,7 +19,6 @@ export function createCategoryMenu(
       id: 'edit',
       label: t('general.action.edit'),
       icon: EditIcon,
-      value: categoryName,
       showDivider: true,
     },
     {
