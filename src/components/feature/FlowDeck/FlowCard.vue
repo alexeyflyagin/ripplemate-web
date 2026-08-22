@@ -6,7 +6,7 @@ import type {
   FlowCardData,
 } from './FlowDeck.types.ts'
 import { useI18n } from 'vue-i18n'
-import { ref, toRef, watch } from 'vue'
+import { computed, ref, toRef, watch } from 'vue'
 import { useFitText } from './useFitText.ts'
 
 const { t } = useI18n()
@@ -27,31 +27,32 @@ const emit = defineEmits<{
   answer: [type: AnswerType]
 }>()
 
-const containerEl = ref()
-const termEl = ref()
+const containerEl = ref<HTMLElement>()
+const termEl = ref<HTMLElement>()
 
-const hardButtonDisabled = ref<boolean>(false)
-const goodButtonDisabled = ref<boolean>(false)
-const easyButtonDisabled = ref<boolean>(false)
+const selectedAnswer = ref<AnswerType | null>(null)
 const letAnswer = ref<boolean>(true)
 
+const hardDisabled = computed(
+  () =>
+    selectedAnswer.value !== null &&
+    selectedAnswer.value !== 'hard',
+)
+const goodDisabled = computed(
+  () =>
+    selectedAnswer.value !== null &&
+    selectedAnswer.value !== 'good',
+)
+const easyDisabled = computed(
+  () =>
+    selectedAnswer.value !== null &&
+    selectedAnswer.value !== 'easy',
+)
+
 function answer(type: AnswerType) {
-  emit('answer', type)
-  switch (type) {
-    case 'easy':
-      hardButtonDisabled.value = true
-      goodButtonDisabled.value = true
-      break
-    case 'good':
-      hardButtonDisabled.value = true
-      easyButtonDisabled.value = true
-      break
-    case 'hard':
-      goodButtonDisabled.value = true
-      easyButtonDisabled.value = true
-      break
-  }
+  selectedAnswer.value = type
   letAnswer.value = false
+  emit('answer', type)
 }
 
 watch(
@@ -68,9 +69,7 @@ useFitText(
 )
 
 function reset() {
-  hardButtonDisabled.value = false
-  goodButtonDisabled.value = false
-  easyButtonDisabled.value = false
+  selectedAnswer.value = null
   letAnswer.value = true
 }
 
@@ -97,7 +96,7 @@ defineExpose({ reset })
           <AnswerButton
             class="answer-button"
             :label="t('flow.answer.hard')"
-            :disabled="hardButtonDisabled"
+            :disabled="hardDisabled"
             :clickable="letAnswer"
             color="red"
             @click="answer('hard')"
@@ -105,7 +104,7 @@ defineExpose({ reset })
           <AnswerButton
             class="answer-button"
             :label="t('flow.answer.good')"
-            :disabled="goodButtonDisabled"
+            :disabled="goodDisabled"
             :clickable="letAnswer"
             color="yellow"
             @click="answer('good')"
@@ -113,7 +112,7 @@ defineExpose({ reset })
           <AnswerButton
             class="answer-button"
             :label="t('flow.answer.easy')"
-            :disabled="easyButtonDisabled"
+            :disabled="easyDisabled"
             :clickable="letAnswer"
             color="green"
             @click="answer('easy')"
