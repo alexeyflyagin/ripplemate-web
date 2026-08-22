@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import FlowCard from './FlowCard.vue'
 import type {
   AnswerType,
@@ -14,6 +14,9 @@ import { EmptyState } from '@/components/feature/EmptyState'
 import NoCardsYetIcon from '~icons/icons-80/no-cards-yet'
 import { useI18n } from 'vue-i18n'
 import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgressBar'
+import { useResizeObserver } from '@vueuse/core'
+
+const CHANGE_STATE_ANIMATION_DURATION_MS = 400
 
 const {
   cardOffset,
@@ -53,9 +56,10 @@ async function answer(answerType: AnswerType) {
   if (!cardData.value) return
   emit('answer', cardData.value, answerType)
   isTouchable.value = false
-  if (answerType !== 'again') await sleep(400)
+  if (answerType !== 'again')
+    await sleep(CHANGE_STATE_ANIMATION_DURATION_MS)
   cardState.value = 'answered'
-  await sleep(400)
+  await sleep(CHANGE_STATE_ANIMATION_DURATION_MS)
   emit('nextcard')
   cardData.value = undefined
 }
@@ -80,17 +84,9 @@ async function showNextCard(
 
 defineExpose({ showNextCard })
 
-const flowDeckRO = new ResizeObserver(() => {
-  if (!flowDeckEl.value) return
-  cardFlowHeight.value = flowDeckEl.value.offsetHeight
-})
-
-onMounted(async () => {
-  if (flowDeckEl.value) flowDeckRO.observe(flowDeckEl.value)
-})
-
-onUnmounted(() => {
-  flowDeckRO.disconnect()
+useResizeObserver(flowDeckEl, () => {
+  if (flowDeckEl.value)
+    cardFlowHeight.value = flowDeckEl.value.offsetHeight
 })
 </script>
 
@@ -119,6 +115,8 @@ onUnmounted(() => {
         '--card-flow-height': cardFlowHeight,
         '--card-offset': cardOffset,
         '--progress': progress,
+        '--change-state-duration':
+          CHANGE_STATE_ANIMATION_DURATION_MS + 'ms',
       }"
       @answer="answer"
     />
@@ -189,7 +187,8 @@ onUnmounted(() => {
 
   &--animated {
     transition:
-      transform 0.4s var(--ease-emphasized),
+      transform var(--change-state-duration)
+        var(--ease-emphasized),
       border-radius 0.2s var(--ease-emphasized);
   }
 
