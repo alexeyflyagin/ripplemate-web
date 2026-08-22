@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { nextTick, onUnmounted, ref, watch } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import type {
   MenuAnchor,
   MenuItemData,
 } from './ContextMenu.types.ts'
 import MenuItem from './MenuItem.vue'
-import { sleep } from '@/utils/sleep.ts'
 
-const isOpened = defineModel<boolean>('isOpened', {
-  default: true,
-})
+const PADDING = 8
 
 const props = withDefaults(
   defineProps<{
@@ -33,34 +30,18 @@ const emit = defineEmits<{
   ]
 }>()
 
-const menuEl = ref<HTMLElement>()
-const finalX = ref(0)
-const finalY = ref(0)
-const isPositioned = ref(false)
-const PADDING = 8
-
-let previouslyFocusedElement: HTMLElement | null = null
-
-watch(isOpened, (value) => {
-  if (value) updatePosition()
+const isOpened = defineModel<boolean>('isOpened', {
+  default: false,
 })
 
+const menuEl = ref<HTMLElement>()
+
+const finalX = ref<number>(0)
+const finalY = ref<number>(0)
+const isPositioned = ref<boolean>(false)
+
 watch(isOpened, async (open) => {
-  if (open) {
-    previouslyFocusedElement =
-      document.activeElement as HTMLElement
-    await nextTick()
-    document.addEventListener('keydown', onKeydown)
-    const focusable = menuEl.value
-      ? getFocusableElements(menuEl.value)
-      : []
-    await sleep(200)
-    focusable[0]?.focus()
-  } else {
-    previouslyFocusedElement?.focus()
-    previouslyFocusedElement = null
-    document.removeEventListener('keydown', onKeydown)
-  }
+  if (open) updatePosition()
 })
 
 async function updatePosition() {
@@ -121,72 +102,6 @@ async function updatePosition() {
 function close() {
   isOpened.value = false
 }
-
-function getFocusableElements(
-  container: HTMLElement,
-): HTMLElement[] {
-  return Array.from(
-    container.querySelectorAll<HTMLElement>(
-      '.menu-item__button:not(:disabled)',
-    ),
-  )
-}
-
-function onKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') {
-    close()
-    return
-  }
-
-  if (!menuEl.value) return
-
-  const focusable = getFocusableElements(menuEl.value)
-  if (focusable.length === 0) return
-
-  const first = focusable[0]!
-  const last = focusable.at(-1)!
-  const currentIndex = focusable.indexOf(
-    document.activeElement as HTMLElement,
-  )
-
-  if (event.key === 'ArrowDown') {
-    event.preventDefault()
-    const nextIndex =
-      currentIndex === -1 ||
-      currentIndex === focusable.length - 1
-        ? 0
-        : currentIndex + 1
-    focusable[nextIndex]!.focus()
-    return
-  }
-
-  if (event.key === 'ArrowUp') {
-    event.preventDefault()
-    const prevIndex =
-      currentIndex <= 0
-        ? focusable.length - 1
-        : currentIndex - 1
-    focusable[prevIndex]!.focus()
-    return
-  }
-
-  if (event.key !== 'Tab') return
-
-  if (event.shiftKey && document.activeElement === first) {
-    event.preventDefault()
-    last.focus()
-  } else if (
-    !event.shiftKey &&
-    document.activeElement === last
-  ) {
-    event.preventDefault()
-    first.focus()
-  }
-}
-
-onUnmounted(() => {
-  document.removeEventListener('keydown', onKeydown)
-})
 </script>
 
 <template>
