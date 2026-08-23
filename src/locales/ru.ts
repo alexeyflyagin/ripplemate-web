@@ -14,6 +14,7 @@ const ru: typeof en = {
       letsGo: 'Поехали!',
       edit: 'Редактировать',
       delete: 'Удалить',
+      cancel: 'Отмена',
       refresh: 'Обновить',
       search: 'Поиск',
       addWorkspace: 'Дообавить пространство',
@@ -81,6 +82,28 @@ const ru: typeof en = {
       good: 'Хорошо',
       hard: 'Сложно',
       forgotCard: 'Я забыл эту карточку',
+    },
+  },
+  dialog: {
+    card: {
+      delete: {
+        title: 'Удалить карточку?',
+        caption: '"{term}" будет удалён навсегда.',
+      },
+    },
+    category: {
+      delete: {
+        title: 'Удалить категорию?',
+        caption:
+          '"{name}" и все его карточки будут удалены навсегда.',
+      },
+    },
+    workspace: {
+      delete: {
+        title: 'Удалить пространство?',
+        caption:
+          '"{name}" и все, что в нем находится, будет безвозвратно удалено.',
+      },
     },
   },
 }

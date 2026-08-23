@@ -12,6 +12,7 @@ export default {
       letsGo: "Let's go!",
       edit: 'Edit',
       delete: 'Delete',
+      cancel: 'Cancel',
       refresh: 'Refresh',
       search: 'Search',
       addWorkspace: 'Add workspace',
@@ -82,6 +83,28 @@ export default {
       good: 'Good',
       hard: 'Hard',
       forgotCard: 'I forgot this card',
+    },
+  },
+  dialog: {
+    card: {
+      delete: {
+        title: 'Delete card?',
+        caption: '"{term}" will be permanently deleted.',
+      },
+    },
+    category: {
+      delete: {
+        title: 'Delete category?',
+        caption:
+          '"{name}" and all its cards will be permanently deleted.',
+      },
+    },
+    workspace: {
+      delete: {
+        title: 'Delete workspace?',
+        caption:
+          '"{name}" and everything inside it will be permanently deleted.',
+      },
     },
   },
 }
