@@ -199,7 +199,7 @@ function autoResize(event: Event) {
   position: relative;
   box-shadow: inset 0 0 0 var(--stroke-subtle) var(--border);
   min-height: 60px;
-  background-color: var(--surface);
+  background-color: transparent;
   border-radius: var(--corner-xlarge);
   padding: 0 var(--space-8);
   cursor: text;
@@ -220,7 +220,7 @@ function autoResize(event: Event) {
 
   &--focused {
     .text-field {
-      box-shadow: inset 0 0 0 var(--stroke-strong)
+      box-shadow: inset 0 0 0 var(--stroke-default)
         var(--accent);
     }
 
@@ -245,7 +245,7 @@ function autoResize(event: Event) {
 
     &.text-field-wrapper--focused {
       .text-field {
-        box-shadow: inset 0 0 0 var(--stroke-strong)
+        box-shadow: inset 0 0 0 var(--stroke-default)
           var(--error);
       }
     }
