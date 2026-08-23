@@ -20,7 +20,11 @@ const emit = defineEmits<{
     @click="emit('cancel')"
     @contextmenu="emit('cancel')"
   >
-    <div class="dialog">
+    <div
+      class="dialog"
+      @click.stop
+      @contextmenu.stop.prevent
+    >
       <div class="dialog__content">
         <h1 class="dialog__title">{{ title }}</h1>
         <p class="dialog__caption" v-html="caption" />
@@ -58,6 +62,7 @@ const emit = defineEmits<{
     black 40%,
     transparent
   );
+  user-select: none;
 }
 
 .dialog {
