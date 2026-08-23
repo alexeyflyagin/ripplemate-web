@@ -1,15 +1,19 @@
-import type { MenuItemData } from '@/components/ui/ContextMenu'
+import {
+  ContextMenu,
+  type MenuItemData,
+} from '@/components/ui/ContextMenu'
 import { useWorkspaceStore } from '@/stores/domain/workspace'
 import { getRect } from '@/utils/getRectByMouseEvent'
 import { computed, ref, watch } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 import { createAddWorkspaceMenuItem } from './factories'
 import TickIcon from '~icons/icons-16/tick'
-import { useContextMenuStore } from '@/stores/ui/contextMenu'
+import { useOverlayStore } from '@/stores/ui/overlay'
 
 export function useWorkspaceMenu(t: ComposerTranslation) {
   const workspaceStore = useWorkspaceStore()
-  const menuStore = useContextMenuStore()
+  const overlayStore = useOverlayStore()
+  let overlayId: string
 
   const isMenuOpened = ref<boolean>(false)
 
@@ -24,12 +28,19 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
       await workspaceStore.createWorkspace({
         name: `Workspace ${workspaceStore.workspaces.length + 1}`,
       })
+      closeMenu()
       return
     }
 
     const itemId = Number(item.id)
     if (isNaN(itemId)) return
     workspaceStore.changeCurrentWorkspace(itemId)
+    closeMenu()
+  }
+
+  function closeMenu() {
+    overlayStore.close(overlayId)
+    isMenuOpened.value = false
   }
 
   function openWorkspaceMenu(event: MouseEvent) {
@@ -56,20 +67,13 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
       ]
     })
 
-    const stop = watch(
-      () => menuStore.isOpened,
-      (value) => {
-        isMenuOpened.value = value
-        if (!value) stop()
-      },
-    )
-
-    menuStore.open({
-      posX: rect.left,
-      posY: rect.bottom + 4,
-      menuAnchor: 'left-top',
-      menuItems: items,
-      handler: handleItemClick,
+    overlayId = overlayStore.open(ContextMenu, {
+      x: rect.left,
+      y: rect.bottom + 4,
+      anchor: 'left-top',
+      items: items,
+      onClickItem: handleItemClick,
+      onClose: closeMenu,
     })
   }
 

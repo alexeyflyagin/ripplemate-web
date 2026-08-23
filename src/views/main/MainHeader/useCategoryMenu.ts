@@ -1,15 +1,19 @@
-import type { MenuItemData } from '@/components/ui/ContextMenu'
+import {
+  ContextMenu,
+  type MenuItemData,
+} from '@/components/ui/ContextMenu'
 import { createCategoryMenu } from '@/menu/Category'
 import { useCategoryStore } from '@/stores/domain/category'
-import { useContextMenuStore } from '@/stores/ui/contextMenu'
+import { useOverlayStore } from '@/stores/ui/overlay'
 import { getRect } from '@/utils/getRectByMouseEvent'
 import { computed, ref, watch } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 
 export function useCategoryMenu(t: ComposerTranslation) {
   const categoryStore = useCategoryStore()
-  const menuStore = useContextMenuStore()
+  const overlayStore = useOverlayStore()
   const selectedId = ref<string | undefined>()
+  let overlayId: string
 
   function isId(id: string): boolean {
     const categoryId = Number(id)
@@ -26,11 +30,18 @@ export function useCategoryMenu(t: ComposerTranslation) {
     switch (item.id) {
       case 'edit':
         // TODO
+        onCloseMenu()
         break
       case 'delete':
         await categoryStore.deleteCategory(categoryId)
+        onCloseMenu()
         break
     }
+  }
+
+  function onCloseMenu() {
+    overlayStore.close(overlayId)
+    selectedId.value = undefined
   }
 
   function openMenu(event: MouseEvent, categoryId: number) {
@@ -49,22 +60,14 @@ export function useCategoryMenu(t: ComposerTranslation) {
 
     selectedId.value = categoryId.toString()
 
-    const stopWatch = watch(
-      () => menuStore.isOpened,
-      (value) => {
-        if (value) return
-        selectedId.value = undefined
-        stopWatch()
-      },
-    )
-
-    menuStore.open({
-      posX: rect.left + rect.width / 2,
-      posY: rect.bottom + 4,
-      menuItems: menuItems,
-      menuAnchor: 'center-top',
+    overlayId = overlayStore.open(ContextMenu, {
+      x: rect.left + rect.width / 2,
+      y: rect.bottom + 4,
+      items: menuItems,
+      anchor: 'center-top',
       payload: categoryId.toString(),
-      handler: handleMenuClick,
+      onClickItem: handleMenuClick,
+      onClose: onCloseMenu,
     })
   }
 

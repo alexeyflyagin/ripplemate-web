@@ -2,10 +2,9 @@
 import { onMounted } from 'vue'
 import { useAuthStore } from '@/stores/domain/auth'
 import { useSettingsStore } from './stores/domain/settings.ts'
-import { useContextMenuStore } from './stores/ui/contextMenu.ts'
-import { ContextMenu } from './components/ui/ContextMenu'
+import { useOverlayStore } from './stores/ui/overlay.ts'
 
-const contextMenuStore = useContextMenuStore()
+const overlayStore = useOverlayStore()
 const authStore = useAuthStore()
 useSettingsStore()
 
@@ -19,13 +18,13 @@ onMounted(async () => {
 <template>
   <RouterView />
 
-  <ContextMenu
-    v-model:is-opened="contextMenuStore.isOpened"
-    :x="contextMenuStore.x"
-    :y="contextMenuStore.y"
-    :anchor="contextMenuStore.anchor"
-    :items="contextMenuStore.items"
-    :payload="contextMenuStore.payload"
-    @click-item="contextMenuStore.handleClick"
+  <component
+    v-for="(overlay, index) in overlayStore.overlays"
+    :key="overlay.id"
+    :is="overlay.component"
+    v-bind="overlay.props"
+    :style="{
+      zIndex: 1000 + index,
+    }"
   />
 </template>

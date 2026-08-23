@@ -1,14 +1,16 @@
 import type { CardItemData } from '@/components/feature/CardList'
 import type { MenuItemData } from '@/components/ui/ContextMenu'
+import { ContextMenu } from '@/components/ui/ContextMenu'
 import { createCardItemMenu } from '@/menu/CardItemMenu'
 import { useCardStore } from '@/stores/domain/card'
-import { useContextMenuStore } from '@/stores/ui/contextMenu'
+import { useOverlayStore } from '@/stores/ui/overlay'
 import { computed } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 
 export function useCardItemMenu(t: ComposerTranslation) {
   const cardStore = useCardStore()
-  const menuStore = useContextMenuStore()
+  const overlayStore = useOverlayStore()
+  let overlayId: string
 
   async function handleClick(
     item: MenuItemData,
@@ -19,9 +21,11 @@ export function useCardItemMenu(t: ComposerTranslation) {
 
     switch (item.id) {
       case 'edit':
-      // TODO
+        overlayStore.close(overlayId)
+        break
       case 'delete':
         await cardStore.deleteCard(cardId)
+        overlayStore.close(overlayId)
         break
     }
   }
@@ -34,12 +38,13 @@ export function useCardItemMenu(t: ComposerTranslation) {
       createCardItemMenu(t, { cardTerm: cardItem.term }),
     )
 
-    menuStore.open({
-      posX: event.clientX,
-      posY: event.clientY,
-      menuItems: items,
+    overlayId = overlayStore.open(ContextMenu, {
+      x: event.clientX,
+      y: event.clientY,
+      items: items,
       payload: cardItem.id.toString(),
-      handler: handleClick,
+      onClickItem: handleClick,
+      onClose: () => overlayStore.close(overlayId),
     })
   }
 

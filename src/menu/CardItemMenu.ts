@@ -13,7 +13,7 @@ export function createCardItemMenu(
 ): MenuItemData[] {
   return [
     {
-      id: 'change',
+      id: 'edit',
       label: t('general.action.edit'),
       icon: EditIcon,
       value: data.cardTerm,

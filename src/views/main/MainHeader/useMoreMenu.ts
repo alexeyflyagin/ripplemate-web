@@ -7,26 +7,30 @@ import { getRect } from '@/utils/getRectByMouseEvent'
 import { useAccountStore } from '@/stores/domain/account'
 import { useWorkspaceStore } from '@/stores/domain/workspace'
 import { computed } from 'vue'
-import { useContextMenuStore } from '@/stores/ui/contextMenu'
 import { useRouter } from 'vue-router'
 import { useSettingsStore } from '@/stores/domain/settings'
 import type { MenuItemData } from '@/components/ui/ContextMenu'
+import { useOverlayStore } from '@/stores/ui/overlay'
+import { ContextMenu } from '@/components/ui/ContextMenu'
 
 export function useMoreMenu(t: ComposerTranslation) {
   const router = useRouter()
   const authStore = useAuthStore()
   const accountStore = useAccountStore()
   const workspaceStore = useWorkspaceStore()
-  const menuStore = useContextMenuStore()
+  const overlayStore = useOverlayStore()
   const settingsStore = useSettingsStore()
+  let overlayId: string
 
   async function onItemClick(item: MenuItemData) {
     switch (item.id) {
       case 'editWorkspaceName':
+        overlayStore.close(overlayId)
         //TODO
         break
       case 'deleteWorkspace':
         await workspaceStore.deleteCurrentWorkspace()
+        overlayStore.close(overlayId)
         break
       case 'font':
         await settingsStore.nextFont()
@@ -39,6 +43,7 @@ export function useMoreMenu(t: ComposerTranslation) {
         return false
       case 'logout':
         await authStore.logout()
+        overlayStore.close(overlayId)
         router.push({ name: 'login' })
         break
     }
@@ -81,12 +86,13 @@ export function useMoreMenu(t: ComposerTranslation) {
       }),
     )
 
-    menuStore.open({
-      posX: rect.right,
-      posY: rect.top,
-      menuItems: items,
-      menuAnchor: 'right-top',
-      handler: onItemClick,
+    overlayId = overlayStore.open(ContextMenu, {
+      x: rect.right,
+      y: rect.top,
+      items: items,
+      anchor: 'right-top',
+      onClickItem: onItemClick,
+      onClose: () => overlayStore.close(overlayId),
     })
   }
 

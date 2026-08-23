@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, ref, watch } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import type {
   MenuAnchor,
   MenuItemData,
@@ -28,21 +28,14 @@ const emit = defineEmits<{
     item: MenuItemData,
     payload: string | undefined,
   ]
+  close: []
 }>()
-
-const isOpened = defineModel<boolean>('isOpened', {
-  default: false,
-})
 
 const menuEl = ref<HTMLElement>()
 
 const finalX = ref<number>(0)
 const finalY = ref<number>(0)
 const isPositioned = ref<boolean>(false)
-
-watch(isOpened, async (open) => {
-  if (open) updatePosition()
-})
 
 async function updatePosition() {
   isPositioned.value = false
@@ -99,42 +92,39 @@ async function updatePosition() {
   isPositioned.value = true
 }
 
-function close() {
-  isOpened.value = false
-}
+onMounted(() => {
+  updatePosition()
+})
 </script>
 
 <template>
-  <Teleport to="body">
+  <div
+    class="context-menu-overlay"
+    @click="emit('close')"
+    @contextmenu.prevent="emit('close')"
+  >
     <div
-      v-if="isOpened"
-      class="context-menu-overlay"
-      @click="close"
-      @contextmenu.prevent="close"
+      ref="menuEl"
+      class="context-menu"
+      :class="{
+        'context-menu--visible': isPositioned,
+      }"
+      :style="{
+        left: finalX + 'px',
+        top: finalY + 'px',
+        width: width,
+      }"
+      @click.stop
+      @contextmenu.stop.prevent
     >
-      <div
-        ref="menuEl"
-        class="context-menu"
-        :class="{
-          'context-menu--visible': isPositioned,
-        }"
-        :style="{
-          left: finalX + 'px',
-          top: finalY + 'px',
-          width: width,
-        }"
-        @click.stop
-        @contextmenu.stop.prevent
-      >
-        <MenuItem
-          v-for="item in items"
-          :key="item.id"
-          v-bind="item"
-          @click="emit('clickItem', item, props.payload)"
-        />
-      </div>
+      <MenuItem
+        v-for="item in items"
+        :key="item.id"
+        v-bind="item"
+        @click="emit('clickItem', item, props.payload)"
+      />
     </div>
-  </Teleport>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -144,7 +134,6 @@ function close() {
 .context-menu-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1000;
 }
 
 .context-menu {
