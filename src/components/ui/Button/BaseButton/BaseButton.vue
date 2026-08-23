@@ -6,7 +6,7 @@ withDefaults(
     label: string
     disabled?: boolean
     icon?: Component
-    variant?: 'default' | 'accent'
+    variant?: 'default' | 'accent' | 'danger-text'
     type?: 'button' | 'submit' | 'reset'
   }>(),
   {
@@ -126,6 +126,22 @@ const emit = defineEmits<{
 
   &:focus-visible::after {
     background-color: var(--white);
+    opacity: var(--opacity-10);
+  }
+}
+
+.base-button--danger-text {
+  color: var(--error);
+
+  @media (hover: hover) {
+    &:hover::after {
+      background-color: var(--error);
+      opacity: var(--opacity-8);
+    }
+  }
+
+  &:focus-visible::after {
+    background-color: var(--error);
     opacity: var(--opacity-10);
   }
 }
