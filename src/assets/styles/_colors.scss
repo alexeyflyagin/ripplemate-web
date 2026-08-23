@@ -25,6 +25,12 @@
     var(--surface) 60%,
     transparent
   );
+
+  --surface-80: color-mix(
+    in srgb,
+    var(--surface) 80%,
+    transparent
+  );
 }
 
 :root[data-theme='dark'] {
