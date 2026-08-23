@@ -119,13 +119,13 @@ const emit = defineEmits<{
 
   @media (hover: hover) {
     &:hover::after {
-      background-color: var(--white);
+      background-color: white;
       opacity: var(--opacity-8);
     }
   }
 
   &:focus-visible::after {
-    background-color: var(--white);
+    background-color: white;
     opacity: var(--opacity-10);
   }
 }

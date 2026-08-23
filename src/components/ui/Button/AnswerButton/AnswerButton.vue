@@ -45,7 +45,7 @@ const emit = defineEmits<{
   border: none;
   border-radius: var(--corner-xxlarge);
   background-color: var(--easy);
-  color: var(--white);
+  color: white;
   transition:
     transform 0.16s var(--ease-emphasized),
     opacity 0.2s var(--ease-emphasized);
@@ -57,7 +57,7 @@ const emit = defineEmits<{
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background-color: var(--white);
+    background-color: white;
     transition: opacity 0.2s var(--ease-emphasized);
     opacity: 0;
   }
