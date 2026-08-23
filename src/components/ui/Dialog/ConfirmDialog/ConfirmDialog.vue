@@ -15,7 +15,11 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="dialog-overlay">
+  <div
+    class="dialog-overlay"
+    @click="emit('cancel')"
+    @contextmenu="emit('cancel')"
+  >
     <div class="dialog">
       <div class="dialog__content">
         <h1 class="dialog__title">{{ title }}</h1>
@@ -63,7 +67,7 @@ const emit = defineEmits<{
   width: 100%;
   max-width: var(--max-content-width-300);
   flex-direction: column;
-  background-color: var(--surface-60);
+  background-color: var(--surface-80);
   border-radius: var(--corner-xxxlarge);
   border: var(--stroke-subtle) solid var(--border);
   margin: var(--space-40);
@@ -84,6 +88,10 @@ const emit = defineEmits<{
 .dialog__caption {
   @include text-caption;
   color: var(--text-muted);
+
+  :deep(strong) {
+    color: var(--text);
+  }
 }
 
 .dialog__actions {
