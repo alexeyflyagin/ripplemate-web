@@ -8,6 +8,8 @@ const ru: typeof en = {
       yesterday: 'Вчера',
     },
     action: {
+      ok: 'ОК',
+      yes: 'Да',
       signup: 'Создать аккаунт',
       login: 'Войти',
       logout: 'Выйти',

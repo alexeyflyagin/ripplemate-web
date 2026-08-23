@@ -6,6 +6,8 @@ export default {
       yesterday: 'Yesterday',
     },
     action: {
+      ok: 'OK',
+      yes: 'Yes',
       signup: 'Sign up',
       login: 'Log in',
       logout: 'Log out',
