@@ -1,4 +1,5 @@
 import {
+  getCategory as getCategoryApi,
   getCategories as getCategoriesApi,
   updateCategory as updateCategoryApi,
   createCategory as createCategoryApi,
@@ -124,6 +125,23 @@ export const useCategoryStore = defineStore(
       changeCurrentCategory(createdCategory.id)
     }
 
+    async function getCategory(id: number) {
+      let category = categories.value?.find(
+        (c) => c.id === id,
+      )
+
+      if (!category && workspaceStore.currentWorkspaceId) {
+        category = await getCategoryApi(
+          workspaceStore.currentWorkspaceId,
+          id,
+        )
+      }
+
+      if (!category) throw Error('Category not found')
+
+      return category
+    }
+
     async function deleteCategory(id: number) {
       if (!workspaceStore.currentWorkspaceId)
         throw new Error('No workspace selected')
@@ -173,6 +191,7 @@ export const useCategoryStore = defineStore(
       createCategory,
       deleteCurrentCategory,
       deleteCategory,
+      getCategory,
     }
   },
 )
