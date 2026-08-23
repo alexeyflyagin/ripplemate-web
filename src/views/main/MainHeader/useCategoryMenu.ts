@@ -2,11 +2,12 @@ import {
   ContextMenu,
   type MenuItemData,
 } from '@/components/ui/ContextMenu'
+import { ConfirmDialog } from '@/components/ui/Dialog/ConfirmDialog'
 import { createCategoryMenu } from '@/menu/Category'
 import { useCategoryStore } from '@/stores/domain/category'
 import { useOverlayStore } from '@/stores/ui/overlay'
 import { getRect } from '@/utils/getRectByMouseEvent'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 
 export function useCategoryMenu(t: ComposerTranslation) {
@@ -33,10 +34,33 @@ export function useCategoryMenu(t: ComposerTranslation) {
         onCloseMenu()
         break
       case 'delete':
-        await categoryStore.deleteCategory(categoryId)
+        deleteCategory(categoryId)
         onCloseMenu()
         break
     }
+  }
+
+  async function deleteCategory(categoryId: number) {
+    const category =
+      await categoryStore.getCategory(categoryId)
+
+    const confirmOverlayId = overlayStore.open(
+      ConfirmDialog,
+      {
+        title: t('dialog.category.delete.title'),
+        caption: t('dialog.category.delete.caption', {
+          name: `<strong>${category.name}</strong>`,
+        }),
+        confirm: t('general.action.delete'),
+        cancel: t('general.action.cancel'),
+        onConfirm: async () => {
+          await categoryStore.deleteCategory(categoryId)
+          overlayStore.close(confirmOverlayId)
+        },
+        onCancel: () =>
+          overlayStore.close(confirmOverlayId),
+      },
+    )
   }
 
   function onCloseMenu() {

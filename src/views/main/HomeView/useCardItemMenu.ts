@@ -1,9 +1,11 @@
 import type { CardItemData } from '@/components/feature/CardList'
 import type { MenuItemData } from '@/components/ui/ContextMenu'
 import { ContextMenu } from '@/components/ui/ContextMenu'
+import { ConfirmDialog } from '@/components/ui/Dialog/ConfirmDialog'
 import { createCardItemMenu } from '@/menu/CardItemMenu'
 import { useCardStore } from '@/stores/domain/card'
 import { useOverlayStore } from '@/stores/ui/overlay'
+import { truncate } from '@/utils/truncate'
 import { computed } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 
@@ -24,10 +26,31 @@ export function useCardItemMenu(t: ComposerTranslation) {
         overlayStore.close(overlayId)
         break
       case 'delete':
-        await cardStore.deleteCard(cardId)
+        openCardDeleteDialog(cardId)
         overlayStore.close(overlayId)
         break
     }
+  }
+
+  async function openCardDeleteDialog(cardId: number) {
+    const card = await cardStore.getCard(cardId)
+    const confirmOverlayId = overlayStore.open(
+      ConfirmDialog,
+      {
+        title: t('dialog.card.delete.title'),
+        caption: t('dialog.card.delete.caption', {
+          term: `<strong>${truncate(card.term, 20)}</strong>`,
+        }),
+        confirm: t('general.action.delete'),
+        cancel: t('general.action.cancel'),
+        onConfirm: async () => {
+          await cardStore.deleteCard(cardId)
+          overlayStore.close(confirmOverlayId)
+        },
+        onCancel: () =>
+          overlayStore.close(confirmOverlayId),
+      },
+    )
   }
 
   async function openCardItemMenu(

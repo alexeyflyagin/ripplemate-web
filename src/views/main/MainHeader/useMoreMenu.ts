@@ -12,6 +12,8 @@ import { useSettingsStore } from '@/stores/domain/settings'
 import type { MenuItemData } from '@/components/ui/ContextMenu'
 import { useOverlayStore } from '@/stores/ui/overlay'
 import { ContextMenu } from '@/components/ui/ContextMenu'
+import { ConfirmDialog } from '@/components/ui/Dialog/ConfirmDialog'
+import { truncate } from '@/utils/truncate'
 
 export function useMoreMenu(t: ComposerTranslation) {
   const router = useRouter()
@@ -29,7 +31,7 @@ export function useMoreMenu(t: ComposerTranslation) {
         //TODO
         break
       case 'deleteWorkspace':
-        await workspaceStore.deleteCurrentWorkspace()
+        deleteWorkspace()
         overlayStore.close(overlayId)
         break
       case 'font':
@@ -48,6 +50,29 @@ export function useMoreMenu(t: ComposerTranslation) {
         break
     }
     return true
+  }
+
+  async function deleteWorkspace() {
+    const workspace = workspaceStore.currentWorkspace
+    if (!workspace) return
+
+    const confirmOverlayId = overlayStore.open(
+      ConfirmDialog,
+      {
+        title: t('dialog.workspace.delete.title'),
+        caption: t('dialog.workspace.delete.caption', {
+          name: `<strong>${workspace.name}</strong>`,
+        }),
+        confirm: t('general.action.delete'),
+        cancel: t('general.action.cancel'),
+        onConfirm: async () => {
+          await workspaceStore.deleteCurrentWorkspace()
+          overlayStore.close(confirmOverlayId)
+        },
+        onCancel: () =>
+          overlayStore.close(confirmOverlayId),
+      },
+    )
   }
 
   async function openMoreMenu(event: MouseEvent) {
