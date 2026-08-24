@@ -169,6 +169,7 @@ const emit = defineEmits<{
     text-align: end;
     flex-shrink: 999;
     min-width: 24px;
+    max-width: 50px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
