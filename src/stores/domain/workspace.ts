@@ -1,5 +1,6 @@
 import {
   getWorkspaces as getWorkspacesApi,
+  getWorkspaceById as getWorkspaceByIdApi,
   updateWorkspace as updateWorkspaceApi,
   createWorkspace as createWorkspaceApi,
   deleteWorkspace as deleteWorkspaceApi,
@@ -50,6 +51,20 @@ export const useWorkspaceStore = defineStore(
       }
     }
 
+    async function getWorkspace(id: number) {
+      let workspace = workspaces.value.find(
+        (w) => w.id === id,
+      )
+
+      if (!workspace) {
+        workspace = await getWorkspaceByIdApi(id)
+      }
+
+      if (!workspace) throw Error('Workspace not found')
+
+      return workspace
+    }
+
     function changeCurrentWorkspace(id: number | null) {
       if (id !== null) {
         if (!workspaces.value.some((w) => w.id === id))
@@ -68,22 +83,27 @@ export const useWorkspaceStore = defineStore(
       }
     }
 
+    async function updateWorkspace(
+      workspaceId: number,
+      data: WorkspaceUpdate,
+    ) {
+      const updatedWorkspace = await updateWorkspaceApi(
+        workspaceId,
+        data,
+      )
+
+      workspaces.value = workspaces.value.map((w) =>
+        w.id === workspaceId ? updatedWorkspace : w,
+      )
+    }
+
     async function updateCurrentWorkspace(
       data: WorkspaceUpdate,
     ) {
       if (!currentWorkspaceId.value)
         throw new Error('No current workspace selected')
 
-      const updatedWorkspace = await updateWorkspaceApi(
-        currentWorkspaceId.value,
-        data,
-      )
-
-      workspaces.value = workspaces.value.map((w) =>
-        w.id === currentWorkspaceId.value
-          ? updatedWorkspace
-          : w,
-      )
+      await updateWorkspace(currentWorkspaceId.value, data)
     }
 
     async function createWorkspace(data: WorkspaceCreate) {
@@ -123,8 +143,10 @@ export const useWorkspaceStore = defineStore(
       currentWorkspaceId,
       currentWorkspace,
       getWorkspaces,
+      getWorkspace,
       changeCurrentWorkspace,
       updateCurrentWorkspace,
+      updateWorkspace,
       createWorkspace,
       deleteCurrentWorkspace,
     }
