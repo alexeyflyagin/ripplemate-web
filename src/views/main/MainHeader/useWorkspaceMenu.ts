@@ -74,6 +74,9 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
       anchor: 'left-top',
       items: items,
       placemet: 'bottom-start' as Placement,
+      initialScrollToId:
+        workspaceStore.currentWorkspaceId?.toString() ??
+        undefined,
       onClickItem: handleItemClick,
       onClose: () => overlay.close(),
     })

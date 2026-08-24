@@ -10,6 +10,7 @@ import {
   type ReferenceElement,
 } from '@floating-ui/dom'
 import { useContextMenuPosition } from './useContextMenuPosition.ts'
+import { useInitialScroll } from './useInitialScroll.ts'
 
 const props = withDefaults(
   defineProps<{
@@ -19,6 +20,7 @@ const props = withDefaults(
     payload?: string
     placement?: Placement
     offsetOptions?: OffsetOptions
+    initialScrollToId?: string
   }>(),
   {
     placement: 'bottom-start',
@@ -34,6 +36,7 @@ const emit = defineEmits<{
   close: []
 }>()
 
+const elements = ref<Map<string, HTMLElement>>(new Map())
 const overlayRef = useTemplateRef('overlay')
 const menuEl = ref<HTMLElement>()
 
@@ -56,6 +59,8 @@ useFocusTrap(overlayRef, {
 })
 
 useMoveFocus(menuEl, { withArrows: true })
+
+useInitialScroll(elements, menuEl, props.initialScrollToId)
 </script>
 
 <template>
@@ -81,6 +86,12 @@ useMoveFocus(menuEl, { withArrows: true })
     >
       <MenuItem
         v-for="item in items"
+        :ref="
+          (el: any) => {
+            if (el) elements.set(item.id, el.$el)
+            else elements.delete(item.id)
+          }
+        "
         :key="item.id"
         v-bind="item"
         @click="emit('clickItem', item, props.payload)"
@@ -90,6 +101,7 @@ useMoveFocus(menuEl, { withArrows: true })
 </template>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/mixins' as *;
 @use '@/assets/styles/shadows' as *;
 @use '@/assets/styles/blur' as *;
 
@@ -99,10 +111,13 @@ useMoveFocus(menuEl, { withArrows: true })
 }
 
 .context-menu {
+  @include hide-scrollbar;
   @include elevation-4;
   @include background-blur-10;
   position: fixed;
   min-width: 180px;
+  max-height: 300px;
+  overflow-y: auto;
   opacity: 0;
   padding-top: var(--space-4);
   background-color: var(--surface-60);
