@@ -1,0 +1,61 @@
+import {
+  autoUpdate,
+  computePosition,
+  flip,
+  offset,
+  shift,
+  type FloatingElement,
+  type OffsetOptions,
+  type Placement,
+  type ReferenceElement,
+} from '@floating-ui/dom'
+import { onMounted, onUnmounted, ref, type Ref } from 'vue'
+
+const PADDING = 8
+
+export function useContextMenuPosition(
+  targetEl: ReferenceElement,
+  menuEl: Ref<FloatingElement | undefined>,
+  options?: {
+    after?: (x: number, y: number) => void
+    offsetOptions?: OffsetOptions
+    placement?: Placement
+  },
+) {
+  let cleanup: (() => void) | undefined
+
+  const xPos = ref<number>(0)
+  const yPos = ref<number>(0)
+
+  onMounted(() => {
+    cleanup = autoUpdate(
+      targetEl,
+      menuEl.value!,
+      async () => {
+        const { x, y } = await computePosition(
+          targetEl,
+          menuEl.value!,
+          {
+            placement: options?.placement,
+            middleware: [
+              flip(),
+              shift({ padding: PADDING }),
+              offset(options?.offsetOptions),
+            ],
+          },
+        )
+
+        xPos.value = x
+        yPos.value = y
+
+        options?.after?.(x, y)
+      },
+    )
+  })
+
+  onUnmounted(() => {
+    cleanup?.()
+  })
+
+  return { x: xPos, y: yPos }
+}

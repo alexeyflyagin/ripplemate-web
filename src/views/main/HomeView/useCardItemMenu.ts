@@ -9,6 +9,7 @@ import {
   type OverlayHandle,
 } from '@/stores/ui/overlay'
 import { truncate } from '@/utils/truncate'
+import type { Placement } from '@floating-ui/dom'
 import { computed } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 
@@ -64,10 +65,10 @@ export function useCardItemMenu(t: ComposerTranslation) {
     )
 
     overlay = overlayStore.open(ContextMenu, {
-      x: event.clientX,
-      y: event.clientY,
+      targetEl: event.currentTarget,
       items: items,
       payload: cardItem.id.toString(),
+      placement: 'bottom' as Placement,
       onClickItem: handleClick,
       onClose: () => overlay.close(),
     })

@@ -9,11 +9,14 @@ import {
   useOverlayStore,
   type OverlayHandle,
 } from '@/stores/ui/overlay'
-import { getRect } from '@/utils/getRectByMouseEvent'
+import type { OffsetOptions } from '@floating-ui/core'
+import type { Placement } from '@floating-ui/dom'
 import { computed, ref, watch } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 
 export function useCategoryMenu(t: ComposerTranslation) {
+  const MENU_OFFSET = 4
+
   const categoryStore = useCategoryStore()
   const overlayStore = useOverlayStore()
   const selectedId = ref<string | undefined>()
@@ -77,16 +80,16 @@ export function useCategoryMenu(t: ComposerTranslation) {
       createCategoryMenu(t, category.name),
     )
 
-    const rect = getRect(event)
-
     selectedId.value = categoryId.toString()
 
     overlay = overlayStore.open(ContextMenu, {
-      x: rect.left + rect.width / 2,
-      y: rect.bottom + 4,
+      targetEl: event.currentTarget,
       items: menuItems,
-      anchor: 'center-top',
       payload: categoryId.toString(),
+      placement: 'bottom' as Placement,
+      offsetOptions: {
+        mainAxis: MENU_OFFSET,
+      } as OffsetOptions,
       onClickItem: handleMenuClick,
       onClose: () => overlay.close(),
     })

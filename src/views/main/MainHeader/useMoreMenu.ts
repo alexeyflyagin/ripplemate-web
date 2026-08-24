@@ -3,7 +3,6 @@ import { FONT_ICONS, THEME_ICONS } from './constants'
 import { resolveTheme } from '@/composables/useTheme'
 import type { ComposerTranslation } from 'vue-i18n'
 import { useAuthStore } from '@/stores/domain/auth'
-import { getRect } from '@/utils/getRectByMouseEvent'
 import { useAccountStore } from '@/stores/domain/account'
 import { useWorkspaceStore } from '@/stores/domain/workspace'
 import { computed } from 'vue'
@@ -16,6 +15,8 @@ import {
 } from '@/stores/ui/overlay'
 import { ContextMenu } from '@/components/ui/ContextMenu'
 import { ConfirmDialog } from '@/components/ui/Dialog/ConfirmDialog'
+import type { Placement } from '@floating-ui/dom'
+import type { OffsetOptions } from '@floating-ui/core'
 
 export function useMoreMenu(t: ComposerTranslation) {
   const router = useRouter()
@@ -77,8 +78,6 @@ export function useMoreMenu(t: ComposerTranslation) {
   }
 
   async function openMoreMenu(event: MouseEvent) {
-    const rect = getRect(event)
-
     const items = computed(() =>
       createHomeMoreMenu(t, {
         font:
@@ -112,11 +111,15 @@ export function useMoreMenu(t: ComposerTranslation) {
       }),
     )
 
+    const targetHtmlEl = event.currentTarget as HTMLElement
+
     overlay = overlayStore.open(ContextMenu, {
-      x: rect.right,
-      y: rect.top,
+      offsetOptions: {
+        mainAxis: -targetHtmlEl.offsetHeight,
+      } as OffsetOptions,
+      targetEl: event.currentTarget,
       items: items,
-      anchor: 'right-top',
+      placement: 'top-end' as Placement,
       onClickItem: onItemClick,
       onClose: () => overlay.close(),
     })

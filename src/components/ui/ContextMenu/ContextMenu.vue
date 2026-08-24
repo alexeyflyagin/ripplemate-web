@@ -1,31 +1,27 @@
 <script setup lang="ts">
-import {
-  nextTick,
-  onMounted,
-  ref,
-  useTemplateRef,
-} from 'vue'
-import type {
-  MenuAnchor,
-  MenuItemData,
-} from './ContextMenu.types.ts'
+import { ref, useTemplateRef } from 'vue'
+import type { MenuItemData } from './ContextMenu.types.ts'
 import MenuItem from './MenuItem.vue'
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
 import { useMoveFocus } from '@/composables/useMoveFocus.ts'
-
-const PADDING = 8
+import {
+  type OffsetOptions,
+  type Placement,
+  type ReferenceElement,
+} from '@floating-ui/dom'
+import { useContextMenuPosition } from './useContextMenuPosition.ts'
 
 const props = withDefaults(
   defineProps<{
     width?: string
-    x: number
-    y: number
+    targetEl: ReferenceElement
     items: MenuItemData[]
     payload?: string
-    anchor?: MenuAnchor
+    placement?: Placement
+    offsetOptions?: OffsetOptions
   }>(),
   {
-    anchor: 'left-top',
+    placement: 'bottom-start',
     width: '200px',
   },
 )
@@ -41,74 +37,25 @@ const emit = defineEmits<{
 const overlayRef = useTemplateRef('overlay')
 const menuEl = ref<HTMLElement>()
 
-const finalX = ref<number>(0)
-const finalY = ref<number>(0)
 const isPositioned = ref<boolean>(false)
 
-async function updatePosition() {
-  isPositioned.value = false
-  await nextTick()
-
-  const menu = menuEl.value
-  if (!menu) return
-
-  const menuWidth = menu.offsetWidth
-  const menuHeight = menu.offsetHeight
-  const vw = window.innerWidth
-  const vh = window.innerHeight
-
-  let x = props.x
-  let y = props.y
-
-  switch (props.anchor) {
-    case 'left-top':
-      break
-    case 'center-top':
-      x = props.x - menuWidth / 2
-      break
-    case 'right-top':
-      x = props.x - menuWidth
-      break
-    case 'left-bottom':
-      y = props.y - menuHeight
-      break
-    case 'center-bottom':
-      x = props.x - menuWidth / 2
-      y = props.y - menuHeight
-      break
-    case 'right-bottom':
-      x = props.x - menuWidth
-      y = props.y - menuHeight
-      break
-  }
-
-  if (x + menuWidth > vw - PADDING) x = props.x - menuWidth
-  if (y + menuHeight > vh - PADDING)
-    y = props.y - menuHeight
-
-  x = Math.min(
-    Math.max(x, PADDING),
-    vw - menuWidth - PADDING,
-  )
-  y = Math.min(
-    Math.max(y, PADDING),
-    vh - menuHeight - PADDING,
-  )
-
-  finalX.value = x
-  finalY.value = y
-  isPositioned.value = true
-}
+const { x, y } = useContextMenuPosition(
+  props.targetEl,
+  menuEl,
+  {
+    offsetOptions: props.offsetOptions,
+    placement: props.placement,
+    after: () => {
+      isPositioned.value = true
+    },
+  },
+)
 
 useFocusTrap(overlayRef, {
   immediate: true,
 })
 
 useMoveFocus(menuEl, { withArrows: true })
-
-onMounted(() => {
-  updatePosition()
-})
 </script>
 
 <template>
@@ -125,8 +72,8 @@ onMounted(() => {
         'context-menu--visible': isPositioned,
       }"
       :style="{
-        left: finalX + 'px',
-        top: finalY + 'px',
+        left: x + 'px',
+        top: y + 'px',
         width: width,
       }"
       @click.stop

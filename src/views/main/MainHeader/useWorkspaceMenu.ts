@@ -3,7 +3,6 @@ import {
   type MenuItemData,
 } from '@/components/ui/ContextMenu'
 import { useWorkspaceStore } from '@/stores/domain/workspace'
-import { getRect } from '@/utils/getRectByMouseEvent'
 import { computed, ref, watch } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 import { createAddWorkspaceMenuItem } from './factories'
@@ -12,8 +11,12 @@ import {
   useOverlayStore,
   type OverlayHandle,
 } from '@/stores/ui/overlay'
+import type { Placement } from '@floating-ui/dom'
+import type { OffsetOptions } from '@floating-ui/core'
 
 export function useWorkspaceMenu(t: ComposerTranslation) {
+  const MENU_OFFSET = 4
+
   const workspaceStore = useWorkspaceStore()
   const overlayStore = useOverlayStore()
   let overlay: OverlayHandle
@@ -42,8 +45,6 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
   }
 
   function openWorkspaceMenu(event: MouseEvent) {
-    const rect = getRect(event)
-
     const items = computed(() => {
       return [
         ...workspaceStore.workspaces.map<MenuItemData>(
@@ -66,10 +67,13 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
     })
 
     overlay = overlayStore.open(ContextMenu, {
-      x: rect.left,
-      y: rect.bottom + 4,
+      offsetOptions: {
+        mainAxis: MENU_OFFSET,
+      } as OffsetOptions,
+      targetEl: event.currentTarget,
       anchor: 'left-top',
       items: items,
+      placemet: 'bottom-start' as Placement,
       onClickItem: handleItemClick,
       onClose: () => overlay.close(),
     })
