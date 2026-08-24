@@ -70,17 +70,17 @@ const emit = defineEmits<{
   cursor: pointer;
 
   &--first {
-    border-top-left-radius: var(--corner-large);
-    border-top-right-radius: var(--corner-large);
+    border-top-left-radius: var(--corner-xlarge);
+    border-top-right-radius: var(--corner-xlarge);
   }
 
   &--last {
-    border-bottom-left-radius: var(--corner-large);
-    border-bottom-right-radius: var(--corner-large);
+    border-bottom-left-radius: var(--corner-xlarge);
+    border-bottom-right-radius: var(--corner-xlarge);
   }
 
   &--only-one {
-    border-radius: var(--corner-large);
+    border-radius: var(--corner-xlarge);
   }
 
   &::after {
