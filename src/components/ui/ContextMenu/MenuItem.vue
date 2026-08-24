@@ -155,16 +155,19 @@ const emit = defineEmits<{
   &__label {
     @include text-label;
     text-align: start;
+    min-width: 0;
+    flex-shrink: 1;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    margin-right: auto;
   }
 
   &__value {
     @include text-label;
     color: var(--text-placeholder);
     text-align: end;
-    flex-grow: 1;
+    flex-shrink: 999;
     min-width: 24px;
     overflow: hidden;
     white-space: nowrap;
