@@ -35,7 +35,7 @@ export function useMoreMenu(t: ComposerTranslation) {
         break
       case 'deleteWorkspace':
         deleteWorkspace()
-        overlay.close
+        overlay.close()
         break
       case 'font':
         await settingsStore.nextFont()
