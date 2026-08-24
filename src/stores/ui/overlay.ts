@@ -38,8 +38,6 @@ export const useOverlayStore = defineStore(
         props,
       })
 
-      console.log(overlays.value)
-
       return {
         id,
 
