@@ -4,7 +4,10 @@ import { ContextMenu } from '@/components/ui/ContextMenu'
 import { ConfirmDialog } from '@/components/ui/Dialog/ConfirmDialog'
 import { createCardItemMenu } from '@/menu/CardItemMenu'
 import { useCardStore } from '@/stores/domain/card'
-import { useOverlayStore } from '@/stores/ui/overlay'
+import {
+  useOverlayStore,
+  type OverlayHandle,
+} from '@/stores/ui/overlay'
 import { truncate } from '@/utils/truncate'
 import { computed } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
@@ -12,7 +15,7 @@ import type { ComposerTranslation } from 'vue-i18n'
 export function useCardItemMenu(t: ComposerTranslation) {
   const cardStore = useCardStore()
   const overlayStore = useOverlayStore()
-  let overlayId: string
+  let overlay: OverlayHandle
 
   async function handleClick(
     item: MenuItemData,
@@ -23,32 +26,31 @@ export function useCardItemMenu(t: ComposerTranslation) {
 
     switch (item.id) {
       case 'edit':
-        overlayStore.close(overlayId)
+        overlay.close()
         break
       case 'delete':
         openCardDeleteDialog(cardId)
-        overlayStore.close(overlayId)
+        overlay.close()
         break
     }
   }
 
   async function openCardDeleteDialog(cardId: number) {
     const card = await cardStore.getCard(cardId)
-    const confirmOverlayId = overlayStore.open(
+    const confirmOverlay = overlayStore.open(
       ConfirmDialog,
       {
         title: t('dialog.card.delete.title'),
         caption: t('dialog.card.delete.caption', {
           term: `<strong>${truncate(card.term, 20)}</strong>`,
         }),
+        type: 'destructive',
         confirm: t('general.action.delete'),
-        cancel: t('general.action.cancel'),
         onConfirm: async () => {
           await cardStore.deleteCard(cardId)
-          overlayStore.close(confirmOverlayId)
+          confirmOverlay.close()
         },
-        onCancel: () =>
-          overlayStore.close(confirmOverlayId),
+        onCancel: () => confirmOverlay.close(),
       },
     )
   }
@@ -61,13 +63,13 @@ export function useCardItemMenu(t: ComposerTranslation) {
       createCardItemMenu(t, { cardTerm: cardItem.term }),
     )
 
-    overlayId = overlayStore.open(ContextMenu, {
+    overlay = overlayStore.open(ContextMenu, {
       x: event.clientX,
       y: event.clientY,
       items: items,
       payload: cardItem.id.toString(),
       onClickItem: handleClick,
-      onClose: () => overlayStore.close(overlayId),
+      onClose: () => overlay.close(),
     })
   }
 

@@ -10,10 +10,12 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSettingsStore } from '@/stores/domain/settings'
 import type { MenuItemData } from '@/components/ui/ContextMenu'
-import { useOverlayStore } from '@/stores/ui/overlay'
+import {
+  useOverlayStore,
+  type OverlayHandle,
+} from '@/stores/ui/overlay'
 import { ContextMenu } from '@/components/ui/ContextMenu'
 import { ConfirmDialog } from '@/components/ui/Dialog/ConfirmDialog'
-import { truncate } from '@/utils/truncate'
 
 export function useMoreMenu(t: ComposerTranslation) {
   const router = useRouter()
@@ -22,17 +24,17 @@ export function useMoreMenu(t: ComposerTranslation) {
   const workspaceStore = useWorkspaceStore()
   const overlayStore = useOverlayStore()
   const settingsStore = useSettingsStore()
-  let overlayId: string
+  let overlay: OverlayHandle
 
   async function onItemClick(item: MenuItemData) {
     switch (item.id) {
       case 'editWorkspaceName':
-        overlayStore.close(overlayId)
+        overlay.close
         //TODO
         break
       case 'deleteWorkspace':
         deleteWorkspace()
-        overlayStore.close(overlayId)
+        overlay.close
         break
       case 'font':
         await settingsStore.nextFont()
@@ -45,7 +47,7 @@ export function useMoreMenu(t: ComposerTranslation) {
         return false
       case 'logout':
         await authStore.logout()
-        overlayStore.close(overlayId)
+        overlay.close
         router.push({ name: 'login' })
         break
     }
@@ -56,21 +58,20 @@ export function useMoreMenu(t: ComposerTranslation) {
     const workspace = workspaceStore.currentWorkspace
     if (!workspace) return
 
-    const confirmOverlayId = overlayStore.open(
+    const confirmOverlay = overlayStore.open(
       ConfirmDialog,
       {
         title: t('dialog.workspace.delete.title'),
         caption: t('dialog.workspace.delete.caption', {
           name: `<strong>${workspace.name}</strong>`,
         }),
+        type: 'destructive',
         confirm: t('general.action.delete'),
-        cancel: t('general.action.cancel'),
         onConfirm: async () => {
           await workspaceStore.deleteCurrentWorkspace()
-          overlayStore.close(confirmOverlayId)
+          confirmOverlay.close()
         },
-        onCancel: () =>
-          overlayStore.close(confirmOverlayId),
+        onCancel: () => confirmOverlay.close(),
       },
     )
   }
@@ -111,13 +112,13 @@ export function useMoreMenu(t: ComposerTranslation) {
       }),
     )
 
-    overlayId = overlayStore.open(ContextMenu, {
+    overlay = overlayStore.open(ContextMenu, {
       x: rect.right,
       y: rect.top,
       items: items,
       anchor: 'right-top',
       onClickItem: onItemClick,
-      onClose: () => overlayStore.close(overlayId),
+      onClose: () => overlay.close(),
     })
   }
 

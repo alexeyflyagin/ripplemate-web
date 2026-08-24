@@ -5,16 +5,19 @@ import {
 import { ConfirmDialog } from '@/components/ui/Dialog/ConfirmDialog'
 import { createCategoryMenu } from '@/menu/Category'
 import { useCategoryStore } from '@/stores/domain/category'
-import { useOverlayStore } from '@/stores/ui/overlay'
+import {
+  useOverlayStore,
+  type OverlayHandle,
+} from '@/stores/ui/overlay'
 import { getRect } from '@/utils/getRectByMouseEvent'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 
 export function useCategoryMenu(t: ComposerTranslation) {
   const categoryStore = useCategoryStore()
   const overlayStore = useOverlayStore()
   const selectedId = ref<string | undefined>()
-  let overlayId: string
+  let overlay: OverlayHandle
 
   function isId(id: string): boolean {
     const categoryId = Number(id)
@@ -31,11 +34,11 @@ export function useCategoryMenu(t: ComposerTranslation) {
     switch (item.id) {
       case 'edit':
         // TODO
-        onCloseMenu()
+        overlay.close()
         break
       case 'delete':
         deleteCategory(categoryId)
-        onCloseMenu()
+        overlay.close()
         break
     }
   }
@@ -51,21 +54,15 @@ export function useCategoryMenu(t: ComposerTranslation) {
         caption: t('dialog.category.delete.caption', {
           name: `<strong>${category.name}</strong>`,
         }),
+        type: 'destructive',
         confirm: t('general.action.delete'),
-        cancel: t('general.action.cancel'),
         onConfirm: async () => {
           await categoryStore.deleteCategory(categoryId)
-          overlayStore.close(confirmOverlayId)
+          confirmOverlayId.close()
         },
-        onCancel: () =>
-          overlayStore.close(confirmOverlayId),
+        onCancel: () => confirmOverlayId.close(),
       },
     )
-  }
-
-  function onCloseMenu() {
-    overlayStore.close(overlayId)
-    selectedId.value = undefined
   }
 
   function openMenu(event: MouseEvent, categoryId: number) {
@@ -84,14 +81,20 @@ export function useCategoryMenu(t: ComposerTranslation) {
 
     selectedId.value = categoryId.toString()
 
-    overlayId = overlayStore.open(ContextMenu, {
+    overlay = overlayStore.open(ContextMenu, {
       x: rect.left + rect.width / 2,
       y: rect.bottom + 4,
       items: menuItems,
       anchor: 'center-top',
       payload: categoryId.toString(),
       onClickItem: handleMenuClick,
-      onClose: onCloseMenu,
+      onClose: () => overlay.close(),
+    })
+
+    const stop = watch(overlay.isOpen, (v) => {
+      if (v) return
+      selectedId.value = undefined
+      stop()
     })
   }
 
