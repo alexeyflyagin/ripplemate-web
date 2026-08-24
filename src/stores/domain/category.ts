@@ -86,11 +86,29 @@ export const useCategoryStore = defineStore(
       }
     }
 
-    async function updateCurrentCategory(
+    async function updateCategory(
+      category_id: number,
       data: CategoryUpdate,
     ) {
       if (!workspaceStore.currentWorkspaceId)
         throw new Error('No current workspace selected')
+
+      const updatedCategory = await updateCategoryApi(
+        workspaceStore.currentWorkspaceId,
+        category_id,
+        data,
+      )
+
+      if (categories.value) {
+        categories.value = categories.value.map((c) =>
+          c.id === category_id ? updatedCategory : c,
+        )
+      }
+    }
+
+    async function updateCurrentCategory(
+      data: CategoryUpdate,
+    ) {
       if (
         !currentCategoryId.value ||
         !categories.value ||
@@ -98,17 +116,7 @@ export const useCategoryStore = defineStore(
       )
         throw new Error('No current category selected')
 
-      const updatedCategory = await updateCategoryApi(
-        workspaceStore.currentWorkspaceId,
-        currentCategoryId.value,
-        data,
-      )
-
-      categories.value = categories.value.map((c) =>
-        c.id === currentCategoryId.value
-          ? updatedCategory
-          : c,
-      )
+      await updateCategory(currentCategoryId.value, data)
     }
 
     async function createCategory(data: CategoryCreate) {
@@ -188,6 +196,7 @@ export const useCategoryStore = defineStore(
       currentCategory,
       changeCurrentCategory,
       updateCurrentCategory,
+      updateCategory,
       createCategory,
       deleteCurrentCategory,
       deleteCategory,
