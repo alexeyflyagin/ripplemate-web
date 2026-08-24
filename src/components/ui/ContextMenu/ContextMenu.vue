@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from 'vue'
+import {
+  nextTick,
+  onMounted,
+  ref,
+  useTemplateRef,
+} from 'vue'
 import type {
   MenuAnchor,
   MenuItemData,
 } from './ContextMenu.types.ts'
 import MenuItem from './MenuItem.vue'
+import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
+import { useMoveFocus } from '@/composables/useMoveFocus.ts'
 
 const PADDING = 8
 
@@ -31,6 +38,7 @@ const emit = defineEmits<{
   close: []
 }>()
 
+const overlayRef = useTemplateRef('overlay')
 const menuEl = ref<HTMLElement>()
 
 const finalX = ref<number>(0)
@@ -92,6 +100,11 @@ async function updatePosition() {
   isPositioned.value = true
 }
 
+useFocusTrap(overlayRef, {
+  immediate: true,
+})
+
+
 onMounted(() => {
   updatePosition()
 })
@@ -100,6 +113,7 @@ onMounted(() => {
 <template>
   <div
     class="context-menu-overlay"
+    ref="overlay"
     @click="emit('close')"
     @contextmenu.prevent="emit('close')"
   >

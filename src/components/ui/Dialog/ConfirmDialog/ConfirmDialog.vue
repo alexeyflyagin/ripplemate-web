@@ -7,9 +7,9 @@ import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
 const { t } = useI18n()
 
 const props = withDefaults(
-defineProps<{
-  title: string
-  caption: string
+  defineProps<{
+    title: string
+    caption: string
     type: 'info' | 'positive' | 'destructive'
     confirm?: string
     cancel?: string
@@ -26,6 +26,10 @@ const emit = defineEmits<{
   cancel: []
   overlay: []
 }>()
+
+const overlay = useTemplateRef('overlay')
+const confirmButtonRef = useTemplateRef('confirmButtonRef')
+const cancelButtonRef = useTemplateRef('cancelButtonRef')
 
 const confirm = computed(() => {
   return props.confirm
@@ -45,6 +49,13 @@ function onOverlay() {
   if (props.overlayClickIsCancel) emit('cancel')
 }
 
+useFocusTrap(overlay, {
+  immediate: true,
+  initialFocus: () =>
+    props.type === 'positive'
+      ? confirmButtonRef.value?.$el
+      : cancelButtonRef.value?.$el,
+})
 </script>
 
 <template>
