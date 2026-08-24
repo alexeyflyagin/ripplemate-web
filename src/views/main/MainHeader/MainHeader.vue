@@ -10,7 +10,8 @@ import { useWorkspaceMenu } from './useWorkspaceMenu'
 import { BaseTabs } from '@/components/ui/Tabs'
 import { useCategoryTabs } from './useCategoryTabs'
 import { useCategoryMenu } from './useCategoryMenu'
-import { onMounted, ref } from 'vue'
+import { ref, useTemplateRef } from 'vue'
+import { useResizeObserver } from '@vueuse/core'
 
 const { t } = useI18n()
 
@@ -34,28 +35,35 @@ defineProps<{
 
 const EXPANDED_MIN_WIDTH = 680
 const isExpanded = ref<boolean>(false)
-const containerEl = ref<HTMLElement>()
-const containerRO = new ResizeObserver((entries) => {
+
+const slotEl = useTemplateRef<HTMLElement>('slot')
+const slotTop = ref<number>(0)
+const slotLeft = ref<number>(0)
+const slotWidth = ref<number>(0)
+useResizeObserver(slotEl, () => {})
+
+const containerEl = useTemplateRef<HTMLElement>('container')
+useResizeObserver(containerEl, (entries) => {
   const width = entries[0]!.contentRect.width
   const height = entries[0]!.contentRect.height
   isExpanded.value = width >= EXPANDED_MIN_WIDTH
   emit('heightChanged', height)
+
+  if (!slotEl.value) return
+  slotTop.value = slotEl.value.getBoundingClientRect().top
+  slotLeft.value = slotEl.value.getBoundingClientRect().left
+  slotWidth.value =
+    slotEl.value.getBoundingClientRect().width
 })
 
 const emit = defineEmits<{
   search: []
   heightChanged: [height: number]
 }>()
-
-onMounted(() => {
-  if (containerEl.value) {
-    containerRO.observe(containerEl.value)
-  }
-})
 </script>
 
 <template>
-  <div ref="containerEl">
+  <div ref="container">
     <div class="toolbar">
       <WorkspaceDropdown
         class="workspace-dropdown"
@@ -63,18 +71,7 @@ onMounted(() => {
         v-model:selected="isMenuOpened"
         @click="openWorkspaceMenu"
       />
-      <BaseTabs
-        v-if="isExpanded"
-        class="category-tabs--built-in"
-        :isReadyProp="!isLoading"
-        :tabs="tabs"
-        :selected-tab-id="selectedId"
-        v-model:active-id="currentTabId"
-        :last-button-icon="PlusIcon"
-        @last-button-click="addCategoryClick"
-        @click="onTabClick"
-        @contextmenu="onTabContextMenu"
-      />
+      <div class="slot-for-tabs" ref="slot" />
       <div class="action-group">
         <BaseIconButton
           v-if="showSearchButton"
@@ -87,18 +84,29 @@ onMounted(() => {
         />
       </div>
     </div>
-    <BaseTabs
-      v-if="!isExpanded"
-      class="category-tabs"
-      :isReadyProp="!isLoading"
-      :tabs="tabs"
-      :selected-tab-id="selectedId"
-      v-model:active-id="currentTabId"
-      :last-button-icon="PlusIcon"
-      @last-button-click="addCategoryClick"
-      @click="onTabClick"
-      @contextmenu="onTabContextMenu"
-    />
+    <div
+      class="category-tabs__container"
+      :class="{
+        'category-tabs__container--floating': isExpanded,
+      }"
+      :style="{
+        '--top': `${slotTop}px`,
+        '--left': `${slotLeft}px`,
+        '--width': `${slotWidth}px`,
+      }"
+    >
+      <BaseTabs
+        class="category-tabs"
+        :isReadyProp="!isLoading"
+        :tabs="tabs"
+        :selected-tab-id="selectedId"
+        v-model:active-id="currentTabId"
+        :last-button-icon="PlusIcon"
+        @last-button-click="addCategoryClick"
+        @click="onTabClick"
+        @contextmenu="onTabContextMenu"
+      />
+    </div>
   </div>
 </template>
 
@@ -107,14 +115,14 @@ onMounted(() => {
 
 .toolbar {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr 2fr 1fr;
   gap: var(--space-8);
   padding: var(--space-12) var(--space-16);
 }
 
 .workspace-dropdown {
   grid-column: 1;
-  min-width: 0;
+  min-width: max-content;
   overflow: hidden;
   justify-self: start;
   max-width: 100%;
@@ -123,17 +131,32 @@ onMounted(() => {
 .action-group {
   grid-column: 3;
   justify-self: end;
+  min-width: max-content;
 }
 
 .category-tabs {
   @include elevation-3;
-  grid-column: 2;
-  margin: 0 var(--space-16);
+}
 
-  &--built-in {
-    @include elevation-3;
-    justify-self: center;
-    max-width: var(--max-content-width-400);
+.category-tabs__container {
+  padding: 0 var(--space-16);
+
+  &--floating {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    top: var(--top);
+    left: var(--left);
+    width: var(--width);
+    padding: 0;
   }
+}
+
+.slot-for-tabs {
+  grid-column: 2;
+  width: 100%;
+  max-width: var(--max-content-width-400);
+  min-height: 0;
+  justify-self: center;
 }
 </style>
