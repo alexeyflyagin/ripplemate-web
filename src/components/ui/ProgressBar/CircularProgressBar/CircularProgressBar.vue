@@ -1,17 +1,27 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 const props = withDefaults(
   defineProps<{
     delay?: number
+    size?: number
+    width?: number
+    progress?: number
   }>(),
   {
     delay: 0,
+    size: 24,
+    width: 3,
+    progress: 60,
   },
 )
 
 let timeoutId = 0
 const visible = ref<boolean>(false)
+
+const radius = computed<number>(() => {
+  return props.size / 2 - props.width
+})
 
 onMounted(() => {
   timeoutId = setTimeout(() => {
@@ -25,15 +35,33 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="progress-bar">
+  <div
+    class="progress-bar"
+    :style="{
+      '--size': `${size}px`,
+      '--circumference-length': `${2 * 3.14 * radius}`,
+      '--width': `${width}px`,
+      '--progress': `${progress}`,
+    }"
+  >
     <svg
       class="spinner"
       :class="{ 'spinner--visible': visible }"
-      viewBox="0 0 24 24"
+      :viewBox="`0 0 ${size} ${size}`"
       role="status"
     >
-      <circle class="track" cx="12" cy="12" r="10" />
-      <circle class="arc" cx="12" cy="12" r="10" />
+      <circle
+        class="track"
+        :cx="`${size / 2}`"
+        :cy="`${size / 2}`"
+        :r="`${radius}`"
+      />
+      <circle
+        class="arc"
+        :cx="`${size / 2}`"
+        :cy="`${size / 2}`"
+        :r="`${radius}`"
+      />
     </svg>
   </div>
 </template>
@@ -44,8 +72,8 @@ onUnmounted(() => {
 }
 
 .spinner {
-  width: 24px;
-  height: 24px;
+  width: var(--size);
+  height: var(--size);
   transition:
     transform 0.5s var(--ease-emphasized),
     opacity 0.5s var(--ease-emphasized);
@@ -60,16 +88,19 @@ onUnmounted(() => {
 
 .track {
   fill: none;
-  stroke: var(--border-muted);
-  stroke-width: 3;
+  stroke: var(--track-color, var(--border-muted));
+  stroke-width: var(--width);
 }
 
 .arc {
   fill: none;
-  stroke: var(--accent);
-  stroke-width: 3;
+  stroke: var(--indicator-color, var(--accent));
+  stroke-width: calc(var(--width));
   stroke-linecap: round;
-  stroke-dasharray: 24 64;
+  stroke-dasharray: calc(
+      var(--circumference-length) * var(--progress) / 100
+    )
+    var(--circumference-length);
   transform-origin: center;
   transform-box: fill-box;
   animation: spin 0.9s linear infinite;
