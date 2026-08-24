@@ -17,6 +17,7 @@ export default {
       cancel: 'Cancel',
       refresh: 'Refresh',
       search: 'Search',
+      create: 'Create',
       addWorkspace: 'Add workspace',
       selectWorkspace: 'Select workspace',
       deleteWorkspace: 'Delete workspace',
@@ -33,6 +34,7 @@ export default {
       theme: 'Theme',
       term: 'Term',
       results: 'Results',
+      name: 'Name',
     },
     error: {
       somethingWentWrong: 'Something went wrong',
@@ -99,6 +101,9 @@ export default {
         title: 'Delete category?',
         caption:
           '"{name}" and all its cards will be permanently deleted.',
+      },
+      new: {
+        title: 'New category',
       },
     },
     workspace: {

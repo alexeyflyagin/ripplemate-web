@@ -3,9 +3,12 @@ import { useCategoryStore } from '@/stores/domain/category'
 import { computed } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 import { createAllTab } from './factories'
+import { useOverlayStore } from '@/stores/ui/overlay'
+import CategoryDialog from '@/views/dialogs/CategoryDialog/CategoryDialog.vue'
 
 export function useCategoryTabs(t: ComposerTranslation) {
   const categoryStore = useCategoryStore()
+  const overlayStore = useOverlayStore()
 
   const currentTabId = computed<string>({
     get() {
@@ -38,12 +41,9 @@ export function useCategoryTabs(t: ComposerTranslation) {
     ]
   })
 
-  async function addCategoryClick(
-    event: MouseEvent,
-    activeId: string,
-  ) {
-    await categoryStore.createCategory({
-      name: `Category ${Math.round(Math.random() * 10000)}`,
+  async function addCategoryClick() {
+    const overlay = overlayStore.open(CategoryDialog, {
+      onClose: () => overlay.close(),
     })
   }
 

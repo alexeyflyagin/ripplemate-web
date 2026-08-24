@@ -19,6 +19,7 @@ const ru: typeof en = {
       cancel: 'Отмена',
       refresh: 'Обновить',
       search: 'Поиск',
+      create: 'Создать',
       addWorkspace: 'Дообавить пространство',
       selectWorkspace: 'Выбрать пространтсво',
       deleteWorkspace: 'Удалить пространство',
@@ -35,6 +36,7 @@ const ru: typeof en = {
       theme: 'Тема',
       term: 'Термин',
       results: 'Найдено',
+      name: 'Название',
     },
     error: {
       somethingWentWrong: 'Что-то пошло не так',
@@ -98,6 +100,9 @@ const ru: typeof en = {
         title: 'Удалить категорию?',
         caption:
           '"{name}" и все его карточки будут удалены навсегда.',
+      },
+      new: {
+        title: 'Новая категория',
       },
     },
     workspace: {
