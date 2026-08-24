@@ -20,7 +20,7 @@ const props = defineProps<{
   categoryId?: number
 }>()
 
-const MAX_CATEGORY_NAME_LENGHT = 24
+const MAX_CATEGORY_NAME_LENGTH = 24
 
 const { t } = useI18n()
 
@@ -83,7 +83,7 @@ async function createCategory() {
   } catch (e) {
     if (e instanceof ApiError && e.status === 409) {
       nameError.value = t(
-        'dialog.category.error.categoryAlreadyExists',
+        'dialog.category.error.alreadyExists',
       )
     }
   }
@@ -103,7 +103,7 @@ async function updateCategory() {
   } catch (e) {
     if (e instanceof ApiError && e.status === 409) {
       nameError.value = t(
-        'dialog.category.error.categoryAlreadyExists',
+        'dialog.category.error.alreadyExists',
       )
     }
   }
@@ -130,20 +130,19 @@ onMounted(async () => {
 
 <template>
   <BaseDialog ref="overlay" @overlay="emit('close')">
-    <div class="new-category">
+    <div class="category-dialog">
       <BaseDialogHeader
-        class="new-category__header"
         :title="headerTitle"
         @close="emit('close')"
       />
       <form @submit.prevent="onSubmit">
-        <div class="new-category__scroll-view">
-          <div class="new-category__content">
+        <div class="category-dialog__scroll-view">
+          <div class="category-dialog__content">
             <BaseTextField
               ref="nameField"
-              class="new_category__name-field"
+              class="category-dialog__name-field"
               :label="t('general.label.name')"
-              :max-length="MAX_CATEGORY_NAME_LENGHT"
+              :max-length="MAX_CATEGORY_NAME_LENGTH"
               v-model:model-value="nameValue"
               :autocomplete="false"
               :error="!!nameError"
@@ -151,9 +150,9 @@ onMounted(async () => {
             />
           </div>
         </div>
-        <div class="new-category__actions">
+        <div class="category-dialog__actions">
           <BaseButton
-            class="new-category__submit"
+            class="category-dialog__submit"
             :label="submitLabel"
             :loading="isLoading"
             variant="accent"
@@ -167,7 +166,7 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
-.new-category {
+.category-dialog {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -175,17 +174,17 @@ onMounted(async () => {
   overflow: hidden;
 }
 
-.new-category__content {
+.category-dialog__content {
   padding: 0 var(--space-24) var(--space-24);
 }
 
-.new-category__actions {
+.category-dialog__actions {
   display: flex;
   padding: var(--space-12);
   border-top: var(--stroke-subtle) solid var(--border-muted);
 }
 
-.new-category__submit {
+.category-dialog__submit {
   flex: 1;
 }
 </style>
