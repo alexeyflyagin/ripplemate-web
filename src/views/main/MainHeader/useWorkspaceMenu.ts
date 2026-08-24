@@ -13,6 +13,7 @@ import {
 } from '@/stores/ui/overlay'
 import type { Placement } from '@floating-ui/dom'
 import type { OffsetOptions } from '@floating-ui/core'
+import WorkspaceDialog from '@/views/dialogs/WorkspaceDialog/WorkspaceDialog.vue'
 
 export function useWorkspaceMenu(t: ComposerTranslation) {
   const MENU_OFFSET = 4
@@ -31,9 +32,7 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
 
   async function handleItemClick(item: MenuItemData) {
     if (item.id === 'add') {
-      await workspaceStore.createWorkspace({
-        name: `Workspace ${workspaceStore.workspaces.length + 1}`,
-      })
+      createWorkspace()
       overlay.close()
       return
     }
@@ -42,6 +41,15 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
     if (isNaN(itemId)) return
     workspaceStore.changeCurrentWorkspace(itemId)
     overlay.close()
+  }
+
+  function createWorkspace() {
+    const workspaceOverlay = overlayStore.open(
+      WorkspaceDialog,
+      {
+        onClose: () => workspaceOverlay.close(),
+      },
+    )
   }
 
   function openWorkspaceMenu(event: MouseEvent) {

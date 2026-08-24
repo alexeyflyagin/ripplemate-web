@@ -33,7 +33,7 @@ export function createHomeMoreMenu(
       ? [
           {
             id: 'editWorkspaceName',
-            label: t('general.label.workspaceName'),
+            label: t('general.action.editWorkspace'),
             icon: EditIcon,
             showDivider: true,
           },

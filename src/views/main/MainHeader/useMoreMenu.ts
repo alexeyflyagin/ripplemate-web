@@ -17,6 +17,7 @@ import { ContextMenu } from '@/components/ui/ContextMenu'
 import { ConfirmDialog } from '@/components/ui/Dialog/ConfirmDialog'
 import type { Placement } from '@floating-ui/dom'
 import type { OffsetOptions } from '@floating-ui/core'
+import WorkspaceDialog from '@/views/dialogs/WorkspaceDialog/WorkspaceDialog.vue'
 
 export function useMoreMenu(t: ComposerTranslation) {
   const router = useRouter()
@@ -30,8 +31,8 @@ export function useMoreMenu(t: ComposerTranslation) {
   async function onItemClick(item: MenuItemData) {
     switch (item.id) {
       case 'editWorkspaceName':
+        editWorkspace()
         overlay.close()
-        //TODO
         break
       case 'deleteWorkspace':
         deleteWorkspace()
@@ -53,6 +54,16 @@ export function useMoreMenu(t: ComposerTranslation) {
         break
     }
     return true
+  }
+
+  function editWorkspace() {
+    const workspaceOverlay = overlayStore.open(
+      WorkspaceDialog,
+      {
+        workspaceId: workspaceStore.currentWorkspaceId,
+        onClose: () => workspaceOverlay.close(),
+      },
+    )
   }
 
   async function deleteWorkspace() {

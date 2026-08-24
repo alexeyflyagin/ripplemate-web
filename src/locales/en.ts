@@ -20,6 +20,7 @@ export default {
       create: 'Create',
       save: 'Save',
       addWorkspace: 'Add workspace',
+      editWorkspace: 'Edit workspace',
       selectWorkspace: 'Select workspace',
       deleteWorkspace: 'Delete workspace',
     },
@@ -110,7 +111,7 @@ export default {
         title: 'Edit category',
       },
       error: {
-        categoryAlreadyExists:
+        alreadyExists:
           'Category with this name already exists',
       },
     },
@@ -119,6 +120,16 @@ export default {
         title: 'Delete workspace?',
         caption:
           '"{name}" and everything inside it will be permanently deleted.',
+      },
+      new: {
+        title: 'New workspace',
+      },
+      edit: {
+        title: 'Edit workspace',
+      },
+      error: {
+        alreadyExists:
+          'Workspace with this name already exists',
       },
     },
   },
