@@ -128,6 +128,21 @@ const emit = defineEmits<{
     background-color: white;
     opacity: var(--opacity-10);
   }
+
+  &:disabled {
+    background-color: transparent;
+    opacity: 1;
+
+    &::after {
+      background-color: var(--text);
+      opacity: var(--opacity-8);
+    }
+
+    .base-button__content {
+      opacity: var(--opacity-40);
+      color: var(--text);
+    }
+  }
 }
 
 .base-button--danger-text {
