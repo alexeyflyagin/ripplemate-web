@@ -104,6 +104,7 @@ useFocusTrap(overlayRef, {
   immediate: true,
 })
 
+useMoveFocus(menuEl, { withArrows: true })
 
 onMounted(() => {
   updatePosition()
