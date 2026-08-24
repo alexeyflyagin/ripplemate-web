@@ -7,14 +7,17 @@ import { BaseTextField } from '@/components/ui/TextField/BaseTextField'
 import { useCategoryStore } from '@/stores/domain/category'
 import {
   computed,
+  nextTick,
   onMounted,
   ref,
   useTemplateRef,
   watch,
+  type Component,
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ActionType } from './CategoryDialog.types'
 import { ApiError } from '@/api/client'
+import RefreshIcon from '~icons/icons-16/refresh'
 
 const props = defineProps<{
   categoryId?: number
@@ -30,7 +33,7 @@ const emit = defineEmits<{
   close: []
 }>()
 
-let oldCategory: CategoryRead
+const oldCategory = ref<CategoryRead | undefined>()
 
 const isLoading = ref<boolean>(false)
 
@@ -41,6 +44,12 @@ const actionType = computed<ActionType>(() => {
 const nameFieldRef = useTemplateRef('nameField')
 const nameValue = ref<string>('')
 const nameError = ref<string>('')
+const resetIcon = computed<Component | undefined>(() => {
+  if (!oldCategory.value) return undefined
+  return oldCategory.value.name !== nameValue.value
+    ? RefreshIcon
+    : undefined
+})
 
 const headerTitle = computed<string>(() => {
   switch (actionType.value) {
@@ -90,15 +99,18 @@ async function createCategory() {
 }
 
 async function updateCategory() {
-  if (!oldCategory) return
-  if (nameValue.value === oldCategory.name) {
+  if (!oldCategory.value) return
+  if (nameValue.value === oldCategory.value.name) {
     emit('close')
     return
   }
   try {
-    await categoryStore.updateCategory(oldCategory.id, {
-      name: nameValue.value.trim(),
-    })
+    await categoryStore.updateCategory(
+      oldCategory.value.id,
+      {
+        name: nameValue.value.trim(),
+      },
+    )
     emit('close')
   } catch (e) {
     if (e instanceof ApiError && e.status === 409) {
@@ -111,13 +123,14 @@ async function updateCategory() {
 
 async function setOldData() {
   if (!props.categoryId) return
-  oldCategory = await categoryStore.getCategory(
+  oldCategory.value = await categoryStore.getCategory(
     props.categoryId,
   )
-  nameValue.value = oldCategory.name
+  nameValue.value = oldCategory.value.name
 }
 
-watch(nameValue, (v) => {
+watch(nameValue, async (v) => {
+  await nextTick()
   nameValue.value = v.trimStart()
   if (nameError.value) nameError.value = ''
 })
@@ -147,6 +160,10 @@ onMounted(async () => {
               :autocomplete="false"
               :error="!!nameError"
               :supporting-text="nameError"
+              :trailing-icon="resetIcon"
+              @trailing-click="
+                () => (nameValue = oldCategory?.name ?? '')
+              "
             />
           </div>
         </div>

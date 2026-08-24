@@ -6,15 +6,18 @@ import BaseDialogHeader from '@/components/ui/Dialog/BaseDialog/BaseDialogHeader
 import { BaseTextField } from '@/components/ui/TextField/BaseTextField'
 import {
   computed,
+  nextTick,
   onMounted,
   ref,
   useTemplateRef,
   watch,
+  type Component,
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ActionType } from './WorkspaceDialog.types'
 import { ApiError } from '@/api/client'
 import { useWorkspaceStore } from '@/stores/domain/workspace'
+import RefreshIcon from '~icons/icons-16/refresh'
 
 const props = defineProps<{
   workspaceId?: number
@@ -30,7 +33,7 @@ const emit = defineEmits<{
   close: []
 }>()
 
-let oldWorkspace: WorkspaceRead
+const oldWorkspace = ref<WorkspaceRead>()
 
 const isLoading = ref<boolean>(false)
 
@@ -41,6 +44,12 @@ const actionType = computed<ActionType>(() => {
 const nameFieldRef = useTemplateRef('nameField')
 const nameValue = ref<string>('')
 const nameError = ref<string>('')
+const resetIcon = computed<Component | undefined>(() => {
+  if (!oldWorkspace.value) return undefined
+  return oldWorkspace.value.name !== nameValue.value
+    ? RefreshIcon
+    : undefined
+})
 
 const headerTitle = computed<string>(() => {
   switch (actionType.value) {
@@ -90,15 +99,18 @@ async function createWorkspace() {
 }
 
 async function updateWorkspace() {
-  if (!oldWorkspace) return
-  if (nameValue.value === oldWorkspace.name) {
+  if (!oldWorkspace.value) return
+  if (nameValue.value === oldWorkspace.value.name) {
     emit('close')
     return
   }
   try {
-    await workspaceStore.updateWorkspace(oldWorkspace.id, {
-      name: nameValue.value.trim(),
-    })
+    await workspaceStore.updateWorkspace(
+      oldWorkspace.value.id,
+      {
+        name: nameValue.value.trim(),
+      },
+    )
     emit('close')
   } catch (e) {
     if (e instanceof ApiError && e.status === 409) {
@@ -111,13 +123,14 @@ async function updateWorkspace() {
 
 async function setOldData() {
   if (!props.workspaceId) return
-  oldWorkspace = await workspaceStore.getWorkspace(
+  oldWorkspace.value = await workspaceStore.getWorkspace(
     props.workspaceId,
   )
-  nameValue.value = oldWorkspace.name
+  nameValue.value = oldWorkspace.value.name
 }
 
-watch(nameValue, (v) => {
+watch(nameValue, async (v) => {
+  await nextTick()
   nameValue.value = v.trimStart()
   if (nameError.value) nameError.value = ''
 })
@@ -148,6 +161,10 @@ onMounted(async () => {
               :autocomplete="false"
               :error="!!nameError"
               :supporting-text="nameError"
+              :trailing-icon="resetIcon"
+              @trailing-click="
+                () => (nameValue = oldWorkspace?.name ?? '')
+              "
             />
           </div>
         </div>
