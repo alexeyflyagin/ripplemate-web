@@ -31,6 +31,7 @@ const props = withDefaults(
     readonly?: boolean
     leadingIsButton?: boolean
     maxLength?: number
+    autocomplete?: boolean
     type?:
       | 'text'
       | 'password'
@@ -42,6 +43,7 @@ const props = withDefaults(
   }>(),
   {
     type: 'text',
+    autocomplete: true,
   },
 )
 
@@ -85,6 +87,8 @@ function autoResize(event: Event) {
   target.style.height = 'auto'
   target.style.height = `${target.scrollHeight}px`
 }
+
+defineExpose({ focusInput })
 </script>
 
 <template>
@@ -141,6 +145,7 @@ function autoResize(event: Event) {
           ref="inputEl"
           :placeholder="placeholder"
           :value="modelValue"
+          :autocomplete="autocomplete ? 'on' : 'off'"
           @input="
             (emit(
               'update:modelValue',
