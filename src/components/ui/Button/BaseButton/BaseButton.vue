@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
+import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgressBar'
 
 withDefaults(
   defineProps<{
     label: string
     disabled?: boolean
+    loading?: boolean
     icon?: Component
     variant?: 'default' | 'accent' | 'danger-text'
     type?: 'button' | 'submit' | 'reset'
@@ -23,13 +25,21 @@ const emit = defineEmits<{
 <template>
   <button
     class="base-button"
-    :class="`base-button--${variant}`"
+    :class="{
+      [`base-button--${variant}`]: variant !== 'default',
+    }"
     :disabled="disabled"
     :type="type"
     @click="emit('click', $event)"
     @contextmenu.prevent
   >
-    <div class="base-button__content">
+    <CircularProgressBar
+      v-if="loading"
+      class="base-button__progress-bar"
+      :size="14"
+      :width="2"
+    />
+    <div v-else class="base-button__content">
       <component class="base-button__icon" :is="icon" />
       <span class="base-button__label">{{ label }}</span>
     </div>
@@ -45,6 +55,7 @@ const emit = defineEmits<{
   position: relative;
   display: inline-flex;
   justify-content: center;
+  min-height: 40px;
   background-color: transparent;
   padding: var(--space-12) var(--space-16);
   border-radius: var(--corner-xlarge);
@@ -91,6 +102,10 @@ const emit = defineEmits<{
       color: var(--text);
     }
   }
+}
+
+.base-button__progress-bar {
+  --indicator-color: var(--bg);
 }
 
 .base-button--accent {
@@ -156,5 +171,9 @@ const emit = defineEmits<{
   white-space: nowrap;
   text-overflow: ellipsis;
   min-width: 0;
+}
+
+.base-button__progress-bar {
+  --track-color: transparent;
 }
 </style>
