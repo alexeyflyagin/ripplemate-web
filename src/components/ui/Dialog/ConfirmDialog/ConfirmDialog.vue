@@ -1,24 +1,58 @@
 <script setup lang="ts">
 import { BaseButton } from '@/components/ui/Button/BaseButton'
+import { computed, useTemplateRef } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
 
+const { t } = useI18n()
+
+const props = withDefaults(
 defineProps<{
   title: string
   caption: string
-  confirm: string
-  cancel: string
-}>()
+    type: 'info' | 'positive' | 'destructive'
+    confirm?: string
+    cancel?: string
+    overlayClickIsCancel?: boolean
+  }>(),
+  {
+    type: 'info',
+    overlayClickIsCancel: true,
+  },
+)
 
 const emit = defineEmits<{
   confirm: []
   cancel: []
+  overlay: []
 }>()
+
+const confirm = computed(() => {
+  return props.confirm
+    ? props.confirm
+    : t('general.action.yes')
+})
+
+const cancel = computed(() => {
+  if (props.cancel) return props.cancel
+  if (props.type === 'info') return t('general.action.ok')
+
+  return t('general.action.cancel')
+})
+
+function onOverlay() {
+  emit('overlay')
+  if (props.overlayClickIsCancel) emit('cancel')
+}
+
 </script>
 
 <template>
   <div
     class="dialog-overlay"
-    @click="emit('cancel')"
-    @contextmenu="emit('cancel')"
+    ref="overlay"
+    @click.stop="onOverlay"
+    @contextmenu.stop.prevent="onOverlay"
   >
     <div
       class="dialog"
@@ -31,15 +65,25 @@ const emit = defineEmits<{
       </div>
       <div class="dialog__actions">
         <BaseButton
-          class="dialog__confirm"
-          :label="confirm"
-          variant="danger-text"
-          @click="emit('confirm')"
-        />
-        <BaseButton
           class="dialog__cancel"
+          ref="cancelButtonRef"
           :label="cancel"
           @click="emit('cancel')"
+        />
+        <BaseButton
+          v-if="type !== 'info'"
+          class="dialog__confirm"
+          ref="confirmButtonRef"
+          :label="confirm"
+          :variant="
+            type === 'destructive'
+              ? 'danger-text'
+              : 'accent'
+          "
+          :style="{
+            order: type === 'destructive' ? -1 : 0,
+          }"
+          @click="emit('confirm')"
         />
       </div>
     </div>
@@ -57,16 +101,11 @@ const emit = defineEmits<{
   justify-content: center;
   align-items: center;
   inset: 0;
-  background-color: color-mix(
-    in srgb,
-    black 40%,
-    transparent
-  );
+  background-color: var(--scrim-70);
   user-select: none;
 }
 
 .dialog {
-  @include elevation-4;
   @include background-blur-10;
   display: flex;
   width: 100%;
