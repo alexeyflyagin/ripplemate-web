@@ -30,7 +30,7 @@ export function useMoreMenu(t: ComposerTranslation) {
   async function onItemClick(item: MenuItemData) {
     switch (item.id) {
       case 'editWorkspaceName':
-        overlay.close
+        overlay.close()
         //TODO
         break
       case 'deleteWorkspace':
@@ -48,7 +48,7 @@ export function useMoreMenu(t: ComposerTranslation) {
         return false
       case 'logout':
         await authStore.logout()
-        overlay.close
+        overlay.close()
         router.push({ name: 'login' })
         break
     }
