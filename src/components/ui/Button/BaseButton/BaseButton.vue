@@ -57,33 +57,9 @@ const emit = defineEmits<{
     content: ' ';
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
     border-radius: inherit;
     background-color: var(--accent);
     opacity: 0;
-  }
-
-  &__content {
-    display: inline-flex;
-    gap: var(--space-8);
-    align-items: center;
-    z-index: 1;
-    transition: transform 0.35s var(--ease-bounce);
-  }
-
-  &__icon {
-    width: 14px;
-    height: 14px;
-    flex-shrink: 0;
-    align-self: center;
-  }
-
-  &__label {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    min-width: 0;
   }
 
   @media (hover: hover) {
@@ -108,8 +84,12 @@ const emit = defineEmits<{
   }
 
   &:disabled {
-    opacity: var(--opacity-40);
     pointer-events: none;
+
+    .base-button__content {
+      opacity: var(--opacity-40);
+      color: var(--text);
+    }
   }
 }
 
@@ -120,18 +100,15 @@ const emit = defineEmits<{
   @media (hover: hover) {
     &:hover::after {
       background-color: white;
-      opacity: var(--opacity-8);
     }
   }
 
   &:focus-visible::after {
     background-color: white;
-    opacity: var(--opacity-10);
   }
 
   &:disabled {
     background-color: transparent;
-    opacity: 1;
 
     &::after {
       background-color: var(--text);
@@ -151,13 +128,33 @@ const emit = defineEmits<{
   @media (hover: hover) {
     &:hover::after {
       background-color: var(--error);
-      opacity: var(--opacity-8);
     }
   }
 
   &:focus-visible::after {
     background-color: var(--error);
-    opacity: var(--opacity-10);
   }
+}
+
+.base-button__content {
+  display: inline-flex;
+  gap: var(--space-8);
+  align-items: center;
+  z-index: 1;
+  transition: transform 0.35s var(--ease-bounce);
+}
+
+.base-button__icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.base-button__label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 </style>
