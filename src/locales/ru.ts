@@ -110,7 +110,7 @@ const ru: typeof en = {
         title: 'Редактировать категорию',
       },
       error: {
-        categoryAlreadyExists:
+        alreadyExists:
           'Категория с таким названием уже существует',
       },
     },
