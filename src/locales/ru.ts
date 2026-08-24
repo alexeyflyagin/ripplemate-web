@@ -20,6 +20,7 @@ const ru: typeof en = {
       refresh: 'Обновить',
       search: 'Поиск',
       create: 'Создать',
+      save: 'Сохранить',
       addWorkspace: 'Дообавить пространство',
       selectWorkspace: 'Выбрать пространтсво',
       deleteWorkspace: 'Удалить пространство',
@@ -103,6 +104,13 @@ const ru: typeof en = {
       },
       new: {
         title: 'Новая категория',
+      },
+      edit: {
+        title: 'Редактировать категорию',
+      },
+      error: {
+        categoryAlreadyExists:
+          'Категория с таким названием уже существует',
       },
     },
     workspace: {

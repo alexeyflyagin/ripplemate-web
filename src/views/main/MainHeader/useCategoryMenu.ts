@@ -9,6 +9,7 @@ import {
   useOverlayStore,
   type OverlayHandle,
 } from '@/stores/ui/overlay'
+import CategoryDialog from '@/views/dialogs/CategoryDialog/CategoryDialog.vue'
 import type { OffsetOptions } from '@floating-ui/core'
 import type { Placement } from '@floating-ui/dom'
 import { computed, ref, watch } from 'vue'
@@ -36,7 +37,7 @@ export function useCategoryMenu(t: ComposerTranslation) {
 
     switch (item.id) {
       case 'edit':
-        // TODO
+        editCategory(categoryId)
         overlay.close()
         break
       case 'delete':
@@ -66,6 +67,13 @@ export function useCategoryMenu(t: ComposerTranslation) {
         onCancel: () => confirmOverlayId.close(),
       },
     )
+  }
+
+  async function editCategory(categoryId: number) {
+    const editOverlay = overlayStore.open(CategoryDialog, {
+      categoryId: categoryId,
+      onClose: () => editOverlay.close(),
+    })
   }
 
   function openMenu(event: MouseEvent, categoryId: number) {

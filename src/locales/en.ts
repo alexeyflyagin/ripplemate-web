@@ -18,6 +18,7 @@ export default {
       refresh: 'Refresh',
       search: 'Search',
       create: 'Create',
+      save: 'Save',
       addWorkspace: 'Add workspace',
       selectWorkspace: 'Select workspace',
       deleteWorkspace: 'Delete workspace',
@@ -104,6 +105,13 @@ export default {
       },
       new: {
         title: 'New category',
+      },
+      edit: {
+        title: 'Edit category',
+      },
+      error: {
+        categoryAlreadyExists:
+          'Category with this name already exists',
       },
     },
     workspace: {
