@@ -1,10 +1,24 @@
+import { useEventListener } from '@vueuse/core'
 import { defineStore } from 'pinia'
-import { markRaw, readonly, ref, type Component } from 'vue'
+import {
+  computed,
+  markRaw,
+  readonly,
+  ref,
+  type Component,
+  type ComputedRef,
+} from 'vue'
 
 interface Overlay {
   id: string
   component: Component
   props?: Record<string, unknown>
+}
+
+export interface OverlayHandle {
+  id: string
+  isOpen: ComputedRef<boolean>
+  close: () => void
 }
 
 export const useOverlayStore = defineStore(
@@ -15,7 +29,7 @@ export const useOverlayStore = defineStore(
     function open(
       component: Component,
       props?: Record<string, unknown>,
-    ) {
+    ): OverlayHandle {
       const id = `${Date.now()}-${Math.random()}`
 
       overlays.value.push({
@@ -24,7 +38,17 @@ export const useOverlayStore = defineStore(
         props,
       })
 
-      return id
+      console.log(overlays.value)
+
+      return {
+        id,
+
+        isOpen: computed(() =>
+          overlays.value.some((o) => o.id === id),
+        ),
+
+        close: () => close(id),
+      }
     }
 
     function close(id: string) {
@@ -37,6 +61,23 @@ export const useOverlayStore = defineStore(
       }
     }
 
-    return { overlays: readonly(overlays), open, close }
+    function closeTop() {
+      const top = overlays.value.at(-1)
+      if (!top) return
+      close(top.id)
+    }
+
+    useEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlays.value.length) {
+        closeTop()
+      }
+    })
+
+    return {
+      overlays: readonly(overlays),
+      open,
+      close,
+      closeTop,
+    }
   },
 )
