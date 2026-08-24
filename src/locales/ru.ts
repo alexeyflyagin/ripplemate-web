@@ -38,6 +38,7 @@ const ru: typeof en = {
       theme: 'Тема',
       term: 'Термин',
       results: 'Найдено',
+      editing: 'Изменение',
       name: 'Название',
     },
     error: {

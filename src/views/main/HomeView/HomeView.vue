@@ -12,11 +12,17 @@ import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgres
 
 const { t } = useI18n()
 
+const emit = defineEmits<{
+  editCard: [cardId: number]
+}>()
+
 const cardStore = useCardStore()
 const categoryStore = useCategoryStore()
 const workspaceStore = useWorkspaceStore()
 
-const { openCardMenu } = useCardItemMenu(t)
+const { openCardMenu } = useCardItemMenu(t, {
+  editCard: (cardId) => emit('editCard', cardId),
+})
 </script>
 
 <template>

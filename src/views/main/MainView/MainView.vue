@@ -40,6 +40,8 @@ const {
   secondaryButtonData,
   sumbitButtonData,
   termFieldValue,
+  editCard,
+  onLeadingClick,
 } = useTermTextField(t, mode)
 
 async function onAddClick() {
@@ -52,6 +54,14 @@ async function onAddClick() {
 async function onSearch() {
   mode.value = 'search'
   setSelectedNavItemId('home')
+  await nextPaint()
+  termTextFieldRef.value?.focusInput()
+}
+
+async function onEditCard(cardId: number) {
+  mode.value = 'edit-card'
+  setSelectedNavItemId('home')
+  await editCard(cardId)
   await nextPaint()
   termTextFieldRef.value?.focusInput()
 }
@@ -75,6 +85,7 @@ async function onSearch() {
     <HomeView
       class="home-view"
       v-if="currentView === 'home'"
+      @edit-card="onEditCard"
     />
     <FlowView
       class="flow-view"
@@ -101,9 +112,7 @@ async function onSearch() {
           :secondary-button="secondaryButtonData"
           @submit-click="onSubmitClick"
           @secondary-click="termFieldValue = ''"
-          @leading-click="
-            ((mode = 'default'), (termFieldValue = ''))
-          "
+          @leading-click="onLeadingClick"
         />
         <div v-if="isKeyboardOpen" class="scrim" />
       </div>

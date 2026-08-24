@@ -13,7 +13,10 @@ import type { Placement } from '@floating-ui/dom'
 import { computed } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 
-export function useCardItemMenu(t: ComposerTranslation) {
+export function useCardItemMenu(
+  t: ComposerTranslation,
+  options?: { editCard: (cardId: number) => void },
+) {
   const cardStore = useCardStore()
   const overlayStore = useOverlayStore()
   let overlay: OverlayHandle
@@ -27,6 +30,7 @@ export function useCardItemMenu(t: ComposerTranslation) {
 
     switch (item.id) {
       case 'edit':
+        options?.editCard(cardId)
         overlay.close()
         break
       case 'delete':

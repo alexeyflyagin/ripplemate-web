@@ -36,6 +36,7 @@ export default {
       theme: 'Theme',
       term: 'Term',
       results: 'Results',
+      editing: 'Editing',
       name: 'Name',
     },
     error: {
