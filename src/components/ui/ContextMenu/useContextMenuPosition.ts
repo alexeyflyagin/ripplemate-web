@@ -4,6 +4,7 @@ import {
   flip,
   offset,
   shift,
+  size,
   type FloatingElement,
   type OffsetOptions,
   type Placement,
@@ -26,6 +27,7 @@ export function useContextMenuPosition(
 
   const xPos = ref<number>(0)
   const yPos = ref<number>(0)
+  const maxHeight = ref<number | undefined>()
 
   onMounted(() => {
     cleanup = autoUpdate(
@@ -40,6 +42,12 @@ export function useContextMenuPosition(
             middleware: [
               flip(),
               shift({ padding: PADDING }),
+              size({
+                padding: PADDING,
+                apply({ availableHeight }) {
+                  maxHeight.value = availableHeight
+                },
+              }),
               offset(options?.offsetOptions),
             ],
           },
@@ -57,5 +65,5 @@ export function useContextMenuPosition(
     cleanup?.()
   })
 
-  return { x: xPos, y: yPos }
+  return { x: xPos, y: yPos, maxHeight }
 }

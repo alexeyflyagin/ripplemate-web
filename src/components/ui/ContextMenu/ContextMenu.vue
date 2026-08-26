@@ -42,7 +42,7 @@ const menuEl = ref<HTMLElement>()
 
 const isPositioned = ref<boolean>(false)
 
-const { x, y } = useContextMenuPosition(
+const { x, y, maxHeight } = useContextMenuPosition(
   props.targetEl,
   menuEl,
   {
@@ -80,6 +80,7 @@ useInitialScroll(elements, menuEl, props.initialScrollToId)
         left: x + 'px',
         top: y + 'px',
         width: width,
+        maxHeight: maxHeight ? maxHeight + 'px' : undefined,
       }"
       @click.stop
       @contextmenu.stop.prevent
@@ -116,7 +117,6 @@ useInitialScroll(elements, menuEl, props.initialScrollToId)
   @include background-blur-10;
   position: fixed;
   min-width: 180px;
-  max-height: 300px;
   overflow-y: auto;
   opacity: 0;
   padding-top: var(--space-4);
