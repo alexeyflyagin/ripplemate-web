@@ -1,6 +1,11 @@
-import type { Font } from '@/composables/useFont'
-import type { Locale } from '@/composables/useLocale'
-import type { Theme } from '@/composables/useTheme'
+export const FONTS = ['serif', 'sans-serif'] as const
+export type Font = (typeof FONTS)[number]
+
+export const LOCALES = ['auto', 'en', 'ru'] as const
+export type Locale = (typeof LOCALES)[number]
+
+export const THEMES = ['auto', 'dark', 'light'] as const
+export type Theme = (typeof THEMES)[number]
 
 export interface UserCreate {
   email: string
@@ -75,9 +80,9 @@ export interface SettingsRead {
 }
 
 export interface SettingsUpdate {
-  font?: Font | null
-  language?: Locale | null
-  theme?: Theme | null
+  font?: Font
+  language?: Locale
+  theme?: Theme
 }
 
 // Workspace

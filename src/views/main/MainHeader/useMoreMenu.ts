@@ -1,12 +1,10 @@
 import { createHomeMoreMenu } from '@/menu/HomeMore'
 import { FONT_ICONS, THEME_ICONS } from './constants'
-import { resolveTheme } from '@/composables/useTheme'
 import type { ComposerTranslation } from 'vue-i18n'
 import { useAuthStore } from '@/stores/domain/auth'
 import { useAccountStore } from '@/stores/domain/account'
 import { useWorkspaceStore } from '@/stores/domain/workspace'
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
 import { useSettingsStore } from '@/stores/domain/settings'
 import type { MenuItemData } from '@/components/ui/ContextMenu'
 import {
@@ -20,7 +18,6 @@ import type { OffsetOptions } from '@floating-ui/core'
 import WorkspaceDialog from '@/views/dialogs/WorkspaceDialog/WorkspaceDialog.vue'
 
 export function useMoreMenu(t: ComposerTranslation) {
-  const router = useRouter()
   const authStore = useAuthStore()
   const accountStore = useAccountStore()
   const workspaceStore = useWorkspaceStore()
@@ -40,20 +37,18 @@ export function useMoreMenu(t: ComposerTranslation) {
         break
       case 'font':
         await settingsStore.nextFont()
-        return false
+        break
       case 'language':
         await settingsStore.nextLanguage()
-        return false
+        break
       case 'theme':
         await settingsStore.nextTheme()
-        return false
+        break
       case 'logout':
-        await authStore.logout()
+        authStore.logout()
         overlay.close()
-        router.push({ name: 'login' })
         break
     }
-    return true
   }
 
   function editWorkspace() {
@@ -94,9 +89,7 @@ export function useMoreMenu(t: ComposerTranslation) {
         font:
           settingsStore.settings?.font ??
           t('general.state.loading'),
-        fontIcon: settingsStore.settings
-          ? FONT_ICONS[settingsStore.settings?.font]
-          : FONT_ICONS['sans-serif'],
+        fontIcon: FONT_ICONS[settingsStore.settings.font],
         theme: settingsStore.settings
           ? t(
               `general.theme.${settingsStore.settings.theme}`,
@@ -107,11 +100,10 @@ export function useMoreMenu(t: ComposerTranslation) {
               `general.lang.${settingsStore.settings.language}`,
             )
           : t('general.state.loading'),
-        themeIcon: settingsStore.settings
-          ? THEME_ICONS[
-              resolveTheme(settingsStore.settings.theme)
-            ]
-          : THEME_ICONS['light'],
+        themeIcon:
+          THEME_ICONS[
+            settingsStore.isDark ? 'dark' : 'light'
+          ],
         userDisplayName: accountStore.account
           ? accountStore.account.display_name
           : t('general.state.loading'),

@@ -33,15 +33,12 @@ router.beforeEach((to) => {
 
   if (
     to.meta.state === 'authorized' &&
-    !authStore.isAuthenticated
+    !authStore.isAuthorized
   ) {
     return { name: 'login' }
   }
 
-  if (
-    to.meta.state === 'guest' &&
-    authStore.isAuthenticated
-  ) {
+  if (to.meta.state === 'guest' && authStore.isAuthorized) {
     return { name: 'main' }
   }
 })

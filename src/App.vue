@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useAuthStore } from '@/stores/domain/auth'
-import { useSettingsStore } from './stores/domain/settings.ts'
 import { useOverlayStore } from './stores/ui/overlay.ts'
+import { useSettingsStore } from './stores/domain/settings/index.ts'
 
 const overlayStore = useOverlayStore()
 const authStore = useAuthStore()
 useSettingsStore()
 
 onMounted(async () => {
-  if (authStore.isAuthenticated) {
+  if (authStore.isAuthorized) {
     await authStore.initializeUserData()
   }
 })

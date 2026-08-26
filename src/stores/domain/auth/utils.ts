@@ -1,4 +1,7 @@
-export function isJWTTokenExpired(token: string): boolean {
+export function isJWTTokenExpired(
+  token: string | undefined,
+): boolean {
+  if (!token) return true
   try {
     const base64Url = token.split('.')[1]
     if (!base64Url) return true
