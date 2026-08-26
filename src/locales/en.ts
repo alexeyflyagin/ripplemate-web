@@ -47,7 +47,6 @@ export default {
       auto: 'Auto',
       light: 'Light',
       dark: 'Dark',
-      oled: 'OLED',
     },
     state: {
       loading: 'Loading...',

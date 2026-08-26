@@ -49,7 +49,6 @@ const ru: typeof en = {
       auto: 'Авто',
       light: 'Светлая',
       dark: 'Тёмная',
-      oled: 'OLED',
     },
     state: {
       loading: 'Загрузка...',

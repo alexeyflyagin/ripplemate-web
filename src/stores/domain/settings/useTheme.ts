@@ -2,20 +2,23 @@ import type { Theme } from '@/api/types'
 import { usePreferredDark } from '@vueuse/core'
 import { computed, watch, type Ref } from 'vue'
 
-type EffectiveTheme = Exclude<Theme, 'auto'>
+type EffectiveTheme = 'light' | 'dark' | 'oled'
 
-export function useTheme(theme: Ref<Theme>) {
+export function useTheme(
+  theme: Ref<Theme>,
+  oledEnabled: Ref<boolean>,
+) {
   const preferredDark = usePreferredDark()
 
-  const effectiveTheme = computed<EffectiveTheme>(() => {
-    if (theme.value === 'auto')
-      return preferredDark.value ? 'dark' : 'light'
-    return theme.value
+  const isDark = computed(() => {
+    if (theme.value === 'auto') return preferredDark.value
+    return theme.value === 'dark'
   })
 
-  const isDark = computed(
-    () => effectiveTheme.value !== 'light',
-  )
+  const effectiveTheme = computed<EffectiveTheme>(() => {
+    if (!isDark.value) return 'light'
+    return oledEnabled.value ? 'oled' : 'dark'
+  })
 
   watch(
     effectiveTheme,

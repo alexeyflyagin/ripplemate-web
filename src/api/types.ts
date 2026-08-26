@@ -4,7 +4,7 @@ export type Font = (typeof FONTS)[number]
 export const LOCALES = ['auto', 'en', 'ru'] as const
 export type Locale = (typeof LOCALES)[number]
 
-export const THEMES = ['auto', 'light', 'dark', 'oled'] as const
+export const THEMES = ['auto', 'light', 'dark'] as const
 export type Theme = (typeof THEMES)[number]
 
 export interface UserCreate {

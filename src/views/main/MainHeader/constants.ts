@@ -16,5 +16,4 @@ export const THEME_ICONS: Record<
 > = {
   light: DayIcon,
   dark: NightIcon,
-  oled: NightIcon,
 }

@@ -106,13 +106,7 @@ export function useMoreMenu(t: ComposerTranslation) {
       createHomeMoreMenu(t, {
         font: settingsStore.font,
         fontIcon: FONT_ICONS[settingsStore.font],
-        theme: t(
-          `general.theme.${
-            settingsStore.isOled
-              ? 'dark'
-              : settingsStore.theme
-          }`,
-        ),
+        theme: t(`general.theme.${settingsStore.theme}`),
         language: t(
           `general.lang.${settingsStore.language}`,
         ),

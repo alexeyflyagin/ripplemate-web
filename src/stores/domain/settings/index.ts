@@ -4,6 +4,7 @@ import { useStorage } from '@vueuse/core'
 import {
   FONTS,
   LOCALES,
+  THEMES,
   type Font,
   type Locale,
   type SettingsRead,
@@ -20,6 +21,7 @@ import { useFont } from './useFont'
 import { useLocale } from './useLocale'
 
 const THEME_KEY = 'settings.theme'
+const OLED_KEY = 'settings.oled'
 const FONT_KEY = 'settings.font'
 const LOCALE_KEY = 'settings.language'
 
@@ -29,14 +31,16 @@ export const useSettingsStore = defineStore(
     const settings = ref<SettingsRead>({})
 
     const theme = useStorage<Theme>(THEME_KEY, 'auto')
+    const oled = useStorage<boolean>(OLED_KEY, false)
     const font = useStorage<Font>(FONT_KEY, 'serif')
     const language = useStorage<Locale>(LOCALE_KEY, 'auto')
 
-    const CYCLE_THEMES = ['auto', 'light', 'dark'] as const
+    const { isDark, effectiveTheme } = useTheme(
+      theme,
+      oled,
+    )
 
-    const { isDark, effectiveTheme } = useTheme(theme)
-
-    const isOled = computed(() => theme.value === 'oled')
+    const isOled = computed(() => oled.value)
     useFont(font)
     useLocale(language)
 
@@ -49,13 +53,11 @@ export const useSettingsStore = defineStore(
     }
 
     function nextTheme() {
-      const current =
-        theme.value === 'oled' ? 'dark' : theme.value
-      theme.value = getNextInArray(CYCLE_THEMES, current)
+      theme.value = getNextInArray(THEMES, theme.value)
     }
 
     function toggleOled() {
-      theme.value = theme.value === 'oled' ? 'dark' : 'oled'
+      oled.value = !oled.value
     }
 
     function nextLanguage() {
@@ -72,6 +74,7 @@ export const useSettingsStore = defineStore(
     return {
       settings,
       theme,
+      oled,
       font,
       language,
       isDark,
