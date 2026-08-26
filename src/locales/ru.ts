@@ -36,6 +36,7 @@ const ru: typeof en = {
       font: 'Шрифт',
       language: 'Язык',
       theme: 'Тема',
+      oled: 'OLED',
       term: 'Термин',
       results: 'Найдено',
       editing: 'Изменение',
@@ -48,9 +49,12 @@ const ru: typeof en = {
       auto: 'Авто',
       light: 'Светлая',
       dark: 'Тёмная',
+      oled: 'OLED',
     },
     state: {
       loading: 'Загрузка...',
+      on: 'Вкл.',
+      off: 'Выкл.',
     },
     lang: {
       ru: 'Русский',

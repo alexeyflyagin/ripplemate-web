@@ -47,7 +47,10 @@ export function useMoreMenu(t: ComposerTranslation) {
         await settingsStore.nextLanguage()
         break
       case 'theme':
-        await settingsStore.nextTheme()
+        settingsStore.nextTheme()
+        break
+      case 'oled':
+        settingsStore.toggleOled()
         break
       case 'logout':
         authStore.logout()
@@ -103,7 +106,13 @@ export function useMoreMenu(t: ComposerTranslation) {
       createHomeMoreMenu(t, {
         font: settingsStore.font,
         fontIcon: FONT_ICONS[settingsStore.font],
-        theme: t(`general.theme.${settingsStore.theme}`),
+        theme: t(
+          `general.theme.${
+            settingsStore.isOled
+              ? 'dark'
+              : settingsStore.theme
+          }`,
+        ),
         language: t(
           `general.lang.${settingsStore.language}`,
         ),
@@ -111,6 +120,8 @@ export function useMoreMenu(t: ComposerTranslation) {
           THEME_ICONS[
             settingsStore.isDark ? 'dark' : 'light'
           ],
+        showOled: settingsStore.isDark,
+        isOled: settingsStore.isOled,
         userDisplayName: accountStore.account
           ? accountStore.account.display_name
           : t('general.state.loading'),

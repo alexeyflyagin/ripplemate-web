@@ -34,6 +34,7 @@ export default {
       font: 'Font',
       language: 'Language',
       theme: 'Theme',
+      oled: 'OLED',
       term: 'Term',
       results: 'Results',
       editing: 'Editing',
@@ -46,9 +47,12 @@ export default {
       auto: 'Auto',
       light: 'Light',
       dark: 'Dark',
+      oled: 'OLED',
     },
     state: {
       loading: 'Loading...',
+      on: 'On',
+      off: 'Off',
     },
     lang: {
       ru: 'Русский',

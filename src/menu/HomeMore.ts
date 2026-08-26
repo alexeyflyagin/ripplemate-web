@@ -6,6 +6,7 @@ import LeaveIcon from '~icons/icons-16/leave'
 import type { ComposerTranslation } from 'vue-i18n'
 import type { Component } from 'vue'
 import DeleteIcon from '~icons/icons-16/delete'
+import OledIcon from '~icons/icons-16/oled'
 
 export interface HomeMoreMenuData {
   userDisplayName: string
@@ -16,6 +17,8 @@ export interface HomeMoreMenuData {
   language: string
   fontIcon: Component
   themeIcon: Component
+  showOled: boolean
+  isOled: boolean
 }
 
 export function createHomeMoreMenu(
@@ -70,6 +73,18 @@ export function createHomeMoreMenu(
       icon: data.themeIcon,
       value: data.theme,
     },
+    ...(data.showOled
+      ? [
+          {
+            id: 'oled',
+            label: t('general.label.oled'),
+            icon: OledIcon,
+            value: data.isOled
+              ? t('general.state.on')
+              : t('general.state.off'),
+          },
+        ]
+      : []),
     {
       id: 'logout',
       label: t('general.action.logout'),

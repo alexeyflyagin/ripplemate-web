@@ -14,6 +14,7 @@ export const THEME_ICONS: Record<
   Exclude<Theme, 'auto'>,
   Component
 > = {
-  dark: NightIcon,
   light: DayIcon,
+  dark: NightIcon,
+  oled: NightIcon,
 }

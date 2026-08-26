@@ -55,3 +55,19 @@
     transparent
   );
 }
+
+:root[data-theme='oled'] {
+  --accent: #48a785;
+  --error: #bf5e53;
+  --text: #ffffff;
+  --text-muted: #cad2ca;
+  --text-placeholder: #919191;
+  --border: #4d564d;
+  --border-muted: #373737;
+  --surface: #1a1d1c;
+  --bg: #000000;
+  --hard: #985252;
+  --good: #989452;
+  --easy: #52987f;
+  --scrim: #000000;
+}

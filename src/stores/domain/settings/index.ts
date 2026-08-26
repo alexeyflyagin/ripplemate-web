@@ -1,10 +1,9 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useStorage } from '@vueuse/core'
 import {
   FONTS,
   LOCALES,
-  THEMES,
   type Font,
   type Locale,
   type SettingsRead,
@@ -33,7 +32,11 @@ export const useSettingsStore = defineStore(
     const font = useStorage<Font>(FONT_KEY, 'serif')
     const language = useStorage<Locale>(LOCALE_KEY, 'auto')
 
-    const { isDark } = useTheme(theme)
+    const CYCLE_THEMES = ['auto', 'light', 'dark'] as const
+
+    const { isDark, effectiveTheme } = useTheme(theme)
+
+    const isOled = computed(() => theme.value === 'oled')
     useFont(font)
     useLocale(language)
 
@@ -46,7 +49,13 @@ export const useSettingsStore = defineStore(
     }
 
     function nextTheme() {
-      theme.value = getNextInArray(THEMES, theme.value)
+      const current =
+        theme.value === 'oled' ? 'dark' : theme.value
+      theme.value = getNextInArray(CYCLE_THEMES, current)
+    }
+
+    function toggleOled() {
+      theme.value = theme.value === 'oled' ? 'dark' : 'oled'
     }
 
     function nextLanguage() {
@@ -66,9 +75,12 @@ export const useSettingsStore = defineStore(
       font,
       language,
       isDark,
+      isOled,
+      effectiveTheme,
       loadSettings,
       updateSettings,
       nextTheme,
+      toggleOled,
       nextLanguage,
       nextFont,
     }
