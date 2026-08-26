@@ -15,7 +15,7 @@ export function useCurrentView() {
   )
 
   function goToView(view: MainViewType) {
-    router.push({
+    return router.push({
       name: view === 'flow' ? 'flow' : 'library',
       params: route.params,
       query: route.query,

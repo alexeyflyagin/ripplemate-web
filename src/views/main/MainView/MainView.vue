@@ -28,8 +28,12 @@ const { bottomContainerHeight } = useBottomContainer(
 )
 
 const libraryMode = useLibraryModeStore()
-const { currentView, items: navItems, setSelectedNavItemId } =
-  useNavBar()
+const {
+  currentView,
+  goToView,
+  items: navItems,
+  setSelectedNavItemId,
+} = useNavBar()
 
 const {
   mode,
@@ -64,8 +68,10 @@ async function onAddClick() {
 }
 
 async function onSearch() {
+  if (currentView.value !== 'library') {
+    await goToView('library')
+  }
   libraryMode.openSearch()
-  if (currentView.value !== 'library') setSelectedNavItemId('library')
   await nextPaint()
   termTextFieldRef.value?.focusInput()
 }

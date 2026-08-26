@@ -117,7 +117,7 @@ useFocusTrap(overlay, {
 }
 
 .dialog {
-  @include background-blur-10;
+  @include background-blur-20;
   display: flex;
   width: 100%;
   max-width: var(--max-content-width-300);

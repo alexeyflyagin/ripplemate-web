@@ -3,10 +3,10 @@
   -webkit-backdrop-filter: blur($blur); // Safari
 }
 
-@mixin background-blur-6 {
-  @include background-blur(6px);
+@mixin background-blur-15 {
+  @include background-blur(15px);
 }
 
-@mixin background-blur-10 {
-  @include background-blur(10px);
+@mixin background-blur-20 {
+  @include background-blur(20px);
 }

@@ -27,7 +27,7 @@ const emit = defineEmits<{
 
 .fab {
   @include elevation-2;
-  @include background-blur-6;
+  @include background-blur-15;
   position: relative;
   display: inline-flex;
   width: 52px;

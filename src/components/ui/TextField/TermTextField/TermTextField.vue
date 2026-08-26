@@ -160,7 +160,7 @@ onMounted(async () => {
 @use '@/assets/styles/mixins' as *;
 
 .term-text-field {
-  @include background-blur-6;
+  @include background-blur-15;
   position: relative;
   display: flex;
   flex-direction: column;

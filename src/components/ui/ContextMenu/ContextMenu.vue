@@ -114,7 +114,7 @@ useInitialScroll(elements, menuEl, props.initialScrollToId)
 .context-menu {
   @include hide-scrollbar;
   @include elevation-4;
-  @include background-blur-10;
+  @include background-blur-20;
   position: fixed;
   min-width: 180px;
   overflow-y: auto;

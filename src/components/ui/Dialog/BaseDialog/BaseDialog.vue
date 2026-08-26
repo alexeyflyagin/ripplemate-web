@@ -55,7 +55,7 @@ useFocusTrap(overlay, {
 }
 
 .base-dialog {
-  @include background-blur-10;
+  @include background-blur-20;
   position: relative;
   display: flex;
   width: 100%;

@@ -38,6 +38,7 @@ export function useNavBar() {
 
   return {
     currentView,
+    goToView,
     items,
     setSelectedNavItemId,
   }
