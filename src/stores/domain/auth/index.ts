@@ -21,6 +21,8 @@ export const useAuthStore = defineStore('auth', () => {
     () => !isJWTTokenExpired(token.value),
   )
 
+  let initPromise: Promise<void> | null = null
+
   watch(token, (newToken) => {
     if (newToken) {
       localStorage.setItem(TOKEN_STORAGE_KEY, newToken)
@@ -32,11 +34,6 @@ export const useAuthStore = defineStore('auth', () => {
   async function login(email: string, password: string) {
     const response = await loginApi(email, password)
     token.value = response.access_token
-    localStorage.setItem(
-      TOKEN_STORAGE_KEY,
-      response.access_token,
-    )
-
     await initializeUserData()
   }
 
@@ -45,16 +42,20 @@ export const useAuthStore = defineStore('auth', () => {
     await login(data.email, data.password)
   }
 
-  async function initializeUserData() {
+  function initializeUserData() {
+    if (initPromise) return initPromise
+
     const accountStore = useAccountStore()
     const settingsStore = useSettingsStore()
     const workspaceStore = useWorkspaceStore()
 
-    await Promise.all([
+    initPromise = Promise.all([
       accountStore.getAccount(),
       settingsStore.loadSettings(),
       workspaceStore.getWorkspaces(),
-    ])
+    ]).then(() => undefined)
+
+    return initPromise
   }
 
   function logout() {

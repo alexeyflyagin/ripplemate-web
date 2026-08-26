@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import HomeView from '@/views/main/HomeView/HomeView.vue'
-import FlowView from '@/views/main/FlowView/FlowView.vue'
 import { useNavBar } from './useNavBar.ts'
 import MainHeader from '@/views/main/MainHeader/MainHeader.vue'
 import NavBarGroup from './NavBarGroup.vue'
 import { TermTextField } from '@/components/ui/TextField/TermTextField'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 import { useI18n } from 'vue-i18n'
 import { useTermTextField } from './useTermTextField.ts'
 import { nextPaint } from '@/utils/nextPaint.ts'
-import { useMainViewStates } from './useMainViewState.ts'
 import { useBottomContainer } from './useBottomContainer.ts'
 import { useKeyboardObserver } from '@/composables/useKeyboardObserver.ts'
+import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
+import { useCategoryStore } from '@/stores/domain/category'
+import { useLibraryModeStore } from '@/stores/ui/libraryMode'
 
 const { t } = useI18n()
 
@@ -27,12 +27,12 @@ const { bottomContainerHeight } = useBottomContainer(
   bottomContainerEl,
 )
 
-const { currentView, mode } = useMainViewStates()
-
-const { items: navItems, setSelectedNavItemId } =
-  useNavBar(currentView)
+const libraryMode = useLibraryModeStore()
+const { currentView, items: navItems, setSelectedNavItemId } =
+  useNavBar()
 
 const {
+  mode,
   placeholder,
   actionCaptionData,
   leadingButtonData,
@@ -42,25 +42,38 @@ const {
   termFieldValue,
   editCard,
   onLeadingClick,
-} = useTermTextField(t, mode)
+} = useTermTextField(t)
+
+// Загрузка категорий по текущему workspace из URL
+const { currentWorkspaceId } = useCurrentWorkspace()
+const categoryStore = useCategoryStore()
+
+watch(
+  currentWorkspaceId,
+  (id) => {
+    if (id) categoryStore.loadCategories(id)
+    else categoryStore.clearCategories()
+  },
+  { immediate: true },
+)
 
 async function onAddClick() {
-  mode.value = 'add-card'
-  setSelectedNavItemId('home')
+  libraryMode.openAdd()
+  if (currentView.value !== 'library') setSelectedNavItemId('library')
   await nextPaint()
   termTextFieldRef.value?.focusInput()
 }
 
 async function onSearch() {
-  mode.value = 'search'
-  setSelectedNavItemId('home')
+  libraryMode.openSearch()
+  if (currentView.value !== 'library') setSelectedNavItemId('library')
   await nextPaint()
   termTextFieldRef.value?.focusInput()
 }
 
 async function onEditCard(cardId: number) {
-  mode.value = 'edit-card'
-  setSelectedNavItemId('home')
+  libraryMode.openEdit(cardId)
+  if (currentView.value !== 'library') setSelectedNavItemId('library')
   await editCard(cardId)
   await nextPaint()
   termTextFieldRef.value?.focusInput()
@@ -82,21 +95,14 @@ async function onEditCard(cardId: number) {
       @search="onSearch"
       @height-changed="(h) => (mainHeaderHeight = h)"
     />
-    <HomeView
-      class="home-view"
-      v-if="currentView === 'home'"
-      @edit-card="onEditCard"
-    />
-    <FlowView
-      class="flow-view"
-      v-if="currentView === 'flow'"
-    />
+    <RouterView @edit-card="onEditCard" />
     <div class="bottom-container" ref="bottomContainerEl">
       <div class="bottom-container__content">
         <NavBarGroup
           v-if="mode === 'default'"
           :nab-bar-items="navItems"
-          v-model:selected-id="currentView"
+          :selected-id="currentView"
+          @update:selected-id="setSelectedNavItemId"
           @on-add-click="onAddClick"
         />
         <TermTextField
@@ -140,8 +146,8 @@ async function onEditCard(cardId: number) {
   z-index: 1;
 }
 
-.home-view,
-.flow-view {
+:deep(.home-view),
+:deep(.flow-view) {
   flex: 1;
   min-height: 0;
 }

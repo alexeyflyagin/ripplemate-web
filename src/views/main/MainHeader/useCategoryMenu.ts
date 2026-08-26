@@ -5,6 +5,8 @@ import {
 import { ConfirmDialog } from '@/components/ui/Dialog/ConfirmDialog'
 import { createCategoryMenu } from '@/menu/Category'
 import { useCategoryStore } from '@/stores/domain/category'
+import { useCurrentCategory } from '@/stores/domain/category/useCurrentCategory'
+import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
 import {
   useOverlayStore,
   type OverlayHandle,
@@ -18,6 +20,8 @@ import type { ComposerTranslation } from 'vue-i18n'
 export function useCategoryMenu(t: ComposerTranslation) {
   const MENU_OFFSET = 4
 
+  const { currentCategoryId } = useCurrentCategory()
+  const { currentWorkspaceId } = useCurrentWorkspace()
   const categoryStore = useCategoryStore()
   const overlayStore = useOverlayStore()
   const selectedId = ref<string | undefined>()
@@ -48,8 +52,10 @@ export function useCategoryMenu(t: ComposerTranslation) {
   }
 
   async function deleteCategory(categoryId: number) {
-    const category =
-      await categoryStore.getCategory(categoryId)
+    const category = await categoryStore.getCategory(
+      currentWorkspaceId.value!,
+      categoryId,
+    )
 
     const confirmOverlayId = overlayStore.open(
       ConfirmDialog,
@@ -61,7 +67,10 @@ export function useCategoryMenu(t: ComposerTranslation) {
         type: 'destructive',
         confirm: t('general.action.delete'),
         onConfirm: async () => {
-          await categoryStore.deleteCategory(categoryId)
+          await categoryStore.deleteCategory(
+            currentWorkspaceId.value!,
+            categoryId,
+          )
           confirmOverlayId.close()
         },
         onCancel: () => confirmOverlayId.close(),
@@ -112,8 +121,7 @@ export function useCategoryMenu(t: ComposerTranslation) {
   function onTabClick(event: MouseEvent, id: string) {
     if (!isId(id)) return
     const categoryId = Number(id)
-    if (categoryStore.currentCategoryId !== categoryId)
-      return
+    if (currentCategoryId.value !== categoryId) return
     openMenu(event, categoryId)
   }
 

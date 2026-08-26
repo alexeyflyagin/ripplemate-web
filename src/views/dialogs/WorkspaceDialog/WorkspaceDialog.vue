@@ -17,6 +17,7 @@ import { useI18n } from 'vue-i18n'
 import type { ActionType } from './WorkspaceDialog.types'
 import { ApiError } from '@/api/client'
 import { useWorkspaceStore } from '@/stores/domain/workspace'
+import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
 import RefreshIcon from '~icons/icons-16/refresh'
 
 const props = defineProps<{
@@ -28,6 +29,7 @@ const MAX_WORKSPACE_NAME_LENGTH = 24
 const { t } = useI18n()
 
 const workspaceStore = useWorkspaceStore()
+const { selectWorkspace } = useCurrentWorkspace()
 
 const emit = defineEmits<{
   close: []
@@ -85,9 +87,10 @@ async function onSubmit() {
 
 async function createWorkspace() {
   try {
-    await workspaceStore.createWorkspace({
+    const created = await workspaceStore.createWorkspace({
       name: nameValue.value.trim(),
     })
+    selectWorkspace(created.id)
     emit('close')
   } catch (e) {
     if (e instanceof ApiError && e.status === 409) {

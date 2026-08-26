@@ -4,6 +4,7 @@ import { ContextMenu } from '@/components/ui/ContextMenu'
 import { ConfirmDialog } from '@/components/ui/Dialog/ConfirmDialog'
 import { createCardItemMenu } from '@/menu/CardItemMenu'
 import { useCardStore } from '@/stores/domain/card'
+import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
 import {
   useOverlayStore,
   type OverlayHandle,
@@ -19,6 +20,7 @@ export function useCardItemMenu(
 ) {
   const cardStore = useCardStore()
   const overlayStore = useOverlayStore()
+  const { currentWorkspaceId } = useCurrentWorkspace()
   let overlay: OverlayHandle
 
   async function handleClick(
@@ -41,7 +43,11 @@ export function useCardItemMenu(
   }
 
   async function openCardDeleteDialog(cardId: number) {
-    const card = await cardStore.getCard(cardId)
+    if (!currentWorkspaceId.value) return
+    const card = await cardStore.getCard(
+      currentWorkspaceId.value,
+      cardId,
+    )
     const confirmOverlay = overlayStore.open(
       ConfirmDialog,
       {
@@ -52,7 +58,10 @@ export function useCardItemMenu(
         type: 'destructive',
         confirm: t('general.action.delete'),
         onConfirm: async () => {
-          await cardStore.deleteCard(cardId)
+          await cardStore.deleteCard(
+            currentWorkspaceId.value!,
+            cardId,
+          )
           confirmOverlay.close()
         },
         onCancel: () => confirmOverlay.close(),

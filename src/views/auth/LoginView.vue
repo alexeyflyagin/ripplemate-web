@@ -134,7 +134,7 @@ async function handleSubmit() {
         class="secondary-action"
         :caption="t('auth.doNotHaveAnAccount')"
         :link-label="t('general.action.signup')"
-        :to="{ name: 'register' }"
+        :to="{ name: 'signup' }"
       />
     </div>
   </div>

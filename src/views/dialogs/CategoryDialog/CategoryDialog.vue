@@ -5,6 +5,8 @@ import BaseDialog from '@/components/ui/Dialog/BaseDialog/BaseDialog.vue'
 import BaseDialogHeader from '@/components/ui/Dialog/BaseDialog/BaseDialogHeader.vue'
 import { BaseTextField } from '@/components/ui/TextField/BaseTextField'
 import { useCategoryStore } from '@/stores/domain/category'
+import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
+import { useCurrentCategory } from '@/stores/domain/category/useCurrentCategory'
 import {
   computed,
   nextTick,
@@ -28,6 +30,8 @@ const MAX_CATEGORY_NAME_LENGTH = 24
 const { t } = useI18n()
 
 const categoryStore = useCategoryStore()
+const { currentWorkspaceId } = useCurrentWorkspace()
+const { selectCategory } = useCurrentCategory()
 
 const emit = defineEmits<{
   close: []
@@ -84,10 +88,15 @@ async function onSubmit() {
 }
 
 async function createCategory() {
+  if (!currentWorkspaceId.value) return
   try {
-    await categoryStore.createCategory({
-      name: nameValue.value.trim(),
-    })
+    const created = await categoryStore.createCategory(
+      currentWorkspaceId.value,
+      {
+        name: nameValue.value.trim(),
+      },
+    )
+    selectCategory(created.id)
     emit('close')
   } catch (e) {
     if (e instanceof ApiError && e.status === 409) {
@@ -105,7 +114,9 @@ async function updateCategory() {
     return
   }
   try {
+    if (!currentWorkspaceId.value) return
     await categoryStore.updateCategory(
+      currentWorkspaceId.value,
       oldCategory.value.id,
       {
         name: nameValue.value.trim(),
@@ -123,7 +134,9 @@ async function updateCategory() {
 
 async function setOldData() {
   if (!props.categoryId) return
+  if (!currentWorkspaceId.value) return
   oldCategory.value = await categoryStore.getCategory(
+    currentWorkspaceId.value,
     props.categoryId,
   )
   nameValue.value = oldCategory.value.name

@@ -3,6 +3,7 @@ import {
   type MenuItemData,
 } from '@/components/ui/ContextMenu'
 import { useWorkspaceStore } from '@/stores/domain/workspace'
+import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
 import { computed, ref, watch } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 import { createAddWorkspaceMenuItem } from './factories'
@@ -20,13 +21,18 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
 
   const workspaceStore = useWorkspaceStore()
   const overlayStore = useOverlayStore()
+  const {
+    currentWorkspaceId,
+    currentWorkspace,
+    selectWorkspace,
+  } = useCurrentWorkspace()
   let overlay: OverlayHandle
 
   const isMenuOpened = ref<boolean>(false)
 
   const currentWorkspaceName = computed(
     () =>
-      workspaceStore.currentWorkspace?.name ??
+      currentWorkspace.value?.name ??
       t('general.action.selectWorkspace'),
   )
 
@@ -39,7 +45,7 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
 
     const itemId = Number(item.id)
     if (isNaN(itemId)) return
-    workspaceStore.changeCurrentWorkspace(itemId)
+    selectWorkspace(itemId)
     overlay.close()
   }
 
@@ -59,10 +65,9 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
           (w) => ({
             id: `${w.id}`,
             label: w.name,
-            selected:
-              w.id === workspaceStore.currentWorkspaceId,
+            selected: w.id === currentWorkspaceId.value,
             icon:
-              w.id === workspaceStore.currentWorkspaceId
+              w.id === currentWorkspaceId.value
                 ? TickIcon
                 : undefined,
           }),
@@ -83,8 +88,7 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
       items: items,
       placemet: 'bottom-start' as Placement,
       initialScrollToId:
-        workspaceStore.currentWorkspaceId?.toString() ??
-        undefined,
+        currentWorkspaceId.value?.toString() ?? undefined,
       onClickItem: handleItemClick,
       onClose: () => overlay.close(),
     })

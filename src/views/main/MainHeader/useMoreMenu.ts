@@ -4,7 +4,9 @@ import type { ComposerTranslation } from 'vue-i18n'
 import { useAuthStore } from '@/stores/domain/auth'
 import { useAccountStore } from '@/stores/domain/account'
 import { useWorkspaceStore } from '@/stores/domain/workspace'
+import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useSettingsStore } from '@/stores/domain/settings'
 import type { MenuItemData } from '@/components/ui/ContextMenu'
 import {
@@ -23,6 +25,9 @@ export function useMoreMenu(t: ComposerTranslation) {
   const workspaceStore = useWorkspaceStore()
   const overlayStore = useOverlayStore()
   const settingsStore = useSettingsStore()
+  const router = useRouter()
+  const { currentWorkspaceId, currentWorkspace } =
+    useCurrentWorkspace()
   let overlay: OverlayHandle
 
   async function onItemClick(item: MenuItemData) {
@@ -55,14 +60,14 @@ export function useMoreMenu(t: ComposerTranslation) {
     const workspaceOverlay = overlayStore.open(
       WorkspaceDialog,
       {
-        workspaceId: workspaceStore.currentWorkspaceId,
+        workspaceId: currentWorkspaceId.value,
         onClose: () => workspaceOverlay.close(),
       },
     )
   }
 
   async function deleteWorkspace() {
-    const workspace = workspaceStore.currentWorkspace
+    const workspace = currentWorkspace.value
     if (!workspace) return
 
     const confirmOverlay = overlayStore.open(
@@ -75,8 +80,18 @@ export function useMoreMenu(t: ComposerTranslation) {
         type: 'destructive',
         confirm: t('general.action.delete'),
         onConfirm: async () => {
-          await workspaceStore.deleteCurrentWorkspace()
+          await workspaceStore.deleteWorkspace(workspace.id)
           confirmOverlay.close()
+
+          const next = workspaceStore.workspaces[0]
+          if (next) {
+            router.push({
+              name: 'library',
+              params: { workspaceId: String(next.id) },
+            })
+          } else {
+            router.push({ name: 'root' })
+          }
         },
         onCancel: () => confirmOverlay.close(),
       },
@@ -107,8 +122,7 @@ export function useMoreMenu(t: ComposerTranslation) {
         userDisplayName: accountStore.account
           ? accountStore.account.display_name
           : t('general.state.loading'),
-        workspaceName:
-          workspaceStore.currentWorkspace?.name,
+        workspaceName: currentWorkspace.value?.name,
         canDeleteWorkspace:
           workspaceStore.workspaces.length > 1,
       }),

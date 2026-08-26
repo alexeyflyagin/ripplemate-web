@@ -47,18 +47,12 @@ export const useSettingsStore = defineStore(
     }
 
     async function nextTheme() {
-      if (!settings.value)
-        throw new Error('No settings loaded')
-
       await updateSettings({
         theme: getNextInArray(THEMES, settings.value.theme),
       })
     }
 
     async function nextLanguage() {
-      if (!settings.value)
-        throw new Error('No settings loaded')
-
       await updateSettings({
         language: getNextInArray(
           LOCALES,
@@ -68,9 +62,6 @@ export const useSettingsStore = defineStore(
     }
 
     async function nextFont() {
-      if (!settings.value)
-        throw new Error('No settings loaded')
-
       await updateSettings({
         font: getNextInArray(FONTS, settings.value.font),
       })

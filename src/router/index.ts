@@ -1,45 +1,105 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  type RouteLocationRaw,
+} from 'vue-router'
 import LoginView from '@/views/auth/LoginView.vue'
 import RegisterView from '@/views/auth/RegisterView.vue'
 import MainView from '@/views/main/MainView/MainView.vue'
+import HomeView from '@/views/main/HomeView/HomeView.vue'
+import FlowView from '@/views/main/FlowView/FlowView.vue'
 import { useAuthStore } from '@/stores/domain/auth'
+import { useWorkspaceStore } from '@/stores/domain/workspace'
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    isPublic?: boolean
+  }
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'main',
+      name: 'root',
+      component: { render: () => null },
+    },
+    {
+      path: '/w/:workspaceId',
       component: MainView,
-      meta: { state: 'authorized' },
+      children: [
+        {
+          path: '',
+          name: 'library',
+          component: HomeView,
+        },
+        {
+          path: 'flow',
+          name: 'flow',
+          component: FlowView,
+        },
+      ],
     },
     {
       path: '/login',
       name: 'login',
       component: LoginView,
-      meta: { state: 'guest' },
+      meta: { isPublic: true },
     },
     {
-      path: '/register',
-      name: 'register',
+      path: '/signup',
+      name: 'signup',
       component: RegisterView,
-      meta: { state: 'guest' },
+      meta: { isPublic: true },
     },
   ],
 })
 
-router.beforeEach((to) => {
-  const authStore = useAuthStore()
+// Целевой маршрут для авторизованного пользователя: первый workspace.
+function authorizedHome(): RouteLocationRaw {
+  const workspaceStore = useWorkspaceStore()
+  const first = workspaceStore.workspaces[0]
+  if (first) {
+    return {
+      name: 'library',
+      params: { workspaceId: String(first.id) },
+    }
+  }
+  // Нет ни одного workspace — остаёмся на root (там UI создания).
+  return { name: 'root' }
+}
 
-  if (
-    to.meta.state === 'authorized' &&
-    !authStore.isAuthorized
-  ) {
+router.beforeEach(async (to) => {
+  const auth = useAuthStore()
+  const isPublic = to.meta.isPublic ?? false
+
+  // Загружаем данные пользователя один раз (account, settings, workspaces)
+  if (auth.isAuthorized) {
+    await auth.initializeUserData()
+  }
+
+  // Неавторизованный на приватном маршруте -> login
+  if (!isPublic && !auth.isAuthorized) {
     return { name: 'login' }
   }
 
-  if (to.meta.state === 'guest' && authStore.isAuthorized) {
-    return { name: 'main' }
+  // Авторизованный на публичном (login/signup) -> домой
+  if (isPublic && auth.isAuthorized) {
+    return authorizedHome()
+  }
+
+  // Авторизованный зашёл на "/" -> достраиваем до workspace
+  if (to.name === 'root' && auth.isAuthorized) {
+    const target = authorizedHome()
+    // избегаем бесконечного редиректа, если workspace всё ещё нет
+    if (
+      typeof target === 'object' &&
+      'name' in target &&
+      target.name !== 'root'
+    ) {
+      return target
+    }
   }
 })
 

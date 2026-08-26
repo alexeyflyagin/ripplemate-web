@@ -1,8 +1,10 @@
 import type { RoundIconButtonData } from '@/components/ui/Button/RoundIconButton'
 import type { ActionCaptionData } from '@/components/ui/TextField/TermTextField'
 import { useCardStore } from '@/stores/domain/card'
-import { useCategoryStore } from '@/stores/domain/category'
-import { computed, ref, watch, type Ref } from 'vue'
+import { useCurrentCategory } from '@/stores/domain/category/useCurrentCategory'
+import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
+import { useLibraryModeStore } from '@/stores/ui/libraryMode'
+import { computed, ref, watch } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 import SearchIcon from '~icons/icons-12/search'
 import EditIcon from '~icons/icons-12/edit'
@@ -11,31 +13,48 @@ import PlusIcon from '~icons/icons-16/plus'
 import TickIcon from '~icons/icons-16/tick'
 import CaretLeftIcon from '~icons/icons-16/caret-left'
 import CloseIcon from '~icons/icons-16/close'
-import type { NavBarMode } from './useMainViewState'
 import type { CardRead } from '@/api/types'
 
-export function useTermTextField(
-  t: ComposerTranslation,
-  mode: Ref<NavBarMode>,
-) {
+export function useTermTextField(t: ComposerTranslation) {
   const cardStore = useCardStore()
-  const categoryStore = useCategoryStore()
+  const libraryMode = useLibraryModeStore()
+  const { currentWorkspaceId } = useCurrentWorkspace()
+  const { currentCategoryId } = useCurrentCategory()
+
+  const mode = computed(() => libraryMode.mode)
   const editedCard = ref<CardRead | undefined>()
 
   const termFieldValue = ref<string>('')
 
+  // Текст поиска синхронизируется с URL (?q=) и с cardStore
   watch(termFieldValue, (v) => {
-    if (mode.value === 'search')
+    if (libraryMode.mode === 'search') {
+      libraryMode.setSearchQuery(v)
       cardStore.setSearch(v.trim())
+    }
   })
 
-  watch(mode, () => {
-    termFieldValue.value = ''
-    cardStore.setSearch(null)
-  })
+  watch(
+    () => libraryMode.mode,
+    (m) => {
+      if (m === 'search') {
+        // при входе в поиск подхватываем текст из URL
+        termFieldValue.value = libraryMode.searchQuery
+        cardStore.setSearch(libraryMode.searchQuery.trim() || null)
+      } else {
+        termFieldValue.value = ''
+        cardStore.setSearch(null)
+      }
+    },
+    { immediate: true },
+  )
 
   async function editCard(cardId: number) {
-    editedCard.value = await cardStore.getCard(cardId)
+    if (!currentWorkspaceId.value) return
+    editedCard.value = await cardStore.getCard(
+      currentWorkspaceId.value,
+      cardId,
+    )
     if (!editedCard.value) return
 
     termFieldValue.value = editedCard.value.term
@@ -44,7 +63,7 @@ export function useTermTextField(
   const actionCaptionData = computed<
     ActionCaptionData | undefined
   >(() => {
-    switch (mode.value) {
+    switch (libraryMode.mode) {
       case 'search':
         return {
           icon: SearchIcon,
@@ -64,7 +83,7 @@ export function useTermTextField(
   })
 
   const placeholder = computed<string | undefined>(() => {
-    switch (mode.value) {
+    switch (libraryMode.mode) {
       case 'add-card':
         return t('general.label.term')
       case 'search':
@@ -77,7 +96,7 @@ export function useTermTextField(
   const leadingButtonData = computed<
     RoundIconButtonData | undefined
   >(() => {
-    switch (mode.value) {
+    switch (libraryMode.mode) {
       case 'edit-card':
         return {
           icon: CloseIcon,
@@ -91,7 +110,7 @@ export function useTermTextField(
   const sumbitButtonData = computed<
     RoundIconButtonData | undefined
   >(() => {
-    switch (mode.value) {
+    switch (libraryMode.mode) {
       case 'add-card':
         return {
           icon: PlusIcon,
@@ -112,7 +131,7 @@ export function useTermTextField(
   const secondaryButtonData = computed<
     RoundIconButtonData | undefined
   >(() => {
-    switch (mode.value) {
+    switch (libraryMode.mode) {
       case 'search':
         if (termFieldValue.value.trim())
           return {
@@ -124,31 +143,43 @@ export function useTermTextField(
   })
 
   async function onSubmitClick() {
-    switch (mode.value) {
+    if (!currentWorkspaceId.value) return
+
+    switch (libraryMode.mode) {
       case 'add-card':
-        await cardStore.createCard({
-          term: termFieldValue.value,
-          category_id: categoryStore.currentCategoryId,
-        })
+        await cardStore.createCard(
+          currentWorkspaceId.value,
+          currentCategoryId.value ?? null,
+          {
+            term: termFieldValue.value,
+            category_id: currentCategoryId.value ?? null,
+          },
+        )
         termFieldValue.value = ''
         break
       case 'edit-card':
         if (editedCard.value) {
-          await cardStore.updateCard(editedCard.value.id, {
-            term: termFieldValue.value.trim(),
-          })
+          await cardStore.updateCard(
+            currentWorkspaceId.value,
+            currentCategoryId.value ?? null,
+            editedCard.value.id,
+            {
+              term: termFieldValue.value.trim(),
+            },
+          )
         }
         termFieldValue.value = ''
-        mode.value = 'default'
+        libraryMode.reset()
         break
     }
   }
 
   function onLeadingClick() {
-    mode.value = 'default'
+    libraryMode.reset()
   }
 
   return {
+    mode,
     termFieldValue,
     actionCaptionData,
     placeholder,

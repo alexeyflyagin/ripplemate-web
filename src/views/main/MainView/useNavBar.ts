@@ -3,17 +3,16 @@ import HomeIcon from '~icons/icons-16/home'
 import HomeFilledIcon from '~icons/icons-16/home-filled'
 import PlayIcon from '~icons/icons-16/play'
 import PlayFilledIcon from '~icons/icons-16/play-filled'
-import { computed, type Ref } from 'vue'
-import {
-  VIEWS,
-  type MainViewTypes,
-} from './useMainViewState'
+import { computed } from 'vue'
+import { VIEWS, useCurrentView } from './useMainViewState'
 
-export function useNavBar(currentView: Ref<MainViewTypes>) {
+export function useNavBar() {
+  const { currentView, goToView } = useCurrentView()
+
   const items = computed<NavItemData[]>(() =>
     VIEWS.map<NavItemData>((v) => {
       switch (v) {
-        case 'home':
+        case 'library':
           return {
             id: v,
             icon: HomeIcon,
@@ -32,11 +31,13 @@ export function useNavBar(currentView: Ref<MainViewTypes>) {
   )
 
   function setSelectedNavItemId(id: string) {
-    if (!VIEWS.find((v) => v == id)) return
-    currentView.value = id as MainViewTypes
+    const view = VIEWS.find((v) => v === id)
+    if (!view) return
+    goToView(view)
   }
 
   return {
+    currentView,
     items,
     setSelectedNavItemId,
   }

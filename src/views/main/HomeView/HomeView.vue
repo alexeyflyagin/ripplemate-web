@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { CardList } from '@/components/feature/CardList'
 import { useCardStore } from '@/stores/domain/card'
-import { useCategoryStore } from '@/stores/domain/category'
 import { useCardItemMenu } from './useCardItemMenu'
 import { useI18n } from 'vue-i18n'
 import NoCardsFoundIcon from '~icons/icons-80/no-cards-found'
 import NoCardsYetIcon from '~icons/icons-80/no-cards-yet'
-import { useWorkspaceStore } from '@/stores/domain/workspace'
 import { EmptyState } from '@/components/feature/EmptyState'
 import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgressBar'
+import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
+import { useCurrentCategory } from '@/stores/domain/category/useCurrentCategory'
+import { watch } from 'vue'
 
 const { t } = useI18n()
 
@@ -17,12 +18,38 @@ const emit = defineEmits<{
 }>()
 
 const cardStore = useCardStore()
-const categoryStore = useCategoryStore()
-const workspaceStore = useWorkspaceStore()
+const { currentWorkspaceId } = useCurrentWorkspace()
+const { currentCategoryId } = useCurrentCategory()
 
 const { openCardMenu } = useCardItemMenu(t, {
   editCard: (cardId) => emit('editCard', cardId),
 })
+
+// Загрузка карточек по workspace + категории (из URL) + поиску
+watch(
+  () => [
+    currentWorkspaceId.value,
+    currentCategoryId.value,
+    cardStore.search,
+  ],
+  ([wsId, catId]) => {
+    if (wsId) {
+      cardStore.loadCards(wsId as number, (catId as number) ?? null)
+    } else {
+      cardStore.cards = []
+      cardStore.total = 0
+    }
+  },
+  { immediate: true },
+)
+
+function loadMore() {
+  if (!currentWorkspaceId.value) return
+  cardStore.loadMore(
+    currentWorkspaceId.value,
+    currentCategoryId.value ?? null,
+  )
+}
 </script>
 
 <template>
@@ -30,10 +57,10 @@ const { openCardMenu } = useCardItemMenu(t, {
     <CardList
       v-if="cardStore.cards.length"
       class="card-list"
-      :list-key="`${workspaceStore.currentWorkspaceId}-${categoryStore.currentCategoryId}-${cardStore.search}`"
+      :list-key="`${currentWorkspaceId}-${currentCategoryId}-${cardStore.search}`"
       :has-more="cardStore.hasMore"
       :cards="cardStore.cards"
-      @load-more="cardStore.loadMore"
+      @load-more="loadMore"
       @contextmenu="openCardMenu"
       @click="openCardMenu"
     />

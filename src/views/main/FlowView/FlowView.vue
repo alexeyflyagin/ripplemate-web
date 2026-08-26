@@ -4,39 +4,41 @@ import {
   type DeckState,
 } from '@/components/feature/FlowDeck'
 import { useCardFlowStore } from '@/stores/domain/cardFlow'
-import { useCategoryStore } from '@/stores/domain/category'
-import { useWorkspaceStore } from '@/stores/domain/workspace'
-import { onMounted, ref, watch } from 'vue'
+import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
+import { useCurrentCategory } from '@/stores/domain/category/useCurrentCategory'
+import { ref, watch } from 'vue'
 
-const workspaceStore = useWorkspaceStore()
-const categoryStore = useCategoryStore()
 const cardFlowStore = useCardFlowStore()
+const { currentWorkspaceId } = useCurrentWorkspace()
+const { currentCategoryId } = useCurrentCategory()
 
 const cardFlowRef = ref<InstanceType<typeof FlowDeck>>()
-
 const deckState = ref<DeckState>('card')
-let requestId = 0
 
 watch(
-  [
-    () => workspaceStore.currentWorkspaceId,
-    () => categoryStore.currentCategoryId,
-  ],
-  async () => {
-    await nextCard(true)
+  () => [currentWorkspaceId.value, currentCategoryId.value],
+  () => {
+    loadNextCard(true)
   },
+  { immediate: true },
 )
 
-async function nextCard(first: boolean = false) {
+async function loadNextCard(first: boolean = false) {
   deckState.value = 'card'
   cardFlowRef.value?.showNextCard(undefined)
 
-  const currentId = ++requestId
-  const card = await cardFlowStore.getNextCard()
-  if (currentId !== requestId) return
+  if (!currentWorkspaceId.value) {
+    deckState.value = 'empty'
+    return
+  }
 
-  if (!card) deckState.value = 'empty'
-  else deckState.value = 'card'
+  await cardFlowStore.nextCard(
+    currentWorkspaceId.value,
+    currentCategoryId.value ?? null,
+  )
+
+  const card = cardFlowStore.currentCard
+  deckState.value = card ? 'card' : 'empty'
 
   cardFlowRef.value?.showNextCard(
     card
@@ -48,10 +50,6 @@ async function nextCard(first: boolean = false) {
     { animation: !first },
   )
 }
-
-onMounted(async () => {
-  await nextCard(true)
-})
 </script>
 
 <template>
@@ -60,7 +58,7 @@ onMounted(async () => {
       class="flow-deck"
       ref="cardFlowRef"
       :state="deckState"
-      @nextcard="nextCard"
+      @nextcard="loadNextCard"
     />
   </div>
 </template>
