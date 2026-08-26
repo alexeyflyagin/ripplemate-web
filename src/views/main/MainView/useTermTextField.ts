@@ -26,7 +26,6 @@ export function useTermTextField(t: ComposerTranslation) {
 
   const termFieldValue = ref<string>('')
 
-  // Текст поиска синхронизируется с URL (?q=) и с cardStore
   watch(termFieldValue, (v) => {
     if (libraryMode.mode === 'search') {
       libraryMode.setSearchQuery(v)
@@ -38,7 +37,6 @@ export function useTermTextField(t: ComposerTranslation) {
     () => libraryMode.mode,
     (m) => {
       if (m === 'search') {
-        // при входе в поиск подхватываем текст из URL
         termFieldValue.value = libraryMode.searchQuery
         cardStore.setSearch(libraryMode.searchQuery.trim() || null)
       } else {

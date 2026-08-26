@@ -56,7 +56,6 @@ const router = createRouter({
   ],
 })
 
-// Целевой маршрут для авторизованного пользователя: первый workspace.
 function authorizedHome(): RouteLocationRaw {
   const workspaceStore = useWorkspaceStore()
   const first = workspaceStore.workspaces[0]
@@ -66,7 +65,6 @@ function authorizedHome(): RouteLocationRaw {
       params: { workspaceId: String(first.id) },
     }
   }
-  // Нет ни одного workspace — остаёмся на root (там UI создания).
   return { name: 'root' }
 }
 
@@ -74,7 +72,6 @@ router.beforeEach(async (to) => {
   const auth = useAuthStore()
   const isPublic = to.meta.isPublic ?? false
 
-  // Загружаем данные пользователя один раз (account, settings, workspaces)
   if (auth.isAuthorized) {
     await auth.initializeUserData()
   }
@@ -89,10 +86,8 @@ router.beforeEach(async (to) => {
     return authorizedHome()
   }
 
-  // Авторизованный зашёл на "/" -> достраиваем до workspace
   if (to.name === 'root' && auth.isAuthorized) {
     const target = authorizedHome()
-    // избегаем бесконечного редиректа, если workspace всё ещё нет
     if (
       typeof target === 'object' &&
       'name' in target &&

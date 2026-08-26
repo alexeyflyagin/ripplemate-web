@@ -20,7 +20,6 @@ export const useLibraryModeStore = defineStore(
     >('default')
     const editingCardId = ref<number | null>(null)
 
-    // При смене workspace выходим из add/edit режима (контекст сменился)
     watch(
       () => route.params.workspaceId,
       () => {

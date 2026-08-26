@@ -25,7 +25,6 @@ const { openCardMenu } = useCardItemMenu(t, {
   editCard: (cardId) => emit('editCard', cardId),
 })
 
-// Загрузка карточек по workspace + категории (из URL) + поиску
 watch(
   () => [
     currentWorkspaceId.value,

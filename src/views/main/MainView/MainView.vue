@@ -44,7 +44,6 @@ const {
   onLeadingClick,
 } = useTermTextField(t)
 
-// Загрузка категорий по текущему workspace из URL
 const { currentWorkspaceId } = useCurrentWorkspace()
 const categoryStore = useCategoryStore()
 
