@@ -33,6 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function login(email: string, password: string) {
     const response = await loginApi(email, password)
+    localStorage.setItem(TOKEN_STORAGE_KEY, response.access_token)
     token.value = response.access_token
     await initializeUserData()
   }
