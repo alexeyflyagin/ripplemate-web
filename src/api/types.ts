@@ -73,17 +73,9 @@ export interface CategoryUpdate {
 }
 
 // Settings
-export interface SettingsRead {
-  font: Font
-  language: Locale
-  theme: Theme
-}
+export interface SettingsRead {}
 
-export interface SettingsUpdate {
-  font?: Font
-  language?: Locale
-  theme?: Theme
-}
+export interface SettingsUpdate {}
 
 // Workspace
 export interface WorkspaceCreate {

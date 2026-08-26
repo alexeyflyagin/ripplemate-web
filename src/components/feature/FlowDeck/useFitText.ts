@@ -39,7 +39,7 @@ export function useFitText(
   }
 
   watch(
-    () => settingsStore.settings?.font,
+    () => settingsStore.font,
     (v) => fit(),
   )
 

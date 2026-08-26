@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
+import { useStorage } from '@vueuse/core'
 import {
   FONTS,
   LOCALES,
@@ -19,24 +20,22 @@ import { getNextInArray } from '@/utils/getNextInArray'
 import { useFont } from './useFont'
 import { useLocale } from './useLocale'
 
+const THEME_KEY = 'settings.theme'
+const FONT_KEY = 'settings.font'
+const LOCALE_KEY = 'settings.language'
+
 export const useSettingsStore = defineStore(
   'settings',
   () => {
-    const settings = ref<SettingsRead>({
-      font: 'serif',
-      language: 'auto',
-      theme: 'auto',
-    })
+    const settings = ref<SettingsRead>({})
 
-    const { isDark } = useTheme(
-      computed<Theme>(() => settings.value.theme),
-    )
+    const theme = useStorage<Theme>(THEME_KEY, 'auto')
+    const font = useStorage<Font>(FONT_KEY, 'serif')
+    const language = useStorage<Locale>(LOCALE_KEY, 'auto')
 
-    useFont(computed<Font>(() => settings.value.font))
-
-    useLocale(
-      computed<Locale>(() => settings.value.language),
-    )
+    const { isDark } = useTheme(theme)
+    useFont(font)
+    useLocale(language)
 
     async function loadSettings() {
       settings.value = await getSettingsApi()
@@ -46,35 +45,32 @@ export const useSettingsStore = defineStore(
       settings.value = await updateSettingApi(data)
     }
 
-    async function nextTheme() {
-      await updateSettings({
-        theme: getNextInArray(THEMES, settings.value.theme),
-      })
+    function nextTheme() {
+      theme.value = getNextInArray(THEMES, theme.value)
     }
 
-    async function nextLanguage() {
-      await updateSettings({
-        language: getNextInArray(
-          LOCALES,
-          settings.value.language,
-        ),
-      })
+    function nextLanguage() {
+      language.value = getNextInArray(
+        LOCALES,
+        language.value,
+      )
     }
 
-    async function nextFont() {
-      await updateSettings({
-        font: getNextInArray(FONTS, settings.value.font),
-      })
+    function nextFont() {
+      font.value = getNextInArray(FONTS, font.value)
     }
 
     return {
       settings,
+      theme,
+      font,
+      language,
       isDark,
+      loadSettings,
       updateSettings,
       nextTheme,
       nextLanguage,
       nextFont,
-      loadSettings,
     }
   },
 )

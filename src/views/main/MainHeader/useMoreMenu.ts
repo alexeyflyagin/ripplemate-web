@@ -101,20 +101,12 @@ export function useMoreMenu(t: ComposerTranslation) {
   async function openMoreMenu(event: MouseEvent) {
     const items = computed(() =>
       createHomeMoreMenu(t, {
-        font:
-          settingsStore.settings?.font ??
-          t('general.state.loading'),
-        fontIcon: FONT_ICONS[settingsStore.settings.font],
-        theme: settingsStore.settings
-          ? t(
-              `general.theme.${settingsStore.settings.theme}`,
-            )
-          : t('general.state.loading'),
-        language: settingsStore.settings
-          ? t(
-              `general.lang.${settingsStore.settings.language}`,
-            )
-          : t('general.state.loading'),
+        font: settingsStore.font,
+        fontIcon: FONT_ICONS[settingsStore.font],
+        theme: t(`general.theme.${settingsStore.theme}`),
+        language: t(
+          `general.lang.${settingsStore.language}`,
+        ),
         themeIcon:
           THEME_ICONS[
             settingsStore.isDark ? 'dark' : 'light'
