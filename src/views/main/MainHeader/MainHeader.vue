@@ -117,7 +117,7 @@ const emit = defineEmits<{
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   gap: var(--space-8);
-  padding: var(--space-12) var(--space-16);
+  padding: var(--space-12) var(--space-16) 0;
 }
 
 .workspace-dropdown {
@@ -139,12 +139,14 @@ const emit = defineEmits<{
 }
 
 .category-tabs__container {
+  margin-top: var(--space-12);
   padding: 0 var(--space-16);
 
   &--floating {
     position: absolute;
     display: flex;
     justify-content: center;
+    margin-top: 0;
     top: var(--top);
     left: var(--left);
     width: var(--width);

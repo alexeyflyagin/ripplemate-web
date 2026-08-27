@@ -62,7 +62,8 @@ watch(
 
 async function onAddClick() {
   libraryMode.openAdd()
-  if (currentView.value !== 'library') setSelectedNavItemId('library')
+  if (currentView.value !== 'library')
+    setSelectedNavItemId('library')
   await nextPaint()
   termTextFieldRef.value?.focusInput()
 }
@@ -78,7 +79,8 @@ async function onSearch() {
 
 async function onEditCard(cardId: string) {
   libraryMode.openEdit(cardId)
-  if (currentView.value !== 'library') setSelectedNavItemId('library')
+  if (currentView.value !== 'library')
+    setSelectedNavItemId('library')
   await editCard(cardId)
   await nextPaint()
   termTextFieldRef.value?.focusInput()
@@ -100,7 +102,10 @@ async function onEditCard(cardId: string) {
       @search="onSearch"
       @height-changed="(h) => (mainHeaderHeight = h)"
     />
-    <RouterView @edit-card="onEditCard" />
+    <RouterView
+      :header-height="mainHeaderHeight"
+      @edit-card="onEditCard"
+    />
     <div class="bottom-container" ref="bottomContainerEl">
       <div class="bottom-container__content">
         <NavBarGroup
@@ -148,7 +153,7 @@ async function onEditCard(cardId: string) {
   right: 0;
   left: 0;
   flex-shrink: 0;
-  z-index: 1;
+  z-index: 10;
 }
 
 :deep(.home-view),
@@ -183,7 +188,7 @@ async function onEditCard(cardId: string) {
   bottom: 0;
   justify-content: center;
   padding: var(--space-24) 0;
-  z-index: 1;
+  z-index: 10;
   pointer-events: none;
 
   &__content {

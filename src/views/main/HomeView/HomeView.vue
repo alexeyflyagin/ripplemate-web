@@ -13,6 +13,10 @@ import { watch } from 'vue'
 
 const { t } = useI18n()
 
+defineProps<{
+  headerHeight?: number
+}>()
+
 const emit = defineEmits<{
   editCard: [cardId: string]
 }>()
@@ -62,6 +66,7 @@ function loadMore() {
       class="card-list"
       :list-key="`${currentWorkspaceId}-${currentCategoryId}-${cardStore.search}`"
       :has-more="cardStore.hasMore"
+      :header-height="headerHeight"
       :cards="cardStore.cards"
       @load-more="loadMore"
       @contextmenu="openCardMenu"
@@ -117,7 +122,6 @@ function loadMore() {
 }
 
 .card-list {
-  @include fade-mask(to bottom);
   --fade-start: calc(
     var(--main-header-height, 100px) + 80px
   );
