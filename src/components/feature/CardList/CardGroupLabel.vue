@@ -18,7 +18,9 @@ defineProps<{
 @use '@/assets/styles/text-styles' as *;
 
 .card-group-label__container {
-  padding: var(--space-8) var(--space-4) var(--space-4);
+  display: flex;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
 }
 
 .card-group-label__label {
@@ -26,6 +28,8 @@ defineProps<{
   display: block;
   color: var(--text-placeholder);
   padding: var(--space-4) var(--space-12);
+  background-color: var(--surface-60);
+  border-radius: var(--corner-full);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

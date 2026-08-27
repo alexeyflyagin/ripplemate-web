@@ -70,18 +70,22 @@ export function useCardItemMenu(
   }
 
   async function openCardItemMenu(
-    event: MouseEvent,
+    event: MouseEvent | KeyboardEvent,
     cardItem: CardItemData,
   ) {
     const items = computed(() =>
       createCardItemMenu(t, { cardTerm: cardItem.term }),
     )
 
+    const row = event.currentTarget as HTMLElement
+    const targetEl =
+      row.querySelector<HTMLElement>('.card-item') ?? row
+
     overlay = overlayStore.open(ContextMenu, {
-      targetEl: event.currentTarget,
+      targetEl,
       items: items,
       payload: cardItem.id.toString(),
-      placement: 'bottom' as Placement,
+      placement: 'bottom-start' as Placement,
       onClickItem: handleClick,
       onClose: () => overlay.close(),
     })

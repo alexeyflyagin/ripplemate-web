@@ -20,32 +20,39 @@ withDefaults(
 )
 
 const emit = defineEmits<{
-  click: [event: MouseEvent]
+  click: [event: MouseEvent | KeyboardEvent]
   contextmenu: [event: MouseEvent]
 }>()
 </script>
 
 <template>
-  <div>
-    <button
+  <div
+    class="card-item-row"
+    tabindex="0"
+    role="button"
+    @click="emit('click', $event)"
+    @contextmenu.prevent="emit('contextmenu', $event)"
+    @keydown.enter="emit('click', $event)"
+    @keydown.space.prevent="emit('click', $event)"
+  >
+    <div
       class="card-item"
       :class="{
         [`card-item--${position}`]: position !== 'middle',
       }"
-      @click="emit('click', $event)"
-      @contextmenu.prevent="emit('contextmenu', $event)"
     >
       <CardItemTogglableIconButton
         :icon="HeartIcon"
         :icon-selected="HeartFilledIcon"
         v-model:selected="isFavorite"
         :style="{ 'margin-top': '2px' }"
+        @click.stop
       />
       <span class="card-item__term">{{ term }}</span>
       <span class="card-item__time-label">{{
         timeLabel
       }}</span>
-    </button>
+    </div>
   </div>
 </template>
 
@@ -53,30 +60,39 @@ const emit = defineEmits<{
 @use '@/assets/styles/text-styles' as *;
 @use '@/assets/styles/mixins' as *;
 
+.card-item-row {
+  display: flex;
+  outline: none;
+  cursor: pointer;
+
+  &:focus-visible .card-item {
+    @include focus-outline;
+    outline-offset: 0px;
+  }
+}
+
 .card-item {
   @include text-caption;
   position: relative;
-  display: flex;
-  width: 100%;
-  align-items: top;
+  display: inline-flex;
+  align-items: flex-start;
   margin: 0;
   border: none;
   color: var(--text);
   background-color: var(--surface);
-  border-radius: var(--corner-small);
-  padding: 0;
+  border-top-right-radius: var(--corner-xlarge);
+  border-bottom-right-radius: var(--corner-xlarge);
+  border-bottom-left-radius: var(--corner-small);
+  border-top-left-radius: var(--corner-small);
   transition: transform 0.3s var(--ease-bounce);
   user-select: none;
-  cursor: pointer;
 
   &--first {
     border-top-left-radius: var(--corner-xlarge);
-    border-top-right-radius: var(--corner-xlarge);
   }
 
   &--last {
     border-bottom-left-radius: var(--corner-xlarge);
-    border-bottom-right-radius: var(--corner-xlarge);
   }
 
   &--only-one {
@@ -91,16 +107,6 @@ const emit = defineEmits<{
     background-color: var(--text);
     opacity: 0;
     pointer-events: none;
-  }
-
-  &:focus-visible {
-    @include focus-outline;
-    outline-offset: 0px;
-  }
-
-  &:active {
-    transform: scale(0.98);
-    transition: transform 0.08s ease-out;
   }
 
   &__term {

@@ -43,7 +43,10 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   loadMore: []
-  click: [event: MouseEvent, card: CardItemData]
+  click: [
+    event: MouseEvent | KeyboardEvent,
+    card: CardItemData,
+  ]
   contextmenu: [event: MouseEvent, card: CardItemData]
   scroll: [event: Event, isNearBottom: boolean]
 }>()
