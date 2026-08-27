@@ -59,7 +59,7 @@ export function convertCards(
         timeLabel: dateFormatter.timeHHmm(
           dateFormatter.parseBackendDate(card.created_at),
         ),
-        isFavorite: false,
+        isFavorite: card.is_favorite,
         position,
       })
     })

@@ -204,11 +204,11 @@ export const useCardStore = defineStore('card', () => {
       )
       if (current !== requestId) return
       const seen = new Set(seg.items.map((c) => c.id))
-      for (const item of res.items) {
-        if (!seen.has(item.id)) seg.items.push(item)
-      }
-      seg.total = res.total
-      cache.value.set(key, { ...seg })
+      const fresh = res.items.filter((c) => !seen.has(c.id))
+      cache.value.set(key, {
+        items: [...seg.items, ...fresh],
+        total: res.total,
+      })
     } finally {
       if (current === requestId) isLoading.value = false
     }
@@ -217,15 +217,6 @@ export const useCardStore = defineStore('card', () => {
   function clearWorkspaceCache() {
     cache.value.clear()
     cachedWorkspaceId.value = null
-  }
-
-  function forEachSegment(
-    fn: (seg: Segment, key: string) => void,
-  ) {
-    for (const [key, seg] of cache.value) {
-      fn(seg, key)
-      cache.value.set(key, { ...seg })
-    }
   }
 
   async function createCard(
@@ -237,17 +228,19 @@ export const useCardStore = defineStore('card', () => {
 
     const allSeg = cache.value.get('all')
     if (allSeg) {
-      allSeg.items.unshift(created)
-      allSeg.total += 1
-      cache.value.set('all', { ...allSeg })
+      cache.value.set('all', {
+        items: [created, ...allSeg.items],
+        total: allSeg.total + 1,
+      })
     }
     if (created.category_id !== null) {
       const catKey = segmentKey(created.category_id)
       const catSeg = cache.value.get(catKey)
       if (catSeg) {
-        catSeg.items.unshift(created)
-        catSeg.total += 1
-        cache.value.set(catKey, { ...catSeg })
+        cache.value.set(catKey, {
+          items: [created, ...catSeg.items],
+          total: catSeg.total + 1,
+        })
       }
     }
     return created
@@ -265,20 +258,25 @@ export const useCardStore = defineStore('card', () => {
       data,
     )
 
-    forEachSegment((seg, key) => {
+    for (const [key, seg] of cache.value) {
       const idx = seg.items.findIndex((c) => c.id === cardId)
-      if (idx === -1) return
+      if (idx === -1) continue
 
       const inThisCategory =
-        key === 'all' || key === segmentKey(updated.category_id)
+        key === 'all' ||
+        key === segmentKey(updated.category_id)
 
       if (inThisCategory) {
-        seg.items[idx] = { ...seg.items[idx], ...updated }
+        const items = seg.items.slice()
+        items[idx] = { ...items[idx], ...updated }
+        cache.value.set(key, { items, total: seg.total })
       } else {
-        seg.items.splice(idx, 1)
-        seg.total -= 1
+        cache.value.set(key, {
+          items: seg.items.filter((c) => c.id !== cardId),
+          total: seg.total - 1,
+        })
       }
-    })
+    }
 
     if (updated.category_id !== null) {
       const catKey = segmentKey(updated.category_id)
@@ -287,9 +285,10 @@ export const useCardStore = defineStore('card', () => {
         catSeg &&
         !catSeg.items.some((c) => c.id === cardId)
       ) {
-        catSeg.items.unshift(updated)
-        catSeg.total += 1
-        cache.value.set(catKey, { ...catSeg })
+        cache.value.set(catKey, {
+          items: [updated, ...catSeg.items],
+          total: catSeg.total + 1,
+        })
       }
     }
 
@@ -301,11 +300,12 @@ export const useCardStore = defineStore('card', () => {
     cardId: string,
   ) {
     await deleteCardApi(workspaceId, cardId)
-    forEachSegment((seg) => {
-      const before = seg.items.length
-      seg.items = seg.items.filter((c) => c.id !== cardId)
-      if (seg.items.length < before) seg.total -= 1
-    })
+    for (const [key, seg] of cache.value) {
+      const items = seg.items.filter((c) => c.id !== cardId)
+      if (items.length !== seg.items.length) {
+        cache.value.set(key, { items, total: seg.total - 1 })
+      }
+    }
   }
 
   function getCard(workspaceId: string, cardId: string) {

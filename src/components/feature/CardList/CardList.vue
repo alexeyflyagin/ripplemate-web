@@ -1,15 +1,9 @@
 <script setup lang="ts">
-import {
-  computed,
-  nextTick,
-  onMounted,
-  ref,
-  watch,
-} from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import type { CardRead } from '@/api/types'
 import type {
-  CardItemData,
   CardGroupLabelData,
+  CardItemData,
   SpacerData,
 } from './CardList.types'
 import CardItem from './CardItem.vue'
@@ -21,18 +15,9 @@ import {
   type VirtualizerHandle,
 } from 'virtua/vue'
 import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgressBar'
-import {
-  useResizeObserver,
-  useThrottleFn,
-} from '@vueuse/core'
-
-const SMOOTH_SCROLL_MAX_DISTANCE = 2000
-const TOP_THRESHOLD = 600
-const BOTTOM_THRESHOLD = 100
-const SMALL_BOTTOM_THRESHOLD = 10
-let initialized = false
-
-const dateFormatter = useDate()
+import { useResizeObserver, useThrottleFn } from '@vueuse/core'
+import { useCardListScroll } from './useCardListScroll.ts'
+import { useDateBadge } from './useDateBadge.ts'
 
 const props = defineProps<{
   listKey: string
@@ -48,233 +33,136 @@ const emit = defineEmits<{
     card: CardItemData,
   ]
   contextmenu: [event: MouseEvent, card: CardItemData]
-  scroll: [event: Event, isNearBottom: boolean]
 }>()
+
+const dateFormatter = useDate()
 
 const scrollEl = ref<HTMLElement>()
 const wrapEl = ref<HTMLElement>()
 const listRef = ref<VirtualizerHandle>()
-const shift = ref<boolean>(false)
-const distanceToTop = ref<number>(0)
-const distanceToBottom = ref<number>(0)
+const isPositioning = ref(false)
 
-const isNearBottom = computed<boolean>(
-  () => distanceToBottom.value <= BOTTOM_THRESHOLD,
-)
+const headerHeight = computed(() => props.headerHeight ?? 0)
 
 const items = computed<
   (CardItemData | CardGroupLabelData | SpacerData)[]
 >(() => convertCards(props.cards, dateFormatter))
 
-const topVisibleIndex = ref<number>(0)
-
-const currentDateLabel = computed<string | null>(() => {
-  for (let i = topVisibleIndex.value; i >= 0; i--) {
-    const item = items.value[i]
-    if (item?.type === 'label') return item.label
-  }
-  for (const item of items.value) {
-    if (item.type === 'label') return item.label
-  }
-  return null
+const {
+  distanceToBottom,
+  shift,
+  measure,
+  scrollToBottom,
+  onLoadSettled,
+  maybeLoadMore,
+  BOTTOM_THRESHOLD,
+} = useCardListScroll({
+  scrollEl,
+  listRef,
+  itemCount: () => items.value.length,
+  hasMore: () => props.hasMore,
+  onLoadMore: () => emit('loadMore'),
 })
 
-function updateTopVisibleIndex() {
-  const offset = listRef.value?.scrollOffset
-  if (offset === undefined) return
-  const index = listRef.value?.findItemIndex(
-    offset + (props.headerHeight ?? 0),
-  )
-  if (index !== undefined) topVisibleIndex.value = index
+const {
+  currentLabel,
+  isVisible: isBadgeVisible,
+  update: updateBadge,
+  onActivity: onBadgeActivity,
+} = useDateBadge(listRef, items, headerHeight)
+
+function refresh() {
+  measure()
+  updateBadge()
 }
 
-watch(
-  () => props.headerHeight,
-  () => {
-    updateTopVisibleIndex()
-    updateBadgeState()
-  },
-)
-
-const isScrolling = ref<boolean>(false)
-const isAtTop = ref<boolean>(true)
-const isCurrentLabelVisible = ref<boolean>(true)
-let scrollIdleTimer:
-  | ReturnType<typeof setTimeout>
-  | undefined
-
-const isBadgeVisible = computed<boolean>(
-  () =>
-    currentDateLabel.value !== null &&
-    isScrolling.value &&
-    !isAtTop.value &&
-    !isCurrentLabelVisible.value,
-)
-
-function markScrolling() {
-  isScrolling.value = true
-  clearTimeout(scrollIdleTimer)
-  scrollIdleTimer = setTimeout(() => {
-    isScrolling.value = false
-  }, 5000)
-}
-
-function updateBadgeState() {
-  const list = listRef.value
-  if (!list) return
-
-  const scroll = list.scrollOffset ?? 0
-  const visibleTop = scroll + (props.headerHeight ?? 0)
-
-  isAtTop.value = scroll <= 1
-
-  let labelIndex = -1
-  for (let i = topVisibleIndex.value; i >= 0; i--) {
-    if (items.value[i]?.type === 'label') {
-      labelIndex = i
-      break
-    }
-  }
-
-  if (labelIndex === -1) {
-    isCurrentLabelVisible.value = true
-    return
-  }
-
-  const labelBottom =
-    list.getItemOffset(labelIndex) +
-    list.getItemSize(labelIndex)
-  isCurrentLabelVisible.value = labelBottom > visibleTop
-}
-
-function getDistanceToBottom(): number {
-  const el = scrollEl.value
-  if (!el) return 0
-  return el.scrollHeight - el.scrollTop - el.offsetHeight
-}
-
-const onScroll = useThrottleFn((event: Event) => {
-  distanceToBottom.value = getDistanceToBottom()
-  distanceToTop.value = scrollEl.value?.scrollTop ?? 0
-  updateTopVisibleIndex()
-  updateBadgeState()
-  markScrolling()
-  emit('scroll', event, isNearBottom.value)
+const onScroll = useThrottleFn(() => {
+  refresh()
+  onBadgeActivity()
+  maybeLoadMore()
 }, 100)
 
-function scrollToBottom(options?: { smooth: boolean }) {
-  if (
-    options?.smooth &&
-    distanceToBottom.value > SMOOTH_SCROLL_MAX_DISTANCE
-  ) {
-    const offset =
-      distanceToBottom.value - SMOOTH_SCROLL_MAX_DISTANCE
-    listRef.value?.scrollBy(offset)
-  }
-
-  listRef.value?.scrollToIndex(items.value.length - 1, {
-    align: 'end',
-    smooth: options?.smooth,
-  })
+function onScrollEnd() {
+  refresh()
+  maybeLoadMore()
 }
 
-async function loadMore() {
-  if (shift.value) return
-
-  shift.value = true
-  const timer = setTimeout(() => {
-    stop()
-    shift.value = false
-  }, 5000)
-
-  const stop = watch(items, async () => {
-    await nextTick()
-    shift.value = false
-    clearTimeout(timer)
-    stop()
-  })
-
-  emit('loadMore')
-}
+let revealFallback: ReturnType<typeof setTimeout> | undefined
 
 watch(
   () => props.listKey,
   () => {
-    initialized = false
-    const stop = watch(items, () => {
-      scrollToBottom()
-      stop()
-    })
+    isPositioning.value = true
+    clearTimeout(revealFallback)
+    revealFallback = setTimeout(() => {
+      isPositioning.value = false
+    }, 400)
   },
 )
 
+watch(items, async () => {
+  if (!isPositioning.value) return
+  await nextTick()
+  scrollToBottom()
+  await nextTick()
+  isPositioning.value = false
+  clearTimeout(revealFallback)
+})
+
+let prevFirstId: string | null = null
 watch(
-  () => [...props.cards],
-  async (value, oldValue) => {
-    if (!initialized) {
-      initialized = true
+  () => props.cards,
+  async (value) => {
+    const firstId = value[0]?.id ?? null
+    const prependedNewer =
+      value.length > 0 &&
+      prevFirstId !== null &&
+      firstId !== prevFirstId
+    prevFirstId = firstId
+
+    onLoadSettled()
+
+    if (prependedNewer) {
+      await nextTick()
+      scrollToBottom(true)
       return
     }
 
-    if (
-      value.length > oldValue.length &&
-      oldValue[0] !== value[0]
-    ) {
-      await nextTick()
-      scrollToBottom({ smooth: true })
-    }
+    await nextTick()
+    refresh()
+    maybeLoadMore()
   },
-  { deep: true },
 )
 
-async function maybeLoadMore() {
-  if (
-    distanceToTop.value < TOP_THRESHOLD &&
-    props.hasMore &&
-    !shift.value
-  ) {
-    await loadMore()
-  }
-}
-
-watch(distanceToTop, maybeLoadMore)
-
-function onScrollEnd() {
-  distanceToTop.value = scrollEl.value?.scrollTop ?? 0
-  updateBadgeState()
-  maybeLoadMore()
-}
-
 useResizeObserver(wrapEl, () => {
-  if (distanceToBottom.value < SMALL_BOTTOM_THRESHOLD)
+  if (distanceToBottom.value < BOTTOM_THRESHOLD) {
     scrollToBottom()
-})
-useResizeObserver(scrollEl, () => {
-  if (distanceToBottom.value < BOTTOM_THRESHOLD)
-    scrollToBottom()
+  }
 })
 
 onMounted(() => {
+  prevFirstId = props.cards[0]?.id ?? null
   scrollToBottom()
-  updateTopVisibleIndex()
+  refresh()
 })
 </script>
 
 <template>
   <div class="card-list">
     <div
-      v-if="currentDateLabel"
+      v-if="currentLabel"
       class="card-list__date-badge"
       :class="{
         'card-list__date-badge--visible': isBadgeVisible,
       }"
     >
-      {{ currentDateLabel }}
+      {{ currentLabel }}
     </div>
 
     <div
       ref="scrollEl"
       class="card-scroll"
+      :class="{ 'card-scroll--positioning': isPositioning }"
       @scroll="onScroll"
     >
       <div :style="{ flexGrow: 1 }" />
@@ -282,11 +170,11 @@ onMounted(() => {
       <div ref="wrapEl">
         <Virtualizer
           ref="listRef"
-          @scroll-end="onScrollEnd"
           :data="items"
           :buffer-size="600"
           :shift="shift"
           :scroll-ref="scrollEl"
+          @scroll-end="onScrollEnd"
           #default="{ item }"
         >
           <div
@@ -299,15 +187,7 @@ onMounted(() => {
           <CircularProgressBar
             v-if="item.type === 'top-spacer' && hasMore"
             :key="'progress-bar'"
-            :style="{
-              display: 'flex',
-              'justify-content': 'center',
-              maxWidth: 'var(--max-content-width-680)',
-              marginRight: 'auto',
-              marginLeft: 'auto',
-              padding: '0 var(--space-16)',
-              boxSizing: 'border-box',
-            }"
+            class="card-list__progress"
           />
           <div
             v-if="item.type === 'bottom-spacer'"
@@ -320,32 +200,18 @@ onMounted(() => {
           <CardGroupLabel
             v-if="item.type === 'label'"
             :key="item.key"
+            class="card-list__row"
             :label="item.label"
-            :style="{
-              maxWidth: 'var(--max-content-width-680)',
-              marginRight: 'auto',
-              marginLeft: 'auto',
-              paddingLeft: 'var(--space-16)',
-              paddingRight: 'var(--space-16)',
-              boxSizing: 'border-box',
-            }"
           />
           <CardItem
             v-if="item.type === 'card'"
             :key="`c-${item.id}`"
-            v-bind="item"
-            :style="{
-              maxWidth: 'var(--max-content-width-680)',
-              marginBottom:
-                item.position === 'last'
-                  ? '0'
-                  : 'var(--space-2)',
-              marginRight: 'auto',
-              marginLeft: 'auto',
-              paddingLeft: 'var(--space-16)',
-              paddingRight: 'var(--space-16)',
-              boxSizing: 'border-box',
+            class="card-list__row card-list__card"
+            :class="{
+              'card-list__card--last':
+                item.position === 'last',
             }"
+            v-bind="item"
             @contextmenu="emit('contextmenu', $event, item)"
             @click="emit('click', $event, item)"
           />
@@ -367,12 +233,37 @@ onMounted(() => {
   min-height: 0;
 }
 
+.card-list__row {
+  max-width: var(--max-content-width-680);
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: var(--space-16);
+  padding-right: var(--space-16);
+  box-sizing: border-box;
+}
+
+.card-list__card {
+  margin-bottom: var(--space-2);
+
+  &--last {
+    margin-bottom: 0;
+  }
+}
+
+.card-list__progress {
+  display: flex;
+  justify-content: center;
+  max-width: var(--max-content-width-680);
+  margin-right: auto;
+  margin-left: auto;
+  padding: 0 var(--space-16);
+  box-sizing: border-box;
+}
+
 .card-list__date-badge {
   @include elevation-2;
   @include background-blur-15;
   @include text-label;
-  opacity: 0;
-  transition: opacity 0.2s ease;
   position: absolute;
   top: calc(
     var(--main-header-height, 0px) + var(--space-12)
@@ -385,6 +276,8 @@ onMounted(() => {
   border: var(--stroke-subtle) solid var(--border-muted);
   background: var(--surface-80);
   color: var(--text-muted);
+  opacity: 0;
+  transition: opacity 0.2s ease;
   pointer-events: none;
   user-select: none;
   white-space: nowrap;
@@ -394,16 +287,20 @@ onMounted(() => {
   opacity: 1;
 }
 
+.card-scroll--positioning {
+  visibility: hidden;
+}
+
 .card-scroll {
   @include fade-mask(to bottom);
   display: flex;
   height: 100%;
-  overscroll-behavior: none;
+  min-height: 0;
   flex-direction: column;
   overflow-y: auto;
+  overscroll-behavior: none;
   overflow-anchor: none;
   scrollbar-width: none;
-  min-height: 0;
 
   &::-webkit-scrollbar {
     display: none;
