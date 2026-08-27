@@ -10,14 +10,14 @@ export function useCurrentCategory() {
   const currentCategoryId = computed<number | undefined>(
     () => {
       const id = Number(route.query.category)
-      return id && categoryStore.findCategoryById(id)
+      return id && categoryStore.getCachedById(id)
         ? id
         : undefined
     },
   )
 
   const currentCategory = computed(() =>
-    categoryStore.findCategoryById(currentCategoryId.value),
+    categoryStore.getCachedById(currentCategoryId.value),
   )
 
   function selectCategory(id: number | undefined) {

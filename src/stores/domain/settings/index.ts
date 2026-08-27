@@ -35,10 +35,7 @@ export const useSettingsStore = defineStore(
     const font = useStorage<Font>(FONT_KEY, 'serif')
     const language = useStorage<Locale>(LOCALE_KEY, 'auto')
 
-    const { isDark, effectiveTheme } = useTheme(
-      theme,
-      oled,
-    )
+    const { isDark, effectiveTheme } = useTheme(theme, oled)
 
     const isOled = computed(() => oled.value)
     useFont(font)

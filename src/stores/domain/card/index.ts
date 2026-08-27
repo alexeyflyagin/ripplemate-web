@@ -12,6 +12,7 @@ import type {
   CardRead,
   CardUpdate,
 } from '@/api/types'
+import { useDebounceFn } from '@vueuse/core'
 
 const PAGE_SIZE = 100
 
@@ -21,7 +22,6 @@ export const useCardStore = defineStore('card', () => {
   const isLoading = ref(false)
   const search = ref<string | null>(null)
 
-  let searchTimeout: ReturnType<typeof setTimeout>
   let requestId = 0
 
   const hasMore = computed(
@@ -130,19 +130,16 @@ export const useCardStore = defineStore('card', () => {
     total.value -= 1
   }
 
-  async function getCard(
-    workspaceId: number,
-    cardId: number,
-  ) {
+  function getCard(workspaceId: number, cardId: number) {
     return getCardApi(workspaceId, cardId)
   }
 
-  function setSearch(value: string | null) {
-    clearTimeout(searchTimeout)
-    searchTimeout = setTimeout(() => {
+  const setSearch = useDebounceFn(
+    (value: string | null) => {
       search.value = value
-    }, 300)
-  }
+    },
+    300,
+  )
 
   return {
     cards,

@@ -18,19 +18,17 @@ export const useCategoryStore = defineStore(
   () => {
     const categories = ref<CategoryRead[] | null>(null)
 
+    function getCachedById(id: number | undefined | null) {
+      if (!categories.value || !id) return undefined
+      return categories.value.find((c) => c.id === id)
+    }
+
     async function loadCategories(workspaceId: number) {
       categories.value = await getCategoriesApi(workspaceId)
     }
 
     function clearCategories() {
       categories.value = null
-    }
-
-    function findCategoryById(
-      id: number | undefined | null,
-    ) {
-      if (!categories.value || !id) return undefined
-      return categories.value.find((c) => c.id === id)
     }
 
     async function updateCategory(
@@ -83,7 +81,7 @@ export const useCategoryStore = defineStore(
       workspaceId: number,
       id: number,
     ) {
-      const found = findCategoryById(id)
+      const found = getCachedById(id)
       if (found) return found
       return await getCategoryApi(workspaceId, id)
     }
@@ -92,7 +90,7 @@ export const useCategoryStore = defineStore(
       categories,
       loadCategories,
       clearCategories,
-      findCategoryById,
+      getCachedById,
       updateCategory,
       createCategory,
       deleteCategory,

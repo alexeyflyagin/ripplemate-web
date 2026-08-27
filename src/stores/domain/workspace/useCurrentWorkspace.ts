@@ -10,16 +10,14 @@ export function useCurrentWorkspace() {
   const currentWorkspaceId = computed<number | undefined>(
     () => {
       const id = Number(route.params.workspaceId)
-      return id && workspaceStore.findWorkspaceById(id)
+      return id && workspaceStore.getCachedById(id)
         ? id
         : undefined
     },
   )
 
   const currentWorkspace = computed(() =>
-    workspaceStore.findWorkspaceById(
-      currentWorkspaceId.value,
-    ),
+    workspaceStore.getCachedById(currentWorkspaceId.value),
   )
 
   function selectWorkspace(id: number) {
