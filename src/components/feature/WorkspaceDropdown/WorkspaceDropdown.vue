@@ -38,6 +38,7 @@ function onClick(e: MouseEvent) {
 <style lang="scss" scoped>
 @use '@/assets/styles/text-styles' as *;
 @use '@/assets/styles/mixins' as *;
+@use '@/assets/styles/blur' as *;
 
 .drop-down {
   @include text-caption-emphasized;
@@ -82,6 +83,7 @@ function onClick(e: MouseEvent) {
   }
 
   &--selected {
+    @include background-blur-15;
     color: var(--text);
 
     &::after {
