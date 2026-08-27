@@ -2,7 +2,7 @@
 import { useNavBar } from './useNavBar.ts'
 import MainHeader from '@/views/main/MainHeader/MainHeader.vue'
 import { NavBar, FAB } from '@/components/ui/NavBar'
-import PlusIcon from '~icons/icons-16/plus'
+import SearchIcon from '~icons/icons-16/search'
 import { TermTextField } from '@/components/ui/TextField/TermTextField'
 import { computed, ref, watch } from 'vue'
 
@@ -52,17 +52,10 @@ const {
 const hasText = computed(() => !!termFieldValue.value.trim())
 
 const showTumbler = computed(
-  () =>
-    mode.value === 'default' &&
-    (currentView.value === 'flow' || !hasText.value),
+  () => mode.value === 'default' && !hasText.value,
 )
-const showFab = computed(
-  () => mode.value === 'default' && currentView.value === 'flow',
-)
-const showField = computed(
-  () =>
-    mode.value !== 'default' ||
-    currentView.value === 'library',
+const showSearchButton = computed(
+  () => mode.value === 'default' && !hasText.value,
 )
 
 const { currentWorkspaceId } = useCurrentWorkspace()
@@ -76,13 +69,6 @@ watch(
   },
   { immediate: true },
 )
-
-async function onAddClick() {
-  if (currentView.value !== 'library')
-    setSelectedNavItemId('library')
-  await nextPaint()
-  termTextFieldRef.value?.focusInput()
-}
 
 async function onSearch() {
   if (currentView.value !== 'library') {
@@ -114,8 +100,6 @@ async function onEditCard(cardId: string) {
   >
     <MainHeader
       class="main-header"
-      :show-search-button="mode !== 'search'"
-      @search="onSearch"
       @height-changed="(h) => (mainHeaderHeight = h)"
     />
     <RouterView
@@ -132,14 +116,7 @@ async function onEditCard(cardId: string) {
             :selected-id="currentView"
             @update:selected-id="setSelectedNavItemId"
           />
-          <FAB
-            v-if="showFab"
-            class="composer__fab"
-            :icon="PlusIcon"
-            @click="onAddClick"
-          />
           <TermTextField
-            v-if="showField"
             ref="termTextFieldRef"
             class="composer__field"
             :placeholder="placeholder"
@@ -152,6 +129,12 @@ async function onEditCard(cardId: string) {
             @submit-click="onSubmitClick"
             @secondary-click="termFieldValue = ''"
             @leading-click="onLeadingClick"
+          />
+          <FAB
+            v-if="showSearchButton"
+            class="composer__search"
+            :icon="SearchIcon"
+            @click="onSearch"
           />
         </div>
         <div v-if="isKeyboardOpen" class="scrim" />
@@ -194,14 +177,17 @@ async function onEditCard(cardId: string) {
 }
 
 .composer__nav-bar,
-.composer__fab {
+.composer__search {
+  flex: none;
+  align-self: center;
   pointer-events: auto;
 }
 
 .composer__field {
   @include elevation-3;
-  align-self: flex-end;
-  flex-grow: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-self: center;
   pointer-events: auto;
 }
 

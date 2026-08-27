@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { BaseIconButton } from '@/components/ui/Button/BaseIconButton'
-import SearchIcon from '~icons/icons-16/search'
 import MoreIcon from '~icons/icons-16/more'
 import { WorkspaceDropdown } from '@/components/feature/WorkspaceDropdown'
 import { useI18n } from 'vue-i18n'
@@ -29,10 +28,6 @@ const {
   openWorkspaceMenu,
 } = useWorkspaceMenu(t)
 
-defineProps<{
-  showSearchButton?: boolean
-}>()
-
 const EXPANDED_MIN_WIDTH = 680
 const isExpanded = ref<boolean>(false)
 
@@ -57,7 +52,6 @@ useResizeObserver(containerEl, (entries) => {
 })
 
 const emit = defineEmits<{
-  search: []
   heightChanged: [height: number]
 }>()
 </script>
@@ -73,11 +67,6 @@ const emit = defineEmits<{
       />
       <div class="slot-for-tabs" ref="slot" />
       <div class="action-group">
-        <BaseIconButton
-          v-if="showSearchButton"
-          :icon="SearchIcon"
-          @click="emit('search')"
-        />
         <BaseIconButton
           :icon="MoreIcon"
           @click="openMoreMenu"
