@@ -11,6 +11,8 @@ export interface CardItemData {
   timeLabel: string
   isFavorite?: boolean
   position?: CardPosition
+  isNew?: boolean
+  isLeaving?: boolean
 }
 
 export interface CardGroupLabelData {

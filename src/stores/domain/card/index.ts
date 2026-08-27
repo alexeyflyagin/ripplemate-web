@@ -28,6 +28,12 @@ function segmentKey(categoryId: string | null): string {
 export const useCardStore = defineStore('card', () => {
   const cache = ref<Map<string, Segment>>(new Map())
   const cachedWorkspaceId = ref<string | null>(null)
+  const justCreatedIds = ref<Set<string>>(new Set())
+  const deletingIds = ref<Set<string>>(new Set())
+  const pendingDelete = new Map<
+    string,
+    { api: boolean; anim: boolean }
+  >()
 
   const searchResults = ref<CardRead[]>([])
   const searchTotal = ref(0)
@@ -68,6 +74,9 @@ export const useCardStore = defineStore('card', () => {
   function resetWorkspaceIfChanged(workspaceId: string) {
     if (cachedWorkspaceId.value !== workspaceId) {
       cache.value.clear()
+      justCreatedIds.value = new Set()
+      deletingIds.value = new Set()
+      pendingDelete.clear()
       cachedWorkspaceId.value = workspaceId
     }
   }
@@ -226,6 +235,10 @@ export const useCardStore = defineStore('card', () => {
   ) {
     const created = await createCardApi(workspaceId, data)
 
+    justCreatedIds.value = new Set(justCreatedIds.value).add(
+      created.id,
+    )
+
     const allSeg = cache.value.get('all')
     if (allSeg) {
       cache.value.set('all', {
@@ -295,11 +308,7 @@ export const useCardStore = defineStore('card', () => {
     return updated
   }
 
-  async function deleteCard(
-    workspaceId: string,
-    cardId: string,
-  ) {
-    await deleteCardApi(workspaceId, cardId)
+  function removeFromCache(cardId: string) {
     for (const [key, seg] of cache.value) {
       const items = seg.items.filter((c) => c.id !== cardId)
       if (items.length !== seg.items.length) {
@@ -308,12 +317,62 @@ export const useCardStore = defineStore('card', () => {
     }
   }
 
+  function stopDeleting(cardId: string) {
+    pendingDelete.delete(cardId)
+    if (!deletingIds.value.has(cardId)) return
+    const next = new Set(deletingIds.value)
+    next.delete(cardId)
+    deletingIds.value = next
+  }
+
+  function tryFinalizeDelete(cardId: string) {
+    const state = pendingDelete.get(cardId)
+    if (!state || !state.api || !state.anim) return
+    stopDeleting(cardId)
+    removeFromCache(cardId)
+  }
+
+  async function deleteCard(
+    workspaceId: string,
+    cardId: string,
+  ) {
+    pendingDelete.set(cardId, { api: false, anim: false })
+    deletingIds.value = new Set(deletingIds.value).add(cardId)
+
+    try {
+      await deleteCardApi(workspaceId, cardId)
+    } catch (error) {
+      stopDeleting(cardId)
+      throw error
+    }
+
+    const state = pendingDelete.get(cardId)
+    if (state) {
+      state.api = true
+      tryFinalizeDelete(cardId)
+    }
+  }
+
+  function onCardLeaveDone(cardId: string) {
+    const state = pendingDelete.get(cardId)
+    if (!state) return
+    state.anim = true
+    tryFinalizeDelete(cardId)
+  }
+
   function getCard(workspaceId: string, cardId: string) {
     for (const seg of cache.value.values()) {
       const found = seg.items.find((c) => c.id === cardId)
       if (found) return Promise.resolve(found)
     }
     return getCardApi(workspaceId, cardId)
+  }
+
+  function markCardSeen(cardId: string) {
+    if (!justCreatedIds.value.has(cardId)) return
+    const next = new Set(justCreatedIds.value)
+    next.delete(cardId)
+    justCreatedIds.value = next
   }
 
   const setSearch = useDebounceFn(
@@ -325,6 +384,10 @@ export const useCardStore = defineStore('card', () => {
 
   return {
     cards,
+    justCreatedIds,
+    markCardSeen,
+    deletingIds,
+    onCardLeaveDone,
     total,
     isLoading,
     hasMore,

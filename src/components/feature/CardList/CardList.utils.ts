@@ -10,6 +10,8 @@ import type { CardRead } from '@/api/types'
 export function convertCards(
   cards: CardRead[],
   dateFormatter: ReturnType<typeof useDate>,
+  newIds?: Set<string>,
+  leavingIds?: Set<string>,
 ) {
   const result: (
     | CardItemData
@@ -60,6 +62,8 @@ export function convertCards(
           dateFormatter.parseBackendDate(card.created_at),
         ),
         isFavorite: card.is_favorite,
+        isNew: newIds?.has(card.id) ?? false,
+        isLeaving: leavingIds?.has(card.id) ?? false,
         position,
       })
     })

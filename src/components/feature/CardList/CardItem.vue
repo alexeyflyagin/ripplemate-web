@@ -13,16 +13,31 @@ withDefaults(
     term: string
     timeLabel: string
     position?: CardPosition
+    isNew?: boolean
+    isLeaving?: boolean
   }>(),
   {
     position: 'middle',
+    isNew: false,
+    isLeaving: false,
   },
 )
 
 const emit = defineEmits<{
   click: [event: MouseEvent | KeyboardEvent]
   contextmenu: [event: MouseEvent]
+  enterDone: []
+  leaveDone: []
 }>()
+
+function onAnimationEnd(event: AnimationEvent) {
+  const name = event.animationName
+  if (name.startsWith('card-item-enter')) {
+    emit('enterDone')
+  } else if (name.startsWith('card-item-leave')) {
+    emit('leaveDone')
+  }
+}
 </script>
 
 <template>
@@ -39,7 +54,10 @@ const emit = defineEmits<{
       class="card-item"
       :class="{
         [`card-item--${position}`]: position !== 'middle',
+        'card-item--new': isNew,
+        'card-item--leaving': isLeaving,
       }"
+      @animationend="onAnimationEnd"
     >
       <CardItemTogglableIconButton
         :icon="HeartIcon"
@@ -86,6 +104,7 @@ const emit = defineEmits<{
   border-top-left-radius: var(--corner-small);
   transition: transform 0.3s var(--ease-bounce);
   user-select: none;
+  transform-origin: left bottom;
 
   &--first {
     border-top-left-radius: var(--corner-xlarge);
@@ -124,6 +143,39 @@ const emit = defineEmits<{
     align-content: center;
     margin-right: var(--space-12);
     color: var(--text-placeholder);
+  }
+}
+
+.card-item--new {
+  animation: card-item-enter 0.5s
+    cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes card-item-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.card-item--leaving {
+  animation: card-item-leave 0.2s
+    cubic-bezier(0.4, 0, 1, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes card-item-leave {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.85);
   }
 }
 </style>

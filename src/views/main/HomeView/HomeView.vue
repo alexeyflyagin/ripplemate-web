@@ -67,9 +67,13 @@ function loadMore() {
       :has-more="cardStore.hasMore"
       :header-height="headerHeight"
       :cards="cardStore.cards"
+      :new-ids="cardStore.justCreatedIds"
+      :leaving-ids="cardStore.deletingIds"
       @load-more="loadMore"
       @contextmenu="openCardMenu"
       @click="openCardMenu"
+      @card-seen="cardStore.markCardSeen"
+      @card-leave-done="cardStore.onCardLeaveDone"
     />
     <CircularProgressBar
       v-else-if="cardStore.isLoading"

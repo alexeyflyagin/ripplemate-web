@@ -18,12 +18,15 @@ import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgres
 import { useResizeObserver, useThrottleFn } from '@vueuse/core'
 import { useCardListScroll } from './useCardListScroll.ts'
 import { useDateBadge } from './useDateBadge.ts'
+import { nextPaint } from '@/utils/nextPaint.ts'
 
 const props = defineProps<{
   listKey: string
   cards: CardRead[]
   hasMore: boolean
   headerHeight?: number
+  newIds?: Set<string>
+  leavingIds?: Set<string>
 }>()
 
 const emit = defineEmits<{
@@ -33,6 +36,8 @@ const emit = defineEmits<{
     card: CardItemData,
   ]
   contextmenu: [event: MouseEvent, card: CardItemData]
+  cardSeen: [cardId: string]
+  cardLeaveDone: [cardId: string]
 }>()
 
 const dateFormatter = useDate()
@@ -46,7 +51,14 @@ const headerHeight = computed(() => props.headerHeight ?? 0)
 
 const items = computed<
   (CardItemData | CardGroupLabelData | SpacerData)[]
->(() => convertCards(props.cards, dateFormatter))
+>(() =>
+  convertCards(
+    props.cards,
+    dateFormatter,
+    props.newIds,
+    props.leavingIds,
+  ),
+)
 
 const {
   distanceToBottom,
@@ -102,9 +114,14 @@ watch(
 
 watch(items, async () => {
   if (!isPositioning.value) return
+
   await nextTick()
   scrollToBottom()
-  await nextTick()
+
+  await nextPaint()
+  refresh()
+  scrollToBottom()
+
   isPositioning.value = false
   clearTimeout(revealFallback)
 })
@@ -214,6 +231,8 @@ onMounted(() => {
             v-bind="item"
             @contextmenu="emit('contextmenu', $event, item)"
             @click="emit('click', $event, item)"
+            @enter-done="emit('cardSeen', item.id)"
+            @leave-done="emit('cardLeaveDone', item.id)"
           />
         </Virtualizer>
       </div>
