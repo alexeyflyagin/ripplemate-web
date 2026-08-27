@@ -139,9 +139,22 @@ watch(
   { deep: true },
 )
 
-watch(distanceToTop, async (v) => {
-  if (v < TOP_THRESHOLD && props.hasMore) await loadMore()
-})
+async function maybeLoadMore() {
+  if (
+    distanceToTop.value < TOP_THRESHOLD &&
+    props.hasMore &&
+    !shift.value
+  ) {
+    await loadMore()
+  }
+}
+
+watch(distanceToTop, maybeLoadMore)
+
+function onScrollEnd() {
+  distanceToTop.value = scrollEl.value?.scrollTop ?? 0
+  maybeLoadMore()
+}
 
 useResizeObserver(wrapEl, () => {
   if (distanceToBottom.value < SMALL_BOTTOM_THRESHOLD)
@@ -168,6 +181,7 @@ onMounted(() => {
     <div ref="wrapEl">
       <Virtualizer
         ref="listRef"
+        @scroll-end="onScrollEnd"
         :data="items"
         :buffer-size="600"
         :shift="shift"
