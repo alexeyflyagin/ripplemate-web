@@ -111,7 +111,10 @@ async function onEditCard(cardId: string) {
     />
     <div class="bottom-container" ref="bottomContainerEl">
       <div class="bottom-container__content">
-        <div class="composer">
+        <div
+          class="composer"
+          :class="{ 'composer--field-collapsed': isFlow }"
+        >
           <NavBar
             v-if="showControls"
             class="composer__nav-bar"
@@ -211,6 +214,10 @@ async function onEditCard(cardId: string) {
 
 .composer__search {
   margin-left: var(--space-8);
+}
+
+.composer--field-collapsed .composer__search {
+  margin-left: 0;
 }
 
 .composer__control--collapsed {
