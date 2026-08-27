@@ -16,13 +16,13 @@ export function createWorkspace(
 }
 
 export function getWorkspaceById(
-  workspaceId: number,
+  workspaceId: string,
 ): Promise<WorkspaceRead> {
   return get<WorkspaceRead>(`/workspaces/${workspaceId}`)
 }
 
 export function updateWorkspace(
-  workspaceId: number,
+  workspaceId: string,
   data: WorkspaceUpdate,
 ): Promise<WorkspaceRead> {
   return patchJson<WorkspaceRead>(
@@ -32,7 +32,7 @@ export function updateWorkspace(
 }
 
 export function deleteWorkspace(
-  workspaceId: number,
+  workspaceId: string,
 ): Promise<void> {
   return del(`/workspaces/${workspaceId}`)
 }

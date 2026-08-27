@@ -17,6 +17,8 @@ import type { Placement } from '@floating-ui/dom'
 import { computed, ref, watch } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 
+const RESERVED_TAB_IDS = ['all', 'add']
+
 export function useCategoryMenu(t: ComposerTranslation) {
   const MENU_OFFSET = 4
 
@@ -27,31 +29,29 @@ export function useCategoryMenu(t: ComposerTranslation) {
   const selectedId = ref<string | undefined>()
   let overlay: OverlayHandle
 
-  function isId(id: string): boolean {
-    const categoryId = Number(id)
-    return !isNaN(categoryId)
+  function isCategoryId(id: string): boolean {
+    return !RESERVED_TAB_IDS.includes(id)
   }
 
   async function handleMenuClick(
     item: MenuItemData,
     payload?: string,
   ) {
-    const categoryId = Number(payload)
-    if (isNaN(categoryId)) return
+    if (!payload) return
 
     switch (item.id) {
       case 'edit':
-        editCategory(categoryId)
+        editCategory(payload)
         overlay.close()
         break
       case 'delete':
-        deleteCategory(categoryId)
+        deleteCategory(payload)
         overlay.close()
         break
     }
   }
 
-  async function deleteCategory(categoryId: number) {
+  async function deleteCategory(categoryId: string) {
     const category = await categoryStore.getCategory(
       currentWorkspaceId.value!,
       categoryId,
@@ -78,14 +78,14 @@ export function useCategoryMenu(t: ComposerTranslation) {
     )
   }
 
-  async function editCategory(categoryId: number) {
+  async function editCategory(categoryId: string) {
     const editOverlay = overlayStore.open(CategoryDialog, {
       categoryId: categoryId,
       onClose: () => editOverlay.close(),
     })
   }
 
-  function openMenu(event: MouseEvent, categoryId: number) {
+  function openMenu(event: MouseEvent, categoryId: string) {
     if (!categoryStore.categories) return
 
     const category = categoryStore.categories.find(
@@ -97,12 +97,12 @@ export function useCategoryMenu(t: ComposerTranslation) {
       createCategoryMenu(t, category.name),
     )
 
-    selectedId.value = categoryId.toString()
+    selectedId.value = categoryId
 
     overlay = overlayStore.open(ContextMenu, {
       targetEl: event.currentTarget,
       items: menuItems,
-      payload: categoryId.toString(),
+      payload: categoryId,
       placement: 'bottom' as Placement,
       offsetOptions: {
         mainAxis: MENU_OFFSET,
@@ -119,16 +119,14 @@ export function useCategoryMenu(t: ComposerTranslation) {
   }
 
   function onTabClick(event: MouseEvent, id: string) {
-    if (!isId(id)) return
-    const categoryId = Number(id)
-    if (currentCategoryId.value !== categoryId) return
-    openMenu(event, categoryId)
+    if (!isCategoryId(id)) return
+    if (currentCategoryId.value !== id) return
+    openMenu(event, id)
   }
 
   function onTabContextMenu(event: MouseEvent, id: string) {
-    if (!isId(id)) return
-    const categoryId = Number(id)
-    openMenu(event, categoryId)
+    if (!isCategoryId(id)) return
+    openMenu(event, id)
   }
 
   return { selectedId, onTabClick, onTabContextMenu }

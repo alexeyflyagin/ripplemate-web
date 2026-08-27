@@ -11,8 +11,8 @@ export const useCardFlowStore = defineStore(
     let requestId = 0
 
     async function nextCard(
-      workspaceId: number,
-      categoryId: number | null,
+      workspaceId: string,
+      categoryId: string | null,
     ) {
       isLoading.value = true
       const current = ++requestId

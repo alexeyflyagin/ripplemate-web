@@ -62,7 +62,7 @@ function authorizedHome(): RouteLocationNamedRaw {
   if (first) {
     return {
       name: 'library',
-      params: { workspaceId: String(first.id) },
+      params: { workspaceId: first.id },
     }
   }
   return { name: 'root' }

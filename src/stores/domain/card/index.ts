@@ -29,8 +29,8 @@ export const useCardStore = defineStore('card', () => {
   )
 
   async function loadCards(
-    workspaceId: number,
-    categoryId: number | null,
+    workspaceId: string,
+    categoryId: string | null,
   ) {
     cards.value = []
     isLoading.value = true
@@ -52,8 +52,8 @@ export const useCardStore = defineStore('card', () => {
   }
 
   async function loadMore(
-    workspaceId: number,
-    categoryId: number | null,
+    workspaceId: string,
+    categoryId: string | null,
   ) {
     if (isLoading.value || !hasMore.value) return
 
@@ -76,8 +76,8 @@ export const useCardStore = defineStore('card', () => {
   }
 
   async function createCard(
-    workspaceId: number,
-    categoryId: number | null,
+    workspaceId: string,
+    categoryId: string | null,
     data: CardCreate,
   ) {
     const created = await createCardApi(workspaceId, data)
@@ -93,8 +93,8 @@ export const useCardStore = defineStore('card', () => {
   }
 
   async function updateCard(
-    workspaceId: number,
-    categoryId: number | null,
+    workspaceId: string,
+    categoryId: string | null,
     cardId: number,
     data: CardUpdate,
   ) {
@@ -122,7 +122,7 @@ export const useCardStore = defineStore('card', () => {
   }
 
   async function deleteCard(
-    workspaceId: number,
+    workspaceId: string,
     cardId: number,
   ) {
     await deleteCardApi(workspaceId, cardId)
@@ -130,7 +130,7 @@ export const useCardStore = defineStore('card', () => {
     total.value -= 1
   }
 
-  function getCard(workspaceId: number, cardId: number) {
+  function getCard(workspaceId: string, cardId: number) {
     return getCardApi(workspaceId, cardId)
   }
 

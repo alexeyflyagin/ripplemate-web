@@ -43,9 +43,7 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
       return
     }
 
-    const itemId = Number(item.id)
-    if (isNaN(itemId)) return
-    selectWorkspace(itemId)
+    selectWorkspace(item.id)
     overlay.close()
   }
 
@@ -88,7 +86,7 @@ export function useWorkspaceMenu(t: ComposerTranslation) {
       items: items,
       placemet: 'bottom-start' as Placement,
       initialScrollToId:
-        currentWorkspaceId.value?.toString() ?? undefined,
+        currentWorkspaceId.value ?? undefined,
       onClickItem: handleItemClick,
       onClose: () => overlay.close(),
     })

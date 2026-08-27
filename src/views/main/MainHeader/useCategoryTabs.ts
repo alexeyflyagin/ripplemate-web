@@ -15,15 +15,10 @@ export function useCategoryTabs(t: ComposerTranslation) {
 
   const currentTabId = computed<string>({
     get() {
-      return currentCategoryId.value
-        ? currentCategoryId.value.toString()
-        : 'all'
+      return currentCategoryId.value ?? 'all'
     },
     set(id) {
-      const categoryId = Number(id)
-      selectCategory(
-        isNaN(categoryId) ? undefined : categoryId,
-      )
+      selectCategory(id === 'all' ? undefined : id)
     },
   })
 
@@ -36,7 +31,7 @@ export function useCategoryTabs(t: ComposerTranslation) {
     return [
       createAllTab(t),
       ...categoryStore.categories.map<TabItemData>((c) => ({
-        id: c.id.toString(),
+        id: c.id,
         label: c.name,
         selectable: true,
       })),

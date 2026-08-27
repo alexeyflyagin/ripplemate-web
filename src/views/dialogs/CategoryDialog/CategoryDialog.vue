@@ -22,7 +22,7 @@ import { ApiError } from '@/api/client'
 import RefreshIcon from '~icons/icons-16/refresh'
 
 const props = defineProps<{
-  categoryId?: number
+  categoryId?: string
 }>()
 
 const MAX_CATEGORY_NAME_LENGTH = 24

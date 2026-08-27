@@ -6,7 +6,7 @@ import type {
 } from '../types'
 
 export function createCategory(
-  workspaceId: number,
+  workspaceId: string,
   data: CategoryCreate,
 ): Promise<CategoryRead> {
   return postJson<CategoryRead>(
@@ -16,7 +16,7 @@ export function createCategory(
 }
 
 export function getCategories(
-  workspaceId: number,
+  workspaceId: string,
 ): Promise<CategoryRead[]> {
   return get<CategoryRead[]>(
     `/workspaces/${workspaceId}/categories`,
@@ -24,8 +24,8 @@ export function getCategories(
 }
 
 export function getCategory(
-  workspaceId: number,
-  categoryId: number,
+  workspaceId: string,
+  categoryId: string,
 ): Promise<CategoryRead> {
   return get<CategoryRead>(
     `/workspaces/${workspaceId}/categories/${categoryId}`,
@@ -33,8 +33,8 @@ export function getCategory(
 }
 
 export function updateCategory(
-  workspaceId: number,
-  categoryId: number,
+  workspaceId: string,
+  categoryId: string,
   data: CategoryUpdate,
 ): Promise<CategoryRead> {
   return patchJson<CategoryRead>(
@@ -44,8 +44,8 @@ export function updateCategory(
 }
 
 export function deleteCategory(
-  workspaceId: number,
-  categoryId: number,
+  workspaceId: string,
+  categoryId: string,
 ): Promise<void> {
   return del(
     `/workspaces/${workspaceId}/categories/${categoryId}`,

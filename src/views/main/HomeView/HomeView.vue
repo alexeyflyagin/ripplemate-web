@@ -31,9 +31,13 @@ watch(
     currentCategoryId.value,
     cardStore.search,
   ],
-  ([wsId, catId]) => {
+  () => {
+    const wsId = currentWorkspaceId.value
     if (wsId) {
-      cardStore.loadCards(wsId as number, (catId as number) ?? null)
+      cardStore.loadCards(
+        wsId,
+        currentCategoryId.value ?? null,
+      )
     } else {
       cardStore.cards = []
       cardStore.total = 0

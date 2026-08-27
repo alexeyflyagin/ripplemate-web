@@ -7,10 +7,11 @@ export function useCurrentCategory() {
   const router = useRouter()
   const categoryStore = useCategoryStore()
 
-  const currentCategoryId = computed<number | undefined>(
+  const currentCategoryId = computed<string | undefined>(
     () => {
-      const id = Number(route.query.category)
-      return id && categoryStore.getCachedById(id)
+      const id = route.query.category
+      return typeof id === 'string' &&
+        categoryStore.getCachedById(id)
         ? id
         : undefined
     },
@@ -20,10 +21,10 @@ export function useCurrentCategory() {
     categoryStore.getCachedById(currentCategoryId.value),
   )
 
-  function selectCategory(id: number | undefined) {
+  function selectCategory(id: string | undefined) {
     const query = { ...route.query }
     if (id) {
-      query.category = String(id)
+      query.category = id
     } else {
       delete query.category
     }

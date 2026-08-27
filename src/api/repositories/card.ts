@@ -7,7 +7,7 @@ import type {
 } from '../types'
 
 export function createCard(
-  workspaceId: number,
+  workspaceId: string,
   data: CardCreate,
 ): Promise<CardRead> {
   return postJson<CardRead>(
@@ -17,8 +17,8 @@ export function createCard(
 }
 
 export function getCards(
-  workspaceId: number,
-  categoryId?: number | null,
+  workspaceId: string,
+  categoryId?: string | null,
   search?: string | null,
   limit?: number | null,
   offset?: number | null,
@@ -26,7 +26,7 @@ export function getCards(
   const params = new URLSearchParams()
 
   if (categoryId != null)
-    params.set('category_id', String(categoryId))
+    params.set('category_id', categoryId)
   if (search != null) params.set('search', search)
   if (limit != null) params.set('limit', String(limit))
   if (offset != null) params.set('offset', String(offset))
@@ -38,13 +38,13 @@ export function getCards(
 }
 
 export function getRandomCard(
-  workspaceId: number,
-  categoryId?: number | null,
+  workspaceId: string,
+  categoryId?: string | null,
 ): Promise<CardRead> {
   const params = new URLSearchParams()
 
   if (categoryId != null)
-    params.set('category_id', String(categoryId))
+    params.set('category_id', categoryId)
 
   const query = params.toString()
   const path = `/workspaces/${workspaceId}/cards/random${query ? `?${query}` : ''}`
@@ -53,7 +53,7 @@ export function getRandomCard(
 }
 
 export function getCard(
-  workspaceId: number,
+  workspaceId: string,
   cardId: number,
 ): Promise<CardRead> {
   return get<CardRead>(
@@ -62,7 +62,7 @@ export function getCard(
 }
 
 export function updateCard(
-  workspaceId: number,
+  workspaceId: string,
   cardId: number,
   data: CardUpdate,
 ): Promise<CardRead> {
@@ -73,7 +73,7 @@ export function updateCard(
 }
 
 export function deleteCard(
-  workspaceId: number,
+  workspaceId: string,
   cardId: number,
 ): Promise<void> {
   return del(`/workspaces/${workspaceId}/cards/${cardId}`)

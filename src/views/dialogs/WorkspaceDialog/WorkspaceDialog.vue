@@ -21,7 +21,7 @@ import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspa
 import RefreshIcon from '~icons/icons-16/refresh'
 
 const props = defineProps<{
-  workspaceId?: number
+  workspaceId?: string
 }>()
 
 const MAX_WORKSPACE_NAME_LENGTH = 24

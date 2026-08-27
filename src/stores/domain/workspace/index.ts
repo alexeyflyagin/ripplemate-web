@@ -18,7 +18,7 @@ export const useWorkspaceStore = defineStore(
   () => {
     const workspaces = ref<WorkspaceRead[]>([])
 
-    function getCachedById(id: number | undefined | null) {
+    function getCachedById(id: string | undefined | null) {
       if (!id) return undefined
       return workspaces.value.find((w) => w.id === id)
     }
@@ -28,7 +28,7 @@ export const useWorkspaceStore = defineStore(
       return workspaces.value
     }
 
-    async function getWorkspace(id: number) {
+    async function getWorkspace(id: string) {
       const found = getCachedById(id)
       if (found) return found
 
@@ -38,7 +38,7 @@ export const useWorkspaceStore = defineStore(
     }
 
     async function updateWorkspace(
-      id: number,
+      id: string,
       data: WorkspaceUpdate,
     ) {
       const updated = await updateWorkspaceApi(id, data)
@@ -54,7 +54,7 @@ export const useWorkspaceStore = defineStore(
       return created
     }
 
-    async function deleteWorkspace(id: number) {
+    async function deleteWorkspace(id: string) {
       await deleteWorkspaceApi(id)
       workspaces.value = workspaces.value.filter(
         (w) => w.id !== id,

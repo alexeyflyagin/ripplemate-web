@@ -35,19 +35,21 @@ export interface AccountRead {
 // Card
 export interface CardCreate {
   term: string
-  category_id?: number | null
+  category_id?: string | null
 }
 
 export interface CardRead {
   id: number
   term: string
-  category_id: number | null
+  category_id: string | null
   created_at: string
+  is_favorite: boolean
 }
 
 export interface CardUpdate {
   term?: string | null
-  category_id?: number | null
+  category_id?: string | null
+  is_favorite?: boolean | null
 }
 
 export interface CardListResponse {
@@ -63,7 +65,7 @@ export interface CategoryCreate {
 }
 
 export interface CategoryRead {
-  id: number
+  id: string
   name: string
   created_at: string
 }
@@ -83,7 +85,7 @@ export interface WorkspaceCreate {
 }
 
 export interface WorkspaceRead {
-  id: number
+  id: string
   name: string
   created_at: string
 }

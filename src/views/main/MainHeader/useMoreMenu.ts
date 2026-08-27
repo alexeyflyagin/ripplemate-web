@@ -90,7 +90,7 @@ export function useMoreMenu(t: ComposerTranslation) {
           if (next) {
             router.push({
               name: 'library',
-              params: { workspaceId: String(next.id) },
+              params: { workspaceId: next.id },
             })
           } else {
             router.push({ name: 'root' })

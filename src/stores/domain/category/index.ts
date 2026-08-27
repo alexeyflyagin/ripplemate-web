@@ -18,12 +18,12 @@ export const useCategoryStore = defineStore(
   () => {
     const categories = ref<CategoryRead[] | null>(null)
 
-    function getCachedById(id: number | undefined | null) {
+    function getCachedById(id: string | undefined | null) {
       if (!categories.value || !id) return undefined
       return categories.value.find((c) => c.id === id)
     }
 
-    async function loadCategories(workspaceId: number) {
+    async function loadCategories(workspaceId: string) {
       categories.value = await getCategoriesApi(workspaceId)
     }
 
@@ -32,8 +32,8 @@ export const useCategoryStore = defineStore(
     }
 
     async function updateCategory(
-      workspaceId: number,
-      id: number,
+      workspaceId: string,
+      id: string,
       data: CategoryUpdate,
     ) {
       const updated = await updateCategoryApi(
@@ -50,7 +50,7 @@ export const useCategoryStore = defineStore(
     }
 
     async function createCategory(
-      workspaceId: number,
+      workspaceId: string,
       data: CategoryCreate,
     ) {
       if (!categories.value)
@@ -65,8 +65,8 @@ export const useCategoryStore = defineStore(
     }
 
     async function deleteCategory(
-      workspaceId: number,
-      id: number,
+      workspaceId: string,
+      id: string,
     ) {
       if (!categories.value)
         throw new Error('Categories were not loaded')
@@ -78,8 +78,8 @@ export const useCategoryStore = defineStore(
     }
 
     async function getCategory(
-      workspaceId: number,
-      id: number,
+      workspaceId: string,
+      id: string,
     ) {
       const found = getCachedById(id)
       if (found) return found

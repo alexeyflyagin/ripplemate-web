@@ -7,10 +7,11 @@ export function useCurrentWorkspace() {
   const route = useRoute()
   const workspaceStore = useWorkspaceStore()
 
-  const currentWorkspaceId = computed<number | undefined>(
+  const currentWorkspaceId = computed<string | undefined>(
     () => {
-      const id = Number(route.params.workspaceId)
-      return id && workspaceStore.getCachedById(id)
+      const id = route.params.workspaceId
+      return typeof id === 'string' &&
+        workspaceStore.getCachedById(id)
         ? id
         : undefined
     },
@@ -20,10 +21,10 @@ export function useCurrentWorkspace() {
     workspaceStore.getCachedById(currentWorkspaceId.value),
   )
 
-  function selectWorkspace(id: number) {
+  function selectWorkspace(id: string) {
     router.push({
       name: 'library',
-      params: { workspaceId: String(id) },
+      params: { workspaceId: id },
     })
   }
 
