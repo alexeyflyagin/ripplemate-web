@@ -102,7 +102,7 @@ async function handleSubmit() {
       password: password.value,
       display_name: name.value,
     })
-    router.push('/')
+    router.push({ name: 'root' })
   } catch (e) {
     if (e instanceof ApiError && e.status === 400) {
       emailError.value = t(

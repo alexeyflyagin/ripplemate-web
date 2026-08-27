@@ -68,7 +68,7 @@ async function handleSubmit() {
 
   try {
     await authStore.login(email.value, password.value)
-    router.push('/')
+    router.push({ name: 'root' })
   } catch (e) {
     if (e instanceof ApiError && e.status === 400) {
       passwordError.value = t(
