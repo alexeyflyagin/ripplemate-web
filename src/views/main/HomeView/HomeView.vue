@@ -43,8 +43,7 @@ watch(
         currentCategoryId.value ?? null,
       )
     } else {
-      cardStore.cards = []
-      cardStore.total = 0
+      cardStore.clearWorkspaceCache()
     }
   },
   { immediate: true },
