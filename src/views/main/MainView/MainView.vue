@@ -76,7 +76,7 @@ async function onSearch() {
   termTextFieldRef.value?.focusInput()
 }
 
-async function onEditCard(cardId: number) {
+async function onEditCard(cardId: string) {
   libraryMode.openEdit(cardId)
   if (currentView.value !== 'library') setSelectedNavItemId('library')
   await editCard(cardId)

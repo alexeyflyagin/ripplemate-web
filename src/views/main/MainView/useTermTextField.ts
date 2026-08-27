@@ -47,7 +47,7 @@ export function useTermTextField(t: ComposerTranslation) {
     { immediate: true },
   )
 
-  async function editCard(cardId: number) {
+  async function editCard(cardId: string) {
     if (!currentWorkspaceId.value) return
     editedCard.value = await cardStore.getCard(
       currentWorkspaceId.value,

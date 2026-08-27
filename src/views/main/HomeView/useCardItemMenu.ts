@@ -16,7 +16,7 @@ import type { ComposerTranslation } from 'vue-i18n'
 
 export function useCardItemMenu(
   t: ComposerTranslation,
-  options?: { editCard: (cardId: number) => void },
+  options?: { editCard: (cardId: string) => void },
 ) {
   const cardStore = useCardStore()
   const overlayStore = useOverlayStore()
@@ -27,8 +27,8 @@ export function useCardItemMenu(
     item: MenuItemData,
     payload?: string,
   ) {
-    const cardId = Number(payload)
-    if (isNaN(cardId)) return
+    if (payload === undefined) return
+    const cardId = payload
 
     switch (item.id) {
       case 'edit':
@@ -42,7 +42,7 @@ export function useCardItemMenu(
     }
   }
 
-  async function openCardDeleteDialog(cardId: number) {
+  async function openCardDeleteDialog(cardId: string) {
     if (!currentWorkspaceId.value) return
     const card = await cardStore.getCard(
       currentWorkspaceId.value,

@@ -18,7 +18,7 @@ export const useLibraryModeStore = defineStore(
     const internalMode = ref<
       'default' | 'add-card' | 'edit-card'
     >('default')
-    const editingCardId = ref<number | null>(null)
+    const editingCardId = ref<string | null>(null)
 
     watch(
       () => route.params.workspaceId,
@@ -53,7 +53,7 @@ export const useLibraryModeStore = defineStore(
       internalMode.value = 'add-card'
     }
 
-    function openEdit(cardId: number) {
+    function openEdit(cardId: string) {
       editingCardId.value = cardId
       internalMode.value = 'edit-card'
     }

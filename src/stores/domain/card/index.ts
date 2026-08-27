@@ -95,7 +95,7 @@ export const useCardStore = defineStore('card', () => {
   async function updateCard(
     workspaceId: string,
     categoryId: string | null,
-    cardId: number,
+    cardId: string,
     data: CardUpdate,
   ) {
     const oldCard = cards.value.find((c) => c.id === cardId)
@@ -123,14 +123,14 @@ export const useCardStore = defineStore('card', () => {
 
   async function deleteCard(
     workspaceId: string,
-    cardId: number,
+    cardId: string,
   ) {
     await deleteCardApi(workspaceId, cardId)
     cards.value = cards.value.filter((c) => c.id !== cardId)
     total.value -= 1
   }
 
-  function getCard(workspaceId: string, cardId: number) {
+  function getCard(workspaceId: string, cardId: string) {
     return getCardApi(workspaceId, cardId)
   }
 

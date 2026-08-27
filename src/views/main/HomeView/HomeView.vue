@@ -14,7 +14,7 @@ import { watch } from 'vue'
 const { t } = useI18n()
 
 const emit = defineEmits<{
-  editCard: [cardId: number]
+  editCard: [cardId: string]
 }>()
 
 const cardStore = useCardStore()

@@ -27,7 +27,7 @@ export interface LoginResponse {
 }
 
 export interface AccountRead {
-  id: number
+  id: string
   display_name: string
   created_at: string
 }
@@ -39,7 +39,7 @@ export interface CardCreate {
 }
 
 export interface CardRead {
-  id: number
+  id: string
   term: string
   category_id: string | null
   created_at: string

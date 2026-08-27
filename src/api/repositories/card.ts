@@ -54,7 +54,7 @@ export function getRandomCard(
 
 export function getCard(
   workspaceId: string,
-  cardId: number,
+  cardId: string,
 ): Promise<CardRead> {
   return get<CardRead>(
     `/workspaces/${workspaceId}/cards/${cardId}`,
@@ -63,7 +63,7 @@ export function getCard(
 
 export function updateCard(
   workspaceId: string,
-  cardId: number,
+  cardId: string,
   data: CardUpdate,
 ): Promise<CardRead> {
   return patchJson<CardRead>(
@@ -74,7 +74,7 @@ export function updateCard(
 
 export function deleteCard(
   workspaceId: string,
-  cardId: number,
+  cardId: string,
 ): Promise<void> {
   return del(`/workspaces/${workspaceId}/cards/${cardId}`)
 }
