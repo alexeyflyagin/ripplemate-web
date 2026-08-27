@@ -196,6 +196,11 @@ onMounted(async () => {
 .text-area {
   @include fade-mask(to bottom);
   @include text-body;
+
+  @media (pointer: coarse) {
+    font-size: 16px;
+  }
+
   flex: 1 1 0;
   min-width: 0;
   min-height: 0;

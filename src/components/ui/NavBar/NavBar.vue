@@ -151,10 +151,18 @@ onMounted(async () => {
   @include background-blur-15;
   position: relative;
   display: inline-flex;
+  height: 52px;
   border-radius: var(--corner-full);
   background-color: var(--surface-60);
   outline: var(--stroke-subtle) solid var(--border-muted);
   overflow: hidden;
+}
+
+.nav-bar__nav-items {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
+  height: 100%;
 }
 
 .nav-bar__active-indicator-container {

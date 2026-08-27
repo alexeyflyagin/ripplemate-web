@@ -296,6 +296,11 @@ defineExpose({ focusInput })
 
 .text-field__input {
   @include text-body;
+
+  @media (pointer: coarse) {
+    font-size: 16px;
+  }
+
   vertical-align: top;
   border: none;
   outline: none;

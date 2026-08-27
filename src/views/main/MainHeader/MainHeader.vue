@@ -106,7 +106,8 @@ const emit = defineEmits<{
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   gap: var(--space-8);
-  padding: var(--space-12) var(--space-16) 0;
+  padding: calc(var(--space-12) + env(safe-area-inset-top))
+    var(--space-16) 0;
 }
 
 .workspace-dropdown {

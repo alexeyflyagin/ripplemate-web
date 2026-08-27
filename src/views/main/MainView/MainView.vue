@@ -57,9 +57,7 @@ const showControls = computed(
   () => mode.value === 'default',
 )
 
-const isFlow = computed(
-  () => currentView.value === 'flow',
-)
+const isFlow = computed(() => currentView.value === 'flow')
 
 const { currentWorkspaceId } = useCurrentWorkspace()
 const categoryStore = useCategoryStore()
@@ -74,6 +72,7 @@ watch(
 )
 
 async function onSearch() {
+  termTextFieldRef.value?.focusInput()
   if (currentView.value !== 'library') {
     await goToView('library')
   }
@@ -83,6 +82,7 @@ async function onSearch() {
 }
 
 async function onEditCard(cardId: string) {
+  termTextFieldRef.value?.focusInput()
   libraryMode.openEdit(cardId)
   if (currentView.value !== 'library')
     setSelectedNavItemId('library')
@@ -186,6 +186,8 @@ async function onEditCard(cardId: string) {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  min-width: 0;
   min-height: 54px;
 }
 
@@ -260,12 +262,14 @@ async function onEditCard(cardId: string) {
   left: 0;
   bottom: 0;
   justify-content: center;
-  padding: var(--space-24) 0;
+  padding: var(--space-24) 0
+    calc(var(--space-24) + env(safe-area-inset-bottom));
   z-index: 10;
   pointer-events: none;
 
   &__content {
     flex: 1;
+    min-width: 0;
     max-width: var(--max-content-width-680);
     padding: 0 var(--space-16);
     box-sizing: border-box;
