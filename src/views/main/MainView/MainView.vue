@@ -49,13 +49,16 @@ const {
   onLeadingClick,
 } = useTermTextField(t)
 
-const hasText = computed(() => !!termFieldValue.value.trim())
-
-const showTumbler = computed(
-  () => mode.value === 'default' && !hasText.value,
+const hasText = computed(
+  () => !!termFieldValue.value.trim(),
 )
-const showSearchButton = computed(
-  () => mode.value === 'default' && !hasText.value,
+
+const showControls = computed(
+  () => mode.value === 'default',
+)
+
+const isFlow = computed(
+  () => currentView.value === 'flow',
 )
 
 const { currentWorkspaceId } = useCurrentWorkspace()
@@ -110,8 +113,11 @@ async function onEditCard(cardId: string) {
       <div class="bottom-container__content">
         <div class="composer">
           <NavBar
-            v-if="showTumbler"
+            v-if="showControls"
             class="composer__nav-bar"
+            :class="{
+              'composer__control--collapsed': hasText,
+            }"
             :nav-items="navItems"
             :selected-id="currentView"
             @update:selected-id="setSelectedNavItemId"
@@ -119,6 +125,10 @@ async function onEditCard(cardId: string) {
           <TermTextField
             ref="termTextFieldRef"
             class="composer__field"
+            :class="{
+              'composer__field--collapsed': isFlow,
+              'composer__field--nowrap': !hasText,
+            }"
             :placeholder="placeholder"
             :action-caption="actionCaptionData"
             v-model:model-value="termFieldValue"
@@ -131,8 +141,11 @@ async function onEditCard(cardId: string) {
             @leading-click="onLeadingClick"
           />
           <FAB
-            v-if="showSearchButton"
+            v-if="showControls"
             class="composer__search"
+            :class="{
+              'composer__control--collapsed': hasText,
+            }"
             :icon="SearchIcon"
             @click="onSearch"
           />
@@ -171,24 +184,62 @@ async function onEditCard(cardId: string) {
 
 .composer {
   display: flex;
-  gap: var(--space-8);
   align-items: center;
   justify-content: center;
+  min-height: 54px;
 }
 
 .composer__nav-bar,
 .composer__search {
   flex: none;
   align-self: center;
+  overflow: hidden;
+  max-width: 240px;
+  opacity: 1;
   pointer-events: auto;
+  transition:
+    max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    margin 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.composer__nav-bar {
+  margin-right: var(--space-8);
+}
+
+.composer__search {
+  margin-left: var(--space-8);
+}
+
+.composer__control--collapsed {
+  max-width: 0;
+  margin-right: 0;
+  margin-left: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .composer__field {
   @include elevation-3;
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
+  overflow: hidden;
   align-self: center;
   pointer-events: auto;
+  transition:
+    flex-grow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    margin 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.composer__field--nowrap :deep(.text-area) {
+  white-space: nowrap;
+  overflow: hidden;
+}
+.composer__field--collapsed {
+  flex-grow: 0;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .scrim {

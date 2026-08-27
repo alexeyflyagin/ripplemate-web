@@ -48,6 +48,7 @@ watch(
 function onInput() {
   const el = textAreaEl.value
   if (!el) return
+  if (el.offsetWidth < 40) return
 
   el.style.height = 'auto'
   el.style.height = `${el.scrollHeight}px`
@@ -85,6 +86,7 @@ function onEnter(e: KeyboardEvent) {
 onMounted(async () => {
   textResizeObserver = new ResizeObserver(async () => {
     await nextTick()
+    onInput()
     updateFade()
   })
 
@@ -187,6 +189,7 @@ onMounted(async () => {
   position: relative;
   display: flex;
   flex: 1;
+  min-width: 0;
   align-items: flex-end;
 }
 
@@ -194,6 +197,7 @@ onMounted(async () => {
   @include fade-mask(to bottom);
   @include text-body;
   flex: 1 1 0;
+  min-width: 0;
   min-height: 0;
   padding: var(--space-8);
   scroll-padding: var(--space-8);
