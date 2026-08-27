@@ -82,10 +82,10 @@ export function useTermTextField(t: ComposerTranslation) {
 
   const placeholder = computed<string | undefined>(() => {
     switch (libraryMode.mode) {
-      case 'add-card':
-        return t('general.label.term')
       case 'search':
         return t('general.action.search')
+      case 'default':
+        return t('general.label.newCard')
       default:
         return undefined
     }
@@ -100,8 +100,10 @@ export function useTermTextField(t: ComposerTranslation) {
           icon: CloseIcon,
           color: 'danger',
         }
-      default:
+      case 'search':
         return { icon: CaretLeftIcon }
+      default:
+        return undefined
     }
   })
 
@@ -109,11 +111,11 @@ export function useTermTextField(t: ComposerTranslation) {
     RoundIconButtonData | undefined
   >(() => {
     switch (libraryMode.mode) {
-      case 'add-card':
+      case 'default':
+        if (!termFieldValue.value.trim()) return undefined
         return {
           icon: PlusIcon,
           color: 'accent',
-          disabled: !termFieldValue.value.trim(),
         }
       case 'edit-card':
         return {
@@ -144,7 +146,7 @@ export function useTermTextField(t: ComposerTranslation) {
     if (!currentWorkspaceId.value) return
 
     switch (libraryMode.mode) {
-      case 'add-card':
+      case 'default':
         await cardStore.createCard(
           currentWorkspaceId.value,
           currentCategoryId.value ?? null,

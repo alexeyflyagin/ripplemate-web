@@ -5,7 +5,6 @@ import { onKeyStroke } from '@vueuse/core'
 
 export type LibraryMode =
   | 'default'
-  | 'add-card'
   | 'edit-card'
   | 'search'
 
@@ -15,9 +14,9 @@ export const useLibraryModeStore = defineStore(
     const route = useRoute()
     const router = useRouter()
 
-    const internalMode = ref<
-      'default' | 'add-card' | 'edit-card'
-    >('default')
+    const internalMode = ref<'default' | 'edit-card'>(
+      'default',
+    )
     const editingCardId = ref<string | null>(null)
 
     watch(
@@ -48,11 +47,6 @@ export const useLibraryModeStore = defineStore(
       return internalMode.value
     })
 
-    function openAdd() {
-      editingCardId.value = null
-      internalMode.value = 'add-card'
-    }
-
     function openEdit(cardId: string) {
       editingCardId.value = cardId
       internalMode.value = 'edit-card'
@@ -81,7 +75,6 @@ export const useLibraryModeStore = defineStore(
       mode,
       editingCardId,
       searchQuery,
-      openAdd,
       openEdit,
       openSearch,
       setSearchQuery,

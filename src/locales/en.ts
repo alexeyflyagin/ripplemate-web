@@ -36,6 +36,7 @@ export default {
       theme: 'Theme',
       oled: 'OLED',
       term: 'Term',
+      newCard: 'New card',
       results: 'Results',
       editing: 'Editing',
       name: 'Name',

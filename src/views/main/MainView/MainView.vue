@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useNavBar } from './useNavBar.ts'
 import MainHeader from '@/views/main/MainHeader/MainHeader.vue'
-import NavBarGroup from './NavBarGroup.vue'
+import { NavBar, FAB } from '@/components/ui/NavBar'
+import PlusIcon from '~icons/icons-16/plus'
 import { TermTextField } from '@/components/ui/TextField/TermTextField'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import { useI18n } from 'vue-i18n'
 import { useTermTextField } from './useTermTextField.ts'
@@ -48,6 +49,22 @@ const {
   onLeadingClick,
 } = useTermTextField(t)
 
+const hasText = computed(() => !!termFieldValue.value.trim())
+
+const showTumbler = computed(
+  () =>
+    mode.value === 'default' &&
+    (currentView.value === 'flow' || !hasText.value),
+)
+const showFab = computed(
+  () => mode.value === 'default' && currentView.value === 'flow',
+)
+const showField = computed(
+  () =>
+    mode.value !== 'default' ||
+    currentView.value === 'library',
+)
+
 const { currentWorkspaceId } = useCurrentWorkspace()
 const categoryStore = useCategoryStore()
 
@@ -61,7 +78,6 @@ watch(
 )
 
 async function onAddClick() {
-  libraryMode.openAdd()
   if (currentView.value !== 'library')
     setSelectedNavItemId('library')
   await nextPaint()
@@ -108,28 +124,36 @@ async function onEditCard(cardId: string) {
     />
     <div class="bottom-container" ref="bottomContainerEl">
       <div class="bottom-container__content">
-        <NavBarGroup
-          v-if="mode === 'default'"
-          :nab-bar-items="navItems"
-          :selected-id="currentView"
-          @update:selected-id="setSelectedNavItemId"
-          @on-add-click="onAddClick"
-        />
-        <TermTextField
-          v-else
-          ref="termTextFieldRef"
-          class="term-text-field"
-          :placeholder="placeholder"
-          :action-caption="actionCaptionData"
-          v-model:model-value="termFieldValue"
-          :max-length="255"
-          :leading-button="leadingButtonData"
-          :submit-button="sumbitButtonData"
-          :secondary-button="secondaryButtonData"
-          @submit-click="onSubmitClick"
-          @secondary-click="termFieldValue = ''"
-          @leading-click="onLeadingClick"
-        />
+        <div class="composer">
+          <NavBar
+            v-if="showTumbler"
+            class="composer__nav-bar"
+            :nav-items="navItems"
+            :selected-id="currentView"
+            @update:selected-id="setSelectedNavItemId"
+          />
+          <FAB
+            v-if="showFab"
+            class="composer__fab"
+            :icon="PlusIcon"
+            @click="onAddClick"
+          />
+          <TermTextField
+            v-if="showField"
+            ref="termTextFieldRef"
+            class="composer__field"
+            :placeholder="placeholder"
+            :action-caption="actionCaptionData"
+            v-model:model-value="termFieldValue"
+            :max-length="255"
+            :leading-button="leadingButtonData"
+            :submit-button="sumbitButtonData"
+            :secondary-button="secondaryButtonData"
+            @submit-click="onSubmitClick"
+            @secondary-click="termFieldValue = ''"
+            @leading-click="onLeadingClick"
+          />
+        </div>
         <div v-if="isKeyboardOpen" class="scrim" />
       </div>
     </div>
@@ -162,7 +186,19 @@ async function onEditCard(cardId: string) {
   min-height: 0;
 }
 
-.term-text-field {
+.composer {
+  display: flex;
+  gap: var(--space-8);
+  align-items: center;
+  justify-content: center;
+}
+
+.composer__nav-bar,
+.composer__fab {
+  pointer-events: auto;
+}
+
+.composer__field {
   @include elevation-3;
   align-self: flex-end;
   flex-grow: 1;

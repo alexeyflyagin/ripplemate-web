@@ -38,6 +38,7 @@ const ru: typeof en = {
       theme: 'Тема',
       oled: 'OLED',
       term: 'Термин',
+      newCard: 'Новая карточка',
       results: 'Найдено',
       editing: 'Изменение',
       name: 'Название',
