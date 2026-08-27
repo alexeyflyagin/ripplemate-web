@@ -1,7 +1,7 @@
 import {
   createRouter,
   createWebHistory,
-  type RouteLocationRaw,
+  type RouteLocationNamedRaw,
 } from 'vue-router'
 import LoginView from '@/views/auth/LoginView.vue'
 import RegisterView from '@/views/auth/RegisterView.vue'
@@ -56,7 +56,7 @@ const router = createRouter({
   ],
 })
 
-function authorizedHome(): RouteLocationRaw {
+function authorizedHome(): RouteLocationNamedRaw {
   const workspaceStore = useWorkspaceStore()
   const first = workspaceStore.workspaces[0]
   if (first) {
@@ -86,11 +86,7 @@ router.beforeEach(async (to) => {
 
   if (to.name === 'root' && auth.isAuthorized) {
     const target = authorizedHome()
-    if (
-      typeof target === 'object' &&
-      'name' in target &&
-      target.name !== 'root'
-    ) {
+    if (target.name !== 'root') {
       return target
     }
   }
