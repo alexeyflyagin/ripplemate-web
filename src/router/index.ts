@@ -76,12 +76,10 @@ router.beforeEach(async (to) => {
     await auth.initializeUserData()
   }
 
-  // Неавторизованный на приватном маршруте -> login
   if (!isPublic && !auth.isAuthorized) {
     return { name: 'login' }
   }
 
-  // Авторизованный на публичном (login/signup) -> домой
   if (isPublic && auth.isAuthorized) {
     return authorizedHome()
   }
