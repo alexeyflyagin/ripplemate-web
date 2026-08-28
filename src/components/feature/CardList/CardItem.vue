@@ -4,20 +4,18 @@ import HeartIcon from '~icons/icons-16/heart'
 import HeartFilledIcon from '~icons/icons-16/heart-filled'
 import type { CardPosition } from './CardList.types.ts'
 
-const isFavorite = defineModel<boolean>('isFavorite', {
-  default: false,
-})
-
 withDefaults(
   defineProps<{
     term: string
     timeLabel: string
     position?: CardPosition
+    isFavorite?: boolean
     isNew?: boolean
     isLeaving?: boolean
   }>(),
   {
     position: 'middle',
+    isFavorite: false,
     isNew: false,
     isLeaving: false,
   },
@@ -28,6 +26,7 @@ const emit = defineEmits<{
   contextmenu: [event: MouseEvent]
   enterDone: []
   leaveDone: []
+  toggleFavorite: []
 }>()
 
 function onAnimationEnd(event: AnimationEvent) {
@@ -62,9 +61,9 @@ function onAnimationEnd(event: AnimationEvent) {
       <CardItemTogglableIconButton
         :icon="HeartIcon"
         :icon-selected="HeartFilledIcon"
-        v-model:selected="isFavorite"
+        :selected="isFavorite"
         :style="{ 'margin-top': '2px' }"
-        @click.stop
+        @click.stop="emit('toggleFavorite')"
       />
       <span class="card-item__term">{{ term }}</span>
       <span class="card-item__time-label">{{

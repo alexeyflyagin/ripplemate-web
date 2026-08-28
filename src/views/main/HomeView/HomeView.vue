@@ -29,6 +29,11 @@ const { openCardMenu } = useCardItemMenu(t, {
   editCard: (cardId) => emit('editCard', cardId),
 })
 
+function onToggleFavorite(cardId: string) {
+  if (!currentWorkspaceId.value) return
+  cardStore.toggleFavorite(currentWorkspaceId.value, cardId)
+}
+
 watch(
   () => [
     currentWorkspaceId.value,
@@ -74,6 +79,7 @@ function loadMore() {
       @click="openCardMenu"
       @card-seen="cardStore.markCardSeen"
       @card-leave-done="cardStore.onCardLeaveDone"
+      @toggle-favorite="onToggleFavorite"
     />
     <CircularProgressBar
       v-else-if="cardStore.isLoading"

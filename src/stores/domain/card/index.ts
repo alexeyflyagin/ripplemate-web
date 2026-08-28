@@ -308,6 +308,46 @@ export const useCardStore = defineStore('card', () => {
     return updated
   }
 
+  function patchCardInCache(
+    cardId: string,
+    patch: Partial<CardRead>,
+  ) {
+    for (const [key, seg] of cache.value) {
+      const idx = seg.items.findIndex((c) => c.id === cardId)
+      if (idx === -1) continue
+      const items = seg.items.slice()
+      items[idx] = { ...items[idx], ...patch }
+      cache.value.set(key, { items, total: seg.total })
+    }
+  }
+
+  async function toggleFavorite(
+    workspaceId: string,
+    cardId: string,
+  ) {
+    let current: boolean | undefined
+    for (const seg of cache.value.values()) {
+      const found = seg.items.find((c) => c.id === cardId)
+      if (found) {
+        current = found.is_favorite
+        break
+      }
+    }
+    if (current === undefined) return
+
+    const next = !current
+    patchCardInCache(cardId, { is_favorite: next })
+
+    try {
+      await updateCardApi(workspaceId, cardId, {
+        is_favorite: next,
+      })
+    } catch (error) {
+      patchCardInCache(cardId, { is_favorite: current })
+      throw error
+    }
+  }
+
   function removeFromCache(cardId: string) {
     for (const [key, seg] of cache.value) {
       const items = seg.items.filter((c) => c.id !== cardId)
@@ -397,6 +437,7 @@ export const useCardStore = defineStore('card', () => {
     loadMore,
     createCard,
     updateCard,
+    toggleFavorite,
     deleteCard,
     getCard,
     clearWorkspaceCache,

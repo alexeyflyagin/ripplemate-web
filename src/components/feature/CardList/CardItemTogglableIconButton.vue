@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 
-const selected = defineModel<boolean>('selected', {
-  default: false,
-})
-
 defineProps<{
   icon: Component
   iconSelected: Component
+  selected?: boolean
 }>()
 </script>
 
@@ -15,7 +12,6 @@ defineProps<{
   <button
     class="togglable-icon-button"
     :class="{ 'togglable-icon-button--selected': selected }"
-    @click.stop="selected = !selected"
     @contextmenu.prevent
   >
     <span class="togglable-icon-button__icon-container">

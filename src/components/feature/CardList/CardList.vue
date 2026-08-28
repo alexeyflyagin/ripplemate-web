@@ -38,6 +38,7 @@ const emit = defineEmits<{
   contextmenu: [event: MouseEvent, card: CardItemData]
   cardSeen: [cardId: string]
   cardLeaveDone: [cardId: string]
+  toggleFavorite: [cardId: string]
 }>()
 
 const dateFormatter = useDate()
@@ -233,6 +234,7 @@ onMounted(() => {
             @click="emit('click', $event, item)"
             @enter-done="emit('cardSeen', item.id)"
             @leave-done="emit('cardLeaveDone', item.id)"
+            @toggle-favorite="emit('toggleFavorite', item.id)"
           />
         </Virtualizer>
       </div>
