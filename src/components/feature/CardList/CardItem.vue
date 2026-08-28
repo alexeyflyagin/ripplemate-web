@@ -93,6 +93,7 @@ function onAnimationEnd(event: AnimationEvent) {
   position: relative;
   display: inline-flex;
   align-items: flex-start;
+  max-width: 100%;
   margin: 0;
   border: none;
   color: var(--text);
@@ -131,8 +132,15 @@ function onAnimationEnd(event: AnimationEvent) {
     margin: var(--space-8) var(--space-16) var(--space-8)
       var(--space-2);
     flex-grow: 1;
+    min-width: 0;
     text-align: left;
     white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 20;
+    overflow: hidden;
   }
 
   &__time-label {

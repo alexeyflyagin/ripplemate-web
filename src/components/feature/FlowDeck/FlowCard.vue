@@ -66,6 +66,7 @@ useFitText(
   termEl,
   containerEl,
   toRef(() => props.data.term),
+  { min: 18 },
 )
 
 function reset() {
@@ -189,6 +190,8 @@ defineExpose({ reset })
   line-height: 1.2;
   color: var(--text);
   text-align: center;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 
 .flow-card__answer {

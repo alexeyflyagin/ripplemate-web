@@ -13,7 +13,7 @@ export function useFitText(
   text: Ref<string>,
   {
     max = 28,
-    min = 14,
+    min = 6,
   }: { max?: number; min?: number } = {},
 ) {
   const settingsStore = useSettingsStore()
