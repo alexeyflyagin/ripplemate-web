@@ -152,11 +152,14 @@ watch(
   },
 )
 
-useResizeObserver(wrapEl, () => {
+function keepPinnedToBottom() {
   if (distanceToBottom.value < BOTTOM_THRESHOLD) {
     scrollToBottom()
   }
-})
+}
+
+useResizeObserver(wrapEl, keepPinnedToBottom)
+useResizeObserver(scrollEl, keepPinnedToBottom)
 
 onMounted(() => {
   prevFirstId = props.cards[0]?.id ?? null
