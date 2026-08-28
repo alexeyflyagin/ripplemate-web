@@ -47,8 +47,14 @@ const {
   onReset: () => reset(),
 })
 
-const { cardOffset, progress, isDragging, onPointerDown, reset } =
-  useDeckBehavior(answer)
+const {
+  cardOffset,
+  progress,
+  isDragging,
+  onPointerDown,
+  onWheel,
+  reset,
+} = useDeckBehavior(answer)
 
 const deckEl = ref<HTMLElement>()
 const deckHeight = ref(0)
@@ -82,6 +88,7 @@ defineExpose({ showNextCard })
         '--change-state-duration': `${CARD_TRANSITION_MS}ms`,
       }"
       @pointerdown="onPointerDown"
+      @wheel="onWheel"
       @answer="answer"
     />
     <CircularProgressBar

@@ -3,6 +3,8 @@ import type { AnswerType } from './FlowDeck.types'
 
 export const SWIPE_COMMIT_THRESHOLD = 60
 export const MIN_DRAG_DISTANCE = 10
+const WHEEL_SWIPE_THRESHOLD = 40
+const WHEEL_RESET_DELAY = 150
 
 export function useDeckBehavior(
   answer: (type: AnswerType) => void,
@@ -91,7 +93,39 @@ export function useDeckBehavior(
     el.removeEventListener('pointercancel', onPointerCancel)
   }
 
+  let wheelAccum = 0
+  let wheelResetTimer: ReturnType<typeof setTimeout> | undefined
+  let wheelFired = false
+
+  function onWheel(e: WheelEvent) {
+    if (
+      (e.target as HTMLElement).closest(
+        '.answer-button, button, a',
+      )
+    ) {
+      return
+    }
+
+    clearTimeout(wheelResetTimer)
+    wheelResetTimer = setTimeout(() => {
+      wheelAccum = 0
+      wheelFired = false
+    }, WHEEL_RESET_DELAY)
+
+    if (wheelFired) return
+
+    wheelAccum += e.deltaY
+    if (wheelAccum >= WHEEL_SWIPE_THRESHOLD) {
+      wheelFired = true
+      wheelAccum = 0
+      answer('again')
+    }
+  }
+
   function reset() {
+    clearTimeout(wheelResetTimer)
+    wheelAccum = 0
+    wheelFired = false
     cardOffset.value = 0
     isPreCommit.value = false
     isDragging.value = false
@@ -103,5 +137,6 @@ export function useDeckBehavior(
     isDragging: readonly(isDragging),
     reset,
     onPointerDown,
+    onWheel,
   }
 }
