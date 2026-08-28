@@ -10,14 +10,11 @@ import { useI18n } from 'vue-i18n'
 import { useTermTextField } from './useTermTextField.ts'
 import { nextPaint } from '@/utils/nextPaint.ts'
 import { useBottomContainer } from './useBottomContainer.ts'
-import { useKeyboardObserver } from '@/composables/useKeyboardObserver.ts'
 import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
 import { useCategoryStore } from '@/stores/domain/category'
 import { useLibraryModeStore } from '@/stores/ui/libraryMode'
 
 const { t } = useI18n()
-
-const { isKeyboardOpen } = useKeyboardObserver()
 
 const termTextFieldRef =
   ref<InstanceType<typeof TermTextField>>()
@@ -153,7 +150,6 @@ async function onEditCard(cardId: string) {
             @click="onSearch"
           />
         </div>
-        <div v-if="isKeyboardOpen" class="scrim" />
       </div>
     </div>
   </div>
@@ -249,17 +245,6 @@ async function onEditCard(cardId: string) {
   margin: 0;
   opacity: 0;
   pointer-events: none;
-}
-
-.scrim {
-  position: fixed;
-  width: 100dvw;
-  height: 100dvh;
-  inset: 0;
-  background-color: black;
-  opacity: var(--opacity-4);
-  z-index: -1;
-  pointer-events: auto;
 }
 
 .bottom-container {
