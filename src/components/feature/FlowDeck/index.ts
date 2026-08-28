@@ -1,2 +1,6 @@
 export { default as FlowDeck } from './FlowDeck.vue'
-export type { DeckState } from './FlowDeck.types.ts'
+export type {
+  DeckState,
+  AnswerType,
+  FlowCardData,
+} from './FlowDeck.types.ts'

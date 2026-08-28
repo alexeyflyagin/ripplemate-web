@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { getRandomCard as getRandomCardApi } from '@/api/repositories/card'
 import type { CardRead } from '@/api/types'
+import type { AnswerType } from '@/components/feature/FlowDeck'
 
 export const useCardFlowStore = defineStore(
   'cardFlow',
@@ -31,6 +32,14 @@ export const useCardFlowStore = defineStore(
       }
     }
 
+    async function answerCard(
+      cardId: string,
+      answerType: AnswerType,
+    ) {
+      void cardId
+      void answerType
+    }
+
     function clear() {
       currentCard.value = undefined
     }
@@ -39,6 +48,7 @@ export const useCardFlowStore = defineStore(
       currentCard,
       isLoading,
       nextCard,
+      answerCard,
       clear,
     }
   },

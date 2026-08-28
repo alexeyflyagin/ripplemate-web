@@ -2,6 +2,8 @@
 import {
   FlowDeck,
   type DeckState,
+  type AnswerType,
+  type FlowCardData,
 } from '@/components/feature/FlowDeck'
 import { useCardFlowStore } from '@/stores/domain/cardFlow'
 import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
@@ -18,12 +20,19 @@ const deckState = ref<DeckState>('card')
 watch(
   () => [currentWorkspaceId.value, currentCategoryId.value],
   () => {
-    loadNextCard(true)
+    loadNextCard()
   },
   { immediate: true },
 )
 
-async function loadNextCard(first: boolean = false) {
+function onAnswer(
+  cardData: FlowCardData,
+  answerType: AnswerType,
+) {
+  cardFlowStore.answerCard(cardData.card_id, answerType)
+}
+
+async function loadNextCard() {
   deckState.value = 'card'
   cardFlowRef.value?.showNextCard(undefined)
 
@@ -47,7 +56,7 @@ async function loadNextCard(first: boolean = false) {
           term: card.term,
         }
       : undefined,
-    { animation: !first },
+    { animation: true },
   )
 }
 </script>
@@ -58,7 +67,8 @@ async function loadNextCard(first: boolean = false) {
       class="flow-deck"
       ref="cardFlowRef"
       :state="deckState"
-      @nextcard="loadNextCard"
+      @answer="onAnswer"
+      @next-card="loadNextCard"
     />
   </div>
 </template>

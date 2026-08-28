@@ -1,6 +1,5 @@
 import { computed, readonly, ref, watch } from 'vue'
 import type { AnswerType } from './FlowDeck.types'
-import type FlowCard from './FlowCard.vue'
 
 export const SWIPE_COMMIT_THRESHOLD = 60
 export const MIN_DRAG_DISTANCE = 10
@@ -9,8 +8,6 @@ export function useDeckBehavior(
   answer: (type: AnswerType) => void,
 ) {
   let startY = 0
-
-  const flowCardRef = ref<InstanceType<typeof FlowCard>>()
 
   const isDragging = ref<boolean>(false)
   const cardOffset = ref<number>(0)
@@ -104,7 +101,6 @@ export function useDeckBehavior(
     cardOffset: readonly(cardOffset),
     progress: readonly(progress),
     isDragging: readonly(isDragging),
-    flowCardRef,
     reset,
     onPointerDown,
   }

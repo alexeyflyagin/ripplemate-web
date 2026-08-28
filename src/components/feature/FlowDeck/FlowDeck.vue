@@ -1,31 +1,21 @@
 <script setup lang="ts">
-import { nextTick, ref } from 'vue'
+import { ref } from 'vue'
 import FlowCard from './FlowCard.vue'
 import type {
   AnswerType,
-  CardState,
   DeckState,
   FlowCardData,
-} from './FlowDeck.types.ts'
-import { useDeckBehavior } from './useDeckBehavior.ts'
-import { sleep } from '@/utils/sleep.ts'
-import { nextPaint } from '@/utils/nextPaint.ts'
+} from './FlowDeck.types'
+import { useDeckBehavior } from './useDeckBehavior'
+import {
+  useCardPresenter,
+  CARD_TRANSITION_MS,
+} from './useCardPresenter'
 import { EmptyState } from '@/components/feature/EmptyState'
 import NoCardsYetIcon from '~icons/icons-80/no-cards-yet'
-import { useI18n } from 'vue-i18n'
 import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgressBar'
+import { useI18n } from 'vue-i18n'
 import { useResizeObserver } from '@vueuse/core'
-
-const CHANGE_STATE_ANIMATION_DURATION_MS = 400
-
-const {
-  cardOffset,
-  progress,
-  isDragging,
-  onPointerDown,
-  reset,
-  flowCardRef,
-} = useDeckBehavior(answer)
 
 const { t } = useI18n()
 
@@ -39,94 +29,68 @@ withDefaults(
 )
 
 const emit = defineEmits<{
-  answer: [cardData: FlowCardData, answerType: AnswerType]
-  nextcard: []
+  answer: [data: FlowCardData, type: AnswerType]
+  nextCard: []
 }>()
 
-const flowDeckEl = ref<HTMLElement>()
+const {
+  flowCardRef,
+  cardData,
+  cardState,
+  isAnimated,
+  isTouchable,
+  answer,
+  showNextCard,
+} = useCardPresenter({
+  onAnswer: (data, type) => emit('answer', data, type),
+  onNextCard: () => emit('nextCard'),
+  onReset: () => reset(),
+})
 
-const isAnimated = ref<boolean>(false)
-const isTouchable = ref<boolean>(false)
-const cardFlowHeight = ref<number>(0)
+const { cardOffset, progress, isDragging, onPointerDown, reset } =
+  useDeckBehavior(answer)
 
-const cardData = ref<FlowCardData | undefined>()
-const cardState = ref<CardState>('initial')
+const deckEl = ref<HTMLElement>()
+const deckHeight = ref(0)
 
-async function answer(answerType: AnswerType) {
-  if (!cardData.value) return
-  emit('answer', cardData.value, answerType)
-  isTouchable.value = false
-  if (answerType !== 'again')
-    await sleep(CHANGE_STATE_ANIMATION_DURATION_MS)
-  cardState.value = 'answered'
-  await sleep(CHANGE_STATE_ANIMATION_DURATION_MS)
-  emit('nextcard')
-  cardData.value = undefined
-}
-
-async function showNextCard(
-  data: FlowCardData | undefined,
-  options?: { animation: boolean },
-) {
-  isAnimated.value = false
-  flowCardRef.value?.reset()
-  reset()
-  cardState.value = 'initial'
-  await nextPaint()
-  cardData.value = data
-  await nextTick()
-  isAnimated.value = options?.animation ?? true
-  cardState.value = 'pending'
-  await nextPaint()
-  isAnimated.value = true
-  isTouchable.value = true
-}
+useResizeObserver(deckEl, () => {
+  deckHeight.value = deckEl.value?.offsetHeight ?? 0
+})
 
 defineExpose({ showNextCard })
-
-useResizeObserver(flowDeckEl, () => {
-  if (flowDeckEl.value)
-    cardFlowHeight.value = flowDeckEl.value.offsetHeight
-})
 </script>
 
 <template>
-  <div
-    class="flow-deck"
-    ref="flowDeckEl"
-    :draggable="false"
-  >
+  <div ref="deckEl" class="flow-deck" :draggable="false">
     <FlowCard
       v-if="state === 'card' && cardData"
       ref="flowCardRef"
       class="flow-card"
       :class="{
-        [`flow-card--${cardState}`]:
-          cardState !== 'pending',
+        [`flow-card--${cardState}`]: cardState !== 'pending',
         'flow-card--touchable': isTouchable,
         'flow-card--is-dragging': isDragging,
         'flow-card--animated': isAnimated,
       }"
-      :data="cardData ?? { card_id: 0, term: 'Term' }"
+      :data="cardData"
       :animated="isAnimated"
       :progress="progress"
-      @pointerdown="onPointerDown"
       :style="{
-        '--card-flow-height': cardFlowHeight,
+        '--card-flow-height': deckHeight,
         '--card-offset': cardOffset,
         '--progress': progress,
-        '--change-state-duration':
-          CHANGE_STATE_ANIMATION_DURATION_MS + 'ms',
+        '--change-state-duration': `${CARD_TRANSITION_MS}ms`,
       }"
+      @pointerdown="onPointerDown"
       @answer="answer"
     />
     <CircularProgressBar
-      v-else-if="state === 'card' && !cardData"
+      v-else-if="state === 'card'"
       class="circle-progress"
       :delay="1000"
     />
     <EmptyState
-      v-else-if="state === 'empty'"
+      v-else
       class="empty-state"
       :icon="NoCardsYetIcon"
       :title="t('main.noCardsYetTitle')"
@@ -193,16 +157,12 @@ useResizeObserver(flowDeckEl, () => {
   }
 
   &--initial {
-    transform: translateY(
-        calc(var(--card-flow-height) * 1px)
-      )
+    transform: translateY(calc(var(--card-flow-height) * 1px))
       scale(0.96);
   }
 
   &--answered {
-    transform: translateY(
-        calc(var(--card-flow-height) * -1px)
-      )
+    transform: translateY(calc(var(--card-flow-height) * -1px))
       scale(0.96);
   }
 
