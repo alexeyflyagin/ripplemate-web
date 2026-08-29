@@ -122,10 +122,7 @@ async function handleSubmit() {
 <template>
   <div class="register">
     <div class="content">
-      <AuthHeader
-        :title="t('appName')"
-        :subtitle="t('auth.signupHeader')"
-      />
+      <AuthHeader :subtitle="t('auth.signupHeader')" />
 
       <form
         class="register__form"

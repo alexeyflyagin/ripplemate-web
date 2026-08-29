@@ -25,6 +25,8 @@ export default {
       deleteWorkspace: 'Delete workspace',
       resetPassword: 'Reset password',
       back: '« Back',
+      resend: 'Resend',
+      resendIn: 'Resend in {timer}',
     },
     label: {
       all: 'All',
@@ -69,6 +71,14 @@ export default {
     doNotHaveAnAccount: "Don't have an account?",
     passwordLength: 'At least 8 characters',
     forgotPassword: 'Forgot password?',
+    confirmEmail: {
+      messageSentHeader: 'Check your email',
+      messageSentCaption:
+        "We sent you a link to verify your email. If you can't find it, check your spam folder.",
+      emailVerified: 'Email verified!',
+      emailVerifiedHint:
+        'Refresh the page on the device where the code was sent',
+    },
     resetPassword: {
       header: 'Reset password',
       caption: 'Enter your email to reset your password',

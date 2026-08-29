@@ -29,6 +29,8 @@ export interface LoginResponse {
 export interface AccountRead {
   id: string
   display_name: string
+  email: string
+  is_verified: boolean
   created_at: string
 }
 
@@ -48,6 +50,10 @@ export interface VerifyEmailRequest {
 
 export interface VerifyEmail {
   token: string
+}
+
+export interface ValidationMessageResponse {
+  message: string
 }
 
 // Card

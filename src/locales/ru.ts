@@ -27,6 +27,8 @@ const ru: typeof en = {
       deleteWorkspace: 'Удалить пространство',
       resetPassword: 'Сбросить пароль',
       back: '« Назад',
+      resend: 'Отправить еще раз',
+      resendIn: 'Отправить ещё раз через {timer}',
     },
     label: {
       all: 'Все',
@@ -71,6 +73,14 @@ const ru: typeof en = {
     doNotHaveAnAccount: 'Нет аккаунта?',
     passwordLength: 'Не менее 8 символов',
     forgotPassword: 'Забыли пароль?',
+    confirmEmail: {
+      messageSentHeader: 'Проверьте свою почту',
+      messageSentCaption:
+        'Мы отправили ссылку для подтверждения аккаунта на вашу почту. Если не нашли — проверьте спам.',
+      emailVerified: 'Почта подтверждена!',
+      emailVerifiedHint:
+        'Обновите страницу на устройстве, откуда был отправлен код',
+    },
     resetPassword: {
       header: 'Восстановление пароля',
       caption: 'Введите email для восстановления пароля',

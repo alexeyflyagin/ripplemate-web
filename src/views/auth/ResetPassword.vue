@@ -9,6 +9,7 @@ import { useRoute, useRouter } from 'vue-router'
 import TickIcon from '~icons/icons-80/tick'
 import HideIcon from '~icons/icons-16/hide'
 import ShowIcon from '~icons/icons-16/show'
+import AuthHeader from './AuthHeader.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -115,9 +116,7 @@ function validate(): boolean {
         v-if="isSubmitted"
         class="reset-password__message-icon"
       />
-      <h1 class="reset-password__header">
-        {{ header }}
-      </h1>
+      <AuthHeader :title="header" />
       <form
         v-if="!isSubmitted"
         class="reset-password__form"
@@ -199,20 +198,6 @@ function validate(): boolean {
   width: 100%;
   margin: var(--space-32) 0;
   max-width: var(--max-content-width-400);
-}
-
-.reset-password__header {
-  @include text-title;
-  color: var(--text);
-  margin: 0 var(--space-16);
-  text-align: center;
-}
-
-.reset-password__caption {
-  @include text-caption;
-  color: var(--text-muted);
-  margin: var(--space-8) var(--space-16) 0;
-  text-align: center;
 }
 
 .reset-password__form {

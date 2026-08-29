@@ -9,6 +9,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import EmailIcon from '~icons/icons-16/email'
 import MessageIcon from '~icons/icons-80/message'
+import AuthHeader from './AuthHeader.vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -79,12 +80,7 @@ function validate(): boolean {
         v-if="isSubmitted"
         class="forgot-password__message-icon"
       />
-      <h1 class="forgot-password__header">
-        {{ header }}
-      </h1>
-      <p class="forgot-password__caption">
-        {{ caption }}
-      </p>
+      <AuthHeader :title="header" :subtitle="caption" />
       <form
         v-if="!isSubmitted"
         class="forgot-password__form"
@@ -143,20 +139,6 @@ function validate(): boolean {
   width: 100%;
   margin: var(--space-32) 0;
   max-width: var(--max-content-width-400);
-}
-
-.forgot-password__header {
-  @include text-title;
-  color: var(--text);
-  margin: 0 var(--space-16);
-  text-align: center;
-}
-
-.forgot-password__caption {
-  @include text-caption;
-  color: var(--text-muted);
-  margin: var(--space-8) var(--space-16) 0;
-  text-align: center;
 }
 
 .forgot-password__form {

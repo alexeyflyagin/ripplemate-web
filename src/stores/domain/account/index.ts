@@ -2,6 +2,10 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { AccountRead } from '@/api/types'
 import { getAccount as getAccountApi } from '@/api/repositories/account'
+import {
+  requestVerifyEmail as requestVerifyEmailApi,
+  verifyEmail as verifyEmailApi,
+} from '@/api/repositories/validation'
 
 export const useAccountStore = defineStore(
   'account',
@@ -12,9 +16,23 @@ export const useAccountStore = defineStore(
       account.value = await getAccountApi()
     }
 
+    async function requestVerifyEmail() {
+      if (!account.value) return
+      await getAccount()
+      return requestVerifyEmailApi(account.value.email)
+    }
+
+    function verifyEmail(token: string) {
+      return verifyEmailApi(token).then(() => {
+        if (account.value) account.value.is_verified = true
+      })
+    }
+
     return {
       account,
       getAccount,
+      requestVerifyEmail,
+      verifyEmail,
     }
   },
 )

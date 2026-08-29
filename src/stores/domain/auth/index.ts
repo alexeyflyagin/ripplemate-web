@@ -50,18 +50,20 @@ export const useAuthStore = defineStore('auth', () => {
     await login(data.email, data.password)
   }
 
-  function initializeUserData() {
+  async function initializeUserData() {
     if (initPromise) return initPromise
 
     const accountStore = useAccountStore()
     const settingsStore = useSettingsStore()
     const workspaceStore = useWorkspaceStore()
 
-    initPromise = Promise.all([
-      accountStore.getAccount(),
-      settingsStore.loadSettings(),
-      workspaceStore.getWorkspaces(),
-    ]).then(() => undefined)
+    await accountStore.getAccount()
+    if (accountStore.account?.is_verified) {
+      initPromise = Promise.all([
+        settingsStore.loadSettings(),
+        workspaceStore.getWorkspaces(),
+      ]).then(() => undefined)
+    }
 
     return initPromise
   }

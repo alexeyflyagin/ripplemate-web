@@ -12,6 +12,8 @@ import { useAuthStore } from '@/stores/domain/auth'
 import { useWorkspaceStore } from '@/stores/domain/workspace'
 import ForgotPassword from '@/views/auth/ForgotPassword.vue'
 import ResetPassword from '@/views/auth/ResetPassword.vue'
+import VerifyEmail from '@/views/auth/VerifyEmail.vue'
+import { useAccountStore } from '@/stores/domain/account'
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -67,6 +69,12 @@ const router = createRouter({
       component: ResetPassword,
       meta: { isPublic: true },
     },
+    {
+      path: '/verify-email',
+      name: 'verify-email',
+      component: VerifyEmail,
+      meta: { isPublic: true },
+    },
   ],
 })
 
@@ -83,22 +91,32 @@ function authorizedHome(): RouteLocationNamedRaw {
 }
 
 router.beforeEach(async (to) => {
-  const auth = useAuthStore()
+  const authStore = useAuthStore()
+  const accountStore = useAccountStore()
   const isPublic = to.meta.isPublic ?? false
 
-  if (auth.isAuthorized) {
-    await auth.initializeUserData()
+  if (authStore.isAuthorized) {
+    await authStore.initializeUserData()
+    if (
+      to.name !== 'verify-email' &&
+      !accountStore.account?.is_verified
+    )
+      return { name: 'verify-email' }
   }
 
-  if (!isPublic && !auth.isAuthorized) {
+  if (!isPublic && !authStore.isAuthorized) {
     return { name: 'login' }
   }
 
-  if (isPublic && auth.isAuthorized) {
+  if (
+    isPublic &&
+    authStore.isAuthorized &&
+    to.name !== 'verify-email'
+  ) {
     return authorizedHome()
   }
 
-  if (to.name === 'root' && auth.isAuthorized) {
+  if (to.name === 'root' && authStore.isAuthorized) {
     const target = authorizedHome()
     if (target.name !== 'root') {
       return target

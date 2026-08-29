@@ -87,10 +87,7 @@ async function handleSubmit() {
 <template>
   <div class="login">
     <div class="content">
-      <AuthHeader
-        :title="t('appName')"
-        :subtitle="t('auth.loginHeader')"
-      />
+      <AuthHeader :subtitle="t('auth.loginHeader')" />
 
       <form
         class="login__form"
