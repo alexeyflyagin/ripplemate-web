@@ -5,13 +5,15 @@ import { BaseButton } from '@/components/ui/Button/BaseButton'
 import AuthHeader from './AuthHeader.vue'
 import { useI18n } from 'vue-i18n'
 import ShowIcon from '~icons/icons-16/show'
+import HideIcon from '~icons/icons-16/hide'
 import ProfileIcon from '~icons/icons-16/profile'
 import EmailIcon from '~icons/icons-16/email'
-import HideIcon from '~icons/icons-16/hide'
+
 import AuthSecondaryAction from './AuthSecondaryAction.vue'
 import { useAuthStore } from '@/stores/domain/auth'
 import { useRouter } from 'vue-router'
 import { ApiError } from '@/api/client'
+import { validateEmail } from '@/utils/validations.ts'
 
 const { t } = useI18n()
 
@@ -66,7 +68,7 @@ function validate(): boolean {
   if (!email.value) {
     emailError.value = t('auth.validation.emailRequired')
     ok = false
-  } else if (!/^\S+@\S+\.\S+$/.test(email.value)) {
+  } else if (!validateEmail(email.value)) {
     emailError.value = t('auth.validation.emailInvalid')
     ok = false
   }

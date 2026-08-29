@@ -25,6 +25,8 @@ const ru: typeof en = {
       editWorkspace: 'Ред. пространство',
       selectWorkspace: 'Выбрать пространтсво',
       deleteWorkspace: 'Удалить пространство',
+      resetPassword: 'Сбросить пароль',
+      back: '« Назад',
     },
     label: {
       all: 'Все',
@@ -68,6 +70,16 @@ const ru: typeof en = {
     alreadyHaveAnAccount: 'Уже есть аккаунт?',
     doNotHaveAnAccount: 'Нет аккаунта?',
     passwordLength: 'Не менее 8 символов',
+    forgotPassword: 'Забыли пароль?',
+    resetPassword: {
+      header: 'Восстановление пароля',
+      caption: 'Введите email для восстановления пароля',
+      messageSentHeader: 'Проверьте свою почту',
+      messageSentCaption:
+        'Мы отправили ссылку для сброса пароля на вашу почту. Если не нашли — проверьте спам.',
+      setNewPasswordHeader: 'Новый пароль',
+      passwordUpdatedHeader: 'Пароль изменен!',
+    },
     validation: {
       nameRequired: 'Введите имя',
       emailRequired: 'Введите email',

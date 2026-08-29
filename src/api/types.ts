@@ -32,6 +32,24 @@ export interface AccountRead {
   created_at: string
 }
 
+// Validation
+export interface ResetPasswordRequest {
+  email: string
+}
+
+export interface ResetPassword {
+  token: string
+  password: string
+}
+
+export interface VerifyEmailRequest {
+  email: string
+}
+
+export interface VerifyEmail {
+  token: string
+}
+
 // Card
 export interface CardCreate {
   term: string

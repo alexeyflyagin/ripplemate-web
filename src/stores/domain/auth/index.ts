@@ -4,6 +4,10 @@ import {
   login as loginApi,
   register as registerApi,
 } from '@/api/repositories/auth'
+import {
+  requestResetPassword as requestResetPasswordApi,
+  resetPassword as resetPasswordApi,
+} from '@/api/repositories/validation'
 import type { UserCreate } from '@/api/types'
 import { isJWTTokenExpired } from './utils'
 import { useAccountStore } from '../account'
@@ -33,7 +37,10 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function login(email: string, password: string) {
     const response = await loginApi(email, password)
-    localStorage.setItem(TOKEN_STORAGE_KEY, response.access_token)
+    localStorage.setItem(
+      TOKEN_STORAGE_KEY,
+      response.access_token,
+    )
     token.value = response.access_token
     await initializeUserData()
   }
@@ -64,6 +71,14 @@ export const useAuthStore = defineStore('auth', () => {
     window.location.assign(import.meta.env.BASE_URL)
   }
 
+  function requestResetPassword(email: string) {
+    return requestResetPasswordApi(email)
+  }
+
+  function resetPassword(token: string, password: string) {
+    return resetPasswordApi(token, password)
+  }
+
   return {
     token,
     isAuthorized,
@@ -71,5 +86,7 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     register: registerAndLogin,
     logout,
+    requestResetPassword,
+    resetPassword,
   }
 })

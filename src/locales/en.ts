@@ -23,6 +23,8 @@ export default {
       editWorkspace: 'Edit workspace',
       selectWorkspace: 'Select workspace',
       deleteWorkspace: 'Delete workspace',
+      resetPassword: 'Reset password',
+      back: '« Back',
     },
     label: {
       all: 'All',
@@ -66,6 +68,16 @@ export default {
     alreadyHaveAnAccount: 'Already have an account?',
     doNotHaveAnAccount: "Don't have an account?",
     passwordLength: 'At least 8 characters',
+    forgotPassword: 'Forgot password?',
+    resetPassword: {
+      header: 'Reset password',
+      caption: 'Enter your email to reset your password',
+      messageSentHeader: 'Check your email',
+      messageSentCaption:
+        "We sent a password reset link to your email. If you haven't found it, check your spam folder.",
+      setNewPasswordHeader: 'Set a new password',
+      passwordUpdatedHeader: 'Password updated!',
+    },
     validation: {
       nameRequired: 'Please enter your name',
       emailRequired: 'Please enter your email',

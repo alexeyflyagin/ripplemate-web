@@ -10,6 +10,8 @@ import HomeView from '@/views/main/HomeView/HomeView.vue'
 import FlowView from '@/views/main/FlowView/FlowView.vue'
 import { useAuthStore } from '@/stores/domain/auth'
 import { useWorkspaceStore } from '@/stores/domain/workspace'
+import ForgotPassword from '@/views/auth/ForgotPassword.vue'
+import ResetPassword from '@/views/auth/ResetPassword.vue'
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -51,6 +53,18 @@ const router = createRouter({
       path: '/signup',
       name: 'signup',
       component: RegisterView,
+      meta: { isPublic: true },
+    },
+    {
+      path: '/forgot-password',
+      name: 'forgot-password',
+      component: ForgotPassword,
+      meta: { isPublic: true },
+    },
+    {
+      path: '/reset-password',
+      name: 'reset-password',
+      component: ResetPassword,
       meta: { isPublic: true },
     },
   ],

@@ -11,6 +11,7 @@ import AuthSecondaryAction from './AuthSecondaryAction.vue'
 import { useAuthStore } from '@/stores/domain/auth'
 import { useRouter } from 'vue-router'
 import { ApiError } from '@/api/client'
+import { validateEmail } from '@/utils/validations.ts'
 
 const { t } = useI18n()
 
@@ -48,7 +49,7 @@ function validate(): boolean {
   if (!email.value) {
     emailError.value = t('auth.validation.emailRequired')
     ok = false
-  } else if (!/^\S+@\S+\.\S+$/.test(email.value)) {
+  } else if (!validateEmail(email.value)) {
     emailError.value = t('auth.validation.emailInvalid')
     ok = false
   }
@@ -136,11 +137,20 @@ async function handleSubmit() {
         :link-label="t('general.action.signup')"
         :to="{ name: 'signup' }"
       />
+
+      <RouterLink
+        class="forgot-password"
+        :to="{ name: 'forgot-password' }"
+      >
+        {{ t('auth.forgotPassword') }}
+      </RouterLink>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/text-styles' as *;
+
 .login {
   min-height: 100vh;
   min-height: 100dvh;
@@ -153,7 +163,6 @@ async function handleSubmit() {
 .content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-32);
   align-items: center;
   width: 100%;
   margin: var(--space-32) 0;
@@ -163,6 +172,7 @@ async function handleSubmit() {
 .login__form {
   display: flex;
   width: 100%;
+  margin-top: var(--space-32);
   flex-direction: column;
   gap: var(--space-32);
 }
@@ -171,5 +181,15 @@ async function handleSubmit() {
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
+}
+
+.secondary-action {
+  margin-top: var(--space-16);
+}
+
+.forgot-password {
+  @include text-label;
+  margin-top: var(--space-8);
+  color: var(--text-placeholder);
 }
 </style>
