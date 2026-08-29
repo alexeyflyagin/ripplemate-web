@@ -15,7 +15,7 @@ export function useCurrentView() {
   )
 
   function goToView(view: MainViewType) {
-    return router.push({
+    return router.replace({
       name: view === 'flow' ? 'flow' : 'library',
       params: route.params,
       query: route.query,
