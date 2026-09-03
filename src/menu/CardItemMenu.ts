@@ -9,14 +9,12 @@ export interface CardItemMenuData {
 
 export function createCardItemMenu(
   t: ComposerTranslation,
-  data: CardItemMenuData,
 ): MenuItemData[] {
   return [
     {
       id: 'edit',
       label: t('general.action.edit'),
       icon: EditIcon,
-      value: data.cardTerm,
     },
     {
       id: 'delete',
