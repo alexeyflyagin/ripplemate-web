@@ -20,10 +20,6 @@ export function useTheme(
     return oledEnabled.value ? 'oled' : 'dark'
   })
 
-  const themeColorMeta = document.querySelector(
-    'meta[name="theme-color"]',
-  )
-
   watch(
     effectiveTheme,
     (val) => {
@@ -31,10 +27,19 @@ export function useTheme(
         'data-theme',
         val,
       )
-      const bg = getComputedStyle(document.documentElement)
+
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.remove()
+
+      const meta = document.createElement('meta')
+      meta.name = 'theme-color'
+      meta.content = getComputedStyle(
+        document.documentElement,
+      )
         .getPropertyValue('--bg')
         .trim()
-      themeColorMeta?.setAttribute('content', bg)
+      document.head.appendChild(meta)
     },
     { immediate: true },
   )
