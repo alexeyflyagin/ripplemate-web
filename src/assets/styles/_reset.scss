@@ -1,56 +1,50 @@
-html,
-body {
+html {
   background-color: var(--bg);
   overscroll-behavior: none;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+body {
   position: fixed;
   inset: 0;
   overflow: hidden;
-  height: 100%;
-  width: 100%;
   margin: 0;
   touch-action: manipulation;
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p {
+:where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd) {
   margin: 0;
 }
 
 img,
-svg,
-.icon {
+svg {
   -webkit-touch-callout: none;
-  pointer-events: none;
-}
-
-input,
-textarea {
-  caret-color: var(--accent);
-}
-
-* {
-  -webkit-tap-highlight-color: transparent;
-  -webkit-user-select: none;
+  -webkit-user-drag: none;
   user-select: none;
 }
 
-input,
-textarea {
-  -webkit-user-select: text;
+:where(
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  input[type='search'],
+  input[type='tel'],
+  input[type='url'],
+  input[type='number'],
+  textarea
+) {
+  caret-color: var(--accent);
+  appearance: none;
+  border-radius: 0;
   user-select: text;
 }
 
-@media (pointer: coarse) {
-  input,
+@supports (-webkit-touch-callout: none) {
+  input:not([type='checkbox'], [type='radio'], [type='range'], [type='color'], [type='file']),
   textarea,
   select {
-    font-size: 16px;
+    font-size: max(16px, 1em);
   }
 }

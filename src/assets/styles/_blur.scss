@@ -1,5 +1,4 @@
 @mixin background-blur($blur: 12px) {
-  -webkit-backdrop-filter: blur($blur); // Safari
   backdrop-filter: blur($blur);
 }
 
