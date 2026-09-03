@@ -40,6 +40,7 @@ export function useContextMenuPosition(
           {
             placement: options?.placement,
             middleware: [
+              offset(options?.offsetOptions),
               flip(),
               shift({ padding: PADDING }),
               size({
@@ -48,7 +49,6 @@ export function useContextMenuPosition(
                   maxHeight.value = availableHeight
                 },
               }),
-              offset(options?.offsetOptions),
             ],
           },
         )
