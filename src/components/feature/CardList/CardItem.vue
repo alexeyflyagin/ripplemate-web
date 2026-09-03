@@ -86,6 +86,13 @@ function onAnimationEnd(event: AnimationEvent) {
     @include focus-outline;
     outline-offset: 0px;
   }
+
+  &:active {
+    .card-item {
+      transform: scale(0.97);
+      transition: transform 0.08s ease-out;
+    }
+  }
 }
 
 .card-item {
@@ -104,7 +111,7 @@ function onAnimationEnd(event: AnimationEvent) {
   border-top-left-radius: var(--corner-small);
   transition: transform 0.3s var(--ease-bounce);
   user-select: none;
-  transform-origin: left bottom;
+  transition: transform 0.3s var(--ease-bounce);
 
   &--first {
     border-top-left-radius: var(--corner-xlarge);
@@ -140,6 +147,7 @@ function onAnimationEnd(event: AnimationEvent) {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 20;
+    line-clamp: 20;
     overflow: hidden;
   }
 
@@ -154,8 +162,8 @@ function onAnimationEnd(event: AnimationEvent) {
 }
 
 .card-item--new {
-  animation: card-item-enter 0.5s
-    cubic-bezier(0.16, 1, 0.3, 1);
+  animation: card-item-enter 0.5s var(--ease-bounce);
+  transform-origin: left bottom;
 }
 
 @keyframes card-item-enter {
@@ -170,9 +178,10 @@ function onAnimationEnd(event: AnimationEvent) {
 }
 
 .card-item--leaving {
-  animation: card-item-leave 0.2s
-    cubic-bezier(0.4, 0, 1, 1) forwards;
+  animation: card-item-leave 0.2s var(--ease-emphasized)
+    forwards;
   pointer-events: none;
+  transform-origin: left bottom;
 }
 
 @keyframes card-item-leave {
