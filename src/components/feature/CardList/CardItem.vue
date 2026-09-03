@@ -4,6 +4,7 @@ import HeartIcon from '~icons/icons-16/heart'
 import HeartFilledIcon from '~icons/icons-16/heart-filled'
 import type { CardPosition } from './CardList.types.ts'
 import { nextTick, ref, watch } from 'vue'
+import { useResizeObserver } from '@vueuse/core'
 
 const props = withDefaults(
   defineProps<{
@@ -22,7 +23,9 @@ const props = withDefaults(
   },
 )
 
+const cardItemEl = ref<HTMLElement | null>(null)
 const pulsing = ref<boolean>(false)
+const areaFactor = ref<number>(0)
 
 const emit = defineEmits<{
   click: [event: MouseEvent | KeyboardEvent]
@@ -34,7 +37,10 @@ const emit = defineEmits<{
 
 watch(
   () => props.term,
-  () => triggerPulse(),
+  async () => {
+    await nextTick()
+    triggerPulse()
+  },
 )
 
 function onAnimationEnd(event: AnimationEvent) {
@@ -52,6 +58,12 @@ async function triggerPulse() {
   await nextTick()
   pulsing.value = true
 }
+
+useResizeObserver(cardItemEl, () => {
+  const width = cardItemEl.value?.offsetWidth ?? 0
+  const height = cardItemEl.value?.offsetHeight ?? 0
+  areaFactor.value = Math.max(width, height) / 100
+})
 </script>
 
 <template>
@@ -65,6 +77,7 @@ async function triggerPulse() {
     @keydown.space.prevent="emit('click', $event)"
   >
     <div
+      ref="cardItemEl"
       class="card-item"
       :class="{
         [`card-item--${position}`]: position !== 'middle',
@@ -72,6 +85,7 @@ async function triggerPulse() {
         'card-item--leaving': isLeaving,
         'card-item--pulse': pulsing,
       }"
+      :style="{ '--area-factor': areaFactor }"
       @animationend="onAnimationEnd"
     >
       <CardItemTogglableIconButton
@@ -105,7 +119,7 @@ async function triggerPulse() {
 
   &:active {
     .card-item {
-      transform: scale(0.97);
+      transform: scale(calc(1 - 0.05 / var(--area-factor)));
       transition: transform 0.08s ease-out;
     }
   }
@@ -185,7 +199,8 @@ async function triggerPulse() {
 @keyframes card-item-enter {
   from {
     opacity: 0;
-    transform: scale(0.9) translateY(6px);
+    transform: scale(calc(1 - 0.1 / var(--area-factor)))
+      translateY(6px);
   }
   to {
     opacity: 1;
@@ -220,7 +235,7 @@ async function triggerPulse() {
     transform: scale(1);
   }
   20% {
-    transform: scale(1.02);
+    transform: scale(calc(1 + 0.05 / var(--area-factor)));
     background-color: color-mix(
       in srgb,
       var(--accent) 20%,
