@@ -10,7 +10,10 @@ import {
   type OverlayHandle,
 } from '@/stores/ui/overlay'
 import { truncate } from '@/utils/truncate'
-import type { Placement } from '@floating-ui/dom'
+import {
+  type OffsetOptions,
+  type Placement,
+} from '@floating-ui/dom'
 import { computed } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 
@@ -73,19 +76,31 @@ export function useCardItemMenu(
     event: MouseEvent | KeyboardEvent,
     cardItem: CardItemData,
   ) {
-    const items = computed(() =>
-      createCardItemMenu(t, { cardTerm: cardItem.term }),
-    )
+    const items = computed(() => createCardItemMenu(t))
 
     const row = event.currentTarget as HTMLElement
     const targetEl =
       row.querySelector<HTMLElement>('.card-item') ?? row
 
+    const targetBounding = targetEl.getBoundingClientRect()
+
+    const offset = {
+      mainAxis:
+        event instanceof MouseEvent
+          ? event.clientY - targetBounding.bottom
+          : 2,
+      crossAxis:
+        event instanceof MouseEvent
+          ? event.clientX - targetBounding.left
+          : 0,
+    } as OffsetOptions
+
     overlay = overlayStore.open(ContextMenu, {
       targetEl,
       items: items,
       payload: cardItem.id.toString(),
-      placement: 'bottom-start' as Placement,
+      position: 'bottom-top' as Placement,
+      offsetOptions: offset,
       onClickItem: handleClick,
       onClose: () => overlay.close(),
     })
