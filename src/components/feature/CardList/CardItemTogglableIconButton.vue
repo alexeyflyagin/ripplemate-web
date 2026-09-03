@@ -51,7 +51,7 @@ defineProps<{
 
   @media (hover: hover) {
     &:hover::after {
-      opacity: var(--opacity-8);
+      opacity: var(--opacity-4);
     }
   }
 
@@ -64,8 +64,11 @@ defineProps<{
     }
   }
 
-  &:active::after {
-    opacity: var(--opacity-8);
+  &:active {
+    .togglable-icon-button__icon-container {
+      transform: scale(0.8);
+      transition: transform 0.08s ease-out;
+    }
   }
 
   &--selected {
@@ -73,9 +76,10 @@ defineProps<{
   }
 
   &__icon-container {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     margin: auto;
+    transition: transform 0.3s var(--ease-bounce);
   }
 }
 </style>
