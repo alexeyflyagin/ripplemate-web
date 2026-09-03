@@ -114,17 +114,18 @@ useInitialScroll(elements, menuEl, props.initialScrollToId)
 .context-menu {
   @include hide-scrollbar;
   @include elevation-4;
-  @include background-blur-20;
+  @include background-blur-15;
   position: fixed;
   min-width: 180px;
   overflow-y: auto;
   opacity: 0;
+  outline: var(--stroke-subtle) solid var(--border-muted);
   padding-top: var(--space-4);
   background-color: var(--surface-60);
   border-radius: var(--corner-xlarge);
   transition:
-    transform 0.2s var(--ease-bounce),
-    opacity 0.2s var(--ease-bounce);
+    transform 0.2s var(--ease-emphasized),
+    opacity 0.2s var(--ease-emphasized);
   transform: scale(0.94);
 }
 
