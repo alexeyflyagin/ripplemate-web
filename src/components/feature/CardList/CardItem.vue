@@ -3,8 +3,9 @@ import CardItemTogglableIconButton from './CardItemTogglableIconButton.vue'
 import HeartIcon from '~icons/icons-16/heart'
 import HeartFilledIcon from '~icons/icons-16/heart-filled'
 import type { CardPosition } from './CardList.types.ts'
+import { nextTick, ref, watch } from 'vue'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     term: string
     timeLabel: string
@@ -21,6 +22,8 @@ withDefaults(
   },
 )
 
+const pulsing = ref<boolean>(false)
+
 const emit = defineEmits<{
   click: [event: MouseEvent | KeyboardEvent]
   contextmenu: [event: MouseEvent]
@@ -29,6 +32,11 @@ const emit = defineEmits<{
   toggleFavorite: []
 }>()
 
+watch(
+  () => props.term,
+  () => triggerPulse(),
+)
+
 function onAnimationEnd(event: AnimationEvent) {
   const name = event.animationName
   if (name.startsWith('card-item-enter')) {
@@ -36,6 +44,13 @@ function onAnimationEnd(event: AnimationEvent) {
   } else if (name.startsWith('card-item-leave')) {
     emit('leaveDone')
   }
+  pulsing.value = false
+}
+
+async function triggerPulse() {
+  pulsing.value = false
+  await nextTick()
+  pulsing.value = true
 }
 </script>
 
@@ -55,6 +70,7 @@ function onAnimationEnd(event: AnimationEvent) {
         [`card-item--${position}`]: position !== 'middle',
         'card-item--new': isNew,
         'card-item--leaving': isLeaving,
+        'card-item--pulse': pulsing,
       }"
       @animationend="onAnimationEnd"
     >
@@ -192,6 +208,27 @@ function onAnimationEnd(event: AnimationEvent) {
   to {
     opacity: 0;
     transform: scale(0.85);
+  }
+}
+
+.card-item--pulse {
+  animation: pulse 1s var(--ease-bounce);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1.02);
+    background-color: color-mix(
+      in srgb,
+      var(--accent) 20%,
+      var(--surface)
+    );
+  }
+  100% {
+    transform: scale(1);
   }
 }
 </style>
