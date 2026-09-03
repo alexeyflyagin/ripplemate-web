@@ -1,20 +1,38 @@
 html {
+  position: fixed;
+  height: 100%;
+  width: 100%;
   background-color: var(--bg);
   overscroll-behavior: none;
   text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+  overflow: hidden;
 }
 
 body {
   position: fixed;
+  height: 100%;
+  width: 100%;
   inset: 0;
   overflow: hidden;
   margin: 0;
   touch-action: manipulation;
 }
 
-:where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd) {
+:where(
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  figure,
+  blockquote,
+  dl,
+  dd
+) {
   margin: 0;
 }
 
@@ -42,7 +60,13 @@ svg {
 }
 
 @supports (-webkit-touch-callout: none) {
-  input:not([type='checkbox'], [type='radio'], [type='range'], [type='color'], [type='file']),
+  input:not(
+    [type='checkbox'],
+    [type='radio'],
+    [type='range'],
+    [type='color'],
+    [type='file']
+  ),
   textarea,
   select {
     font-size: max(16px, 1em);
