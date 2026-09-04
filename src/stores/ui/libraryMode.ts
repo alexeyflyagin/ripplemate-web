@@ -3,10 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { onKeyStroke } from '@vueuse/core'
 
-export type LibraryMode =
-  | 'default'
-  | 'edit-card'
-  | 'search'
+export type LibraryMode = 'default' | 'edit-card' | 'search'
 
 export const useLibraryModeStore = defineStore(
   'libraryMode',

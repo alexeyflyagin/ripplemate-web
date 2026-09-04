@@ -69,7 +69,6 @@ watch(
 )
 
 async function onSearch() {
-  termTextFieldRef.value?.focusInput()
   if (currentView.value !== 'library') {
     await goToView('library')
   }
@@ -79,13 +78,12 @@ async function onSearch() {
 }
 
 async function onEditCard(cardId: string) {
-  termTextFieldRef.value?.focusInput()
   libraryMode.openEdit(cardId)
   if (currentView.value !== 'library')
     setSelectedNavItemId('library')
   await editCard(cardId)
   await nextPaint()
-  termTextFieldRef.value?.focusInput()
+  termTextFieldRef.value?.focusInput(true)
 }
 </script>
 

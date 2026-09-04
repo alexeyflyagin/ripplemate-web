@@ -54,13 +54,18 @@ const { x, y, maxHeight } = useContextMenuPosition(
   },
 )
 
-useFocusTrap(overlayRef, {
+const focusTrap = useFocusTrap(overlayRef, {
   immediate: true,
 })
 
 useMoveFocus(menuEl, { withArrows: true })
 
 useInitialScroll(elements, menuEl, props.initialScrollToId)
+
+function onClickItem(item: MenuItemData) {
+  focusTrap.deactivate({ returnFocus: false })
+  emit('clickItem', item, props.payload)
+}
 </script>
 
 <template>
@@ -95,7 +100,7 @@ useInitialScroll(elements, menuEl, props.initialScrollToId)
         "
         :key="item.id"
         v-bind="item"
-        @click="emit('clickItem', item, props.payload)"
+        @click="onClickItem(item)"
       />
     </div>
   </div>

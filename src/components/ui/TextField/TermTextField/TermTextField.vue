@@ -72,8 +72,18 @@ function updateFade() {
     bottomOffset >= MAX_FADE ? MAX_FADE : bottomOffset
 }
 
-function focusInput() {
+function focusInput(toBottom?: boolean | undefined) {
   textAreaEl.value?.focus()
+  if (toBottom) {
+    textAreaEl.value?.setSelectionRange(
+      modelValue.value.length,
+      modelValue.value.length,
+    )
+    if (textAreaEl.value) {
+      textAreaEl.value.scrollTop =
+        textAreaEl.value?.scrollHeight ?? 0
+    }
+  }
 }
 
 function onEnter(e: KeyboardEvent) {
@@ -96,7 +106,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="term-text-field" @click="focusInput">
+  <div class="term-text-field" @click="() => focusInput()">
     <div v-if="actionCaption" class="action-caption">
       <div class="action-caption__container">
         <component
