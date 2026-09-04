@@ -114,6 +114,18 @@ useFocusTrap(overlay, {
   inset: 0;
   background-color: var(--scrim-70);
   user-select: none;
+  padding-top: calc(
+    var(--space-40) + env(safe-area-inset-top)
+  );
+  padding-bottom: calc(
+    var(--space-40) + env(safe-area-inset-bottom)
+  );
+  padding-left: calc(
+    var(--space-40) + env(safe-area-inset-left)
+  );
+  padding-right: calc(
+    var(--space-40) + env(safe-area-inset-right)
+  );
 }
 
 .dialog {
@@ -125,7 +137,6 @@ useFocusTrap(overlay, {
   background-color: var(--surface-80);
   border-radius: var(--corner-xxxlarge);
   border: var(--stroke-subtle) solid var(--border);
-  margin: var(--space-40);
 }
 
 .dialog__content {

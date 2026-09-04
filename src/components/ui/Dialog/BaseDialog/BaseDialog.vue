@@ -51,7 +51,18 @@ useFocusTrap(overlay, {
   overflow: hidden;
   inset: 0;
   background-color: var(--scrim-70);
-  padding: var(--space-40);
+  padding-top: calc(
+    var(--space-40) + env(safe-area-inset-top)
+  );
+  padding-bottom: calc(
+    var(--space-40) + env(safe-area-inset-bottom)
+  );
+  padding-left: calc(
+    var(--space-40) + env(safe-area-inset-left)
+  );
+  padding-right: calc(
+    var(--space-40) + env(safe-area-inset-right)
+  );
 }
 
 .base-dialog {
