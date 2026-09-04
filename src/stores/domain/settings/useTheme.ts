@@ -27,19 +27,6 @@ export function useTheme(
         'data-theme',
         val,
       )
-
-      document
-        .querySelector('meta[name="theme-color"]')
-        ?.remove()
-
-      const meta = document.createElement('meta')
-      meta.name = 'theme-color'
-      meta.content = getComputedStyle(
-        document.documentElement,
-      )
-        .getPropertyValue('--bg')
-        .trim()
-      document.head.appendChild(meta)
     },
     { immediate: true },
   )
