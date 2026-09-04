@@ -124,13 +124,11 @@ useInitialScroll(elements, menuEl, props.initialScrollToId)
   background-color: var(--surface-60);
   border-radius: var(--corner-xlarge);
   transition:
-    transform 0.2s var(--ease-emphasized),
-    opacity 0.2s var(--ease-emphasized);
-  transform: scale(0.94);
+    transform 0.1s var(--ease-emphasized),
+    opacity 0.1s var(--ease-emphasized);
 }
 
 .context-menu--visible {
   opacity: 1;
-  transform: scale(1);
 }
 </style>
