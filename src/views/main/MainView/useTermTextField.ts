@@ -38,7 +38,9 @@ export function useTermTextField(t: ComposerTranslation) {
     (m) => {
       if (m === 'search') {
         termFieldValue.value = libraryMode.searchQuery
-        cardStore.setSearch(libraryMode.searchQuery.trim() || null)
+        cardStore.setSearch(
+          libraryMode.searchQuery.trim() || null,
+        )
       } else {
         termFieldValue.value = ''
         cardStore.setSearch(null)
@@ -147,6 +149,7 @@ export function useTermTextField(t: ComposerTranslation) {
 
     switch (libraryMode.mode) {
       case 'default':
+        if (!termFieldValue.value.trim()) return
         await cardStore.createCard(
           currentWorkspaceId.value,
           currentCategoryId.value ?? null,
