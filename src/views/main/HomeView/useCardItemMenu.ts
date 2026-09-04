@@ -79,10 +79,7 @@ export function useCardItemMenu(
     const items = computed(() => createCardItemMenu(t))
 
     const row = event.currentTarget as HTMLElement
-    const targetEl =
-      row.querySelector<HTMLElement>('.card-item') ?? row
-
-    const targetBounding = targetEl.getBoundingClientRect()
+    const targetBounding = row.getBoundingClientRect()
 
     const offset = {
       mainAxis:
@@ -96,7 +93,7 @@ export function useCardItemMenu(
     } as OffsetOptions
 
     overlay = overlayStore.open(ContextMenu, {
-      targetEl,
+      targetEl: row,
       items: items,
       payload: cardItem.id.toString(),
       position: 'bottom-top' as Placement,
