@@ -184,7 +184,7 @@ useResizeObserver(cardItemEl, () => {
   &__time-label {
     @include text-label;
     min-height: 38px;
-    align-self: flex-start;
+    align-self: flex-end;
     align-content: center;
     margin-right: var(--space-12);
     color: var(--text-placeholder);
