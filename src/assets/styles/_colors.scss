@@ -4,14 +4,15 @@
   --text: #1d211d;
   --text-muted: #5a665a;
   --text-placeholder: #747474;
-  --border: #b6c2b6;
-  --border-muted: #e9eee9;
-  --surface: #ffffff;
-  --bg: #f2f2f2;
+  --border: #d4dad4;
+  --border-muted: #e1e5e1;
+  --surface: #f6f6f6;
+  --bg: #fcfcfc;
+  --surface-highest: #ffffff;
   --hard: #c88282;
   --good: #c6c171;
   --easy: #52c99e;
-  --scrim: #c0c0c0;
+  --scrim: #000000;
 }
 
 :root[data-theme='dark'] {
@@ -22,12 +23,13 @@
   --text-placeholder: #919191;
   --border: #4d564d;
   --border-muted: #373737;
-  --surface: #222725;
+  --surface: #1f2321;
   --bg: #181b19;
+  --surface-highest: #222423;
   --hard: #985252;
   --good: #989452;
   --easy: #52987f;
-  --scrim: #101010;
+  --scrim: #000000;
 }
 
 :root[data-theme='oled'] {
@@ -40,6 +42,7 @@
   --border-muted: #373737;
   --surface: #1a1d1c;
   --bg: #000000;
+  --surface-highest: #1c1c1c;
   --hard: #985252;
   --good: #989452;
   --easy: #52987f;
@@ -59,15 +62,23 @@
     transparent
   );
 
-  --surface-80: color-mix(
+  --surface-highest-60: color-mix(
     in srgb,
-    var(--surface) 80%,
+    var(--surface-highest) 60%,
     transparent
   );
 
-  --scrim-70: color-mix(
+  --surface-highest-80: color-mix(
     in srgb,
-    var(--scrim) 70%,
+    var(--surface-highest) 80%,
+    transparent
+  );
+
+  --bg-60: color-mix(in srgb, var(--bg) 60%, transparent);
+
+  --scrim-30: color-mix(
+    in srgb,
+    var(--scrim) 30%,
     transparent
   );
 }

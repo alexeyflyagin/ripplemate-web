@@ -50,7 +50,7 @@ useFocusTrap(overlay, {
   align-items: center;
   overflow: hidden;
   inset: 0;
-  background-color: var(--scrim-70);
+  background-color: var(--scrim-30);
   padding-top: calc(
     var(--space-40) + env(safe-area-inset-top)
   );
@@ -74,7 +74,7 @@ useFocusTrap(overlay, {
   min-width: 100px;
   max-height: 100%;
   overflow: auto;
-  background-color: var(--surface-80);
+  background-color: var(--surface-highest-80);
   border-radius: var(--corner-xxxlarge);
   border: var(--stroke-subtle) solid var(--border);
 }

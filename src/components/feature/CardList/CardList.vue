@@ -311,7 +311,7 @@ onMounted(() => {
   padding: var(--space-4) var(--space-12);
   border-radius: var(--corner-full);
   border: var(--stroke-subtle) solid var(--border-muted);
-  background: var(--surface-80);
+  background: var(--surface-highest-80);
   color: var(--text-muted);
   opacity: 0;
   transition: opacity 0.2s ease;

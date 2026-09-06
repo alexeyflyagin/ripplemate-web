@@ -176,7 +176,7 @@ onMounted(async () => {
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: var(--surface-60);
+  background-color: var(--surface-highest-80);
   border-radius: 26px;
   overflow: hidden;
   min-height: 52px;

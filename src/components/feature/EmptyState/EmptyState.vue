@@ -38,7 +38,7 @@ defineProps<{
     align-items: center;
     box-sizing: border-box;
     padding: var(--space-24);
-    background-color: var(--surface-60);
+    background-color: var(--surface-highest-60);
     border-radius: var(--corner-xxlarge);
     border: var(--stroke-subtle) solid var(--border-muted);
     color: var(--text-placeholder);

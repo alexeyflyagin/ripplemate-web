@@ -153,7 +153,7 @@ onMounted(async () => {
   display: inline-flex;
   height: 52px;
   border-radius: var(--corner-full);
-  background-color: var(--surface-60);
+  background-color: var(--surface-highest-80);
   outline: var(--stroke-subtle) solid var(--border-muted);
   overflow: hidden;
 }

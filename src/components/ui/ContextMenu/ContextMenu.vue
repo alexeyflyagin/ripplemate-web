@@ -126,7 +126,7 @@ function onClickItem(item: MenuItemData) {
   opacity: 0;
   outline: var(--stroke-subtle) solid var(--border-muted);
   padding-top: var(--space-4);
-  background-color: var(--surface-60);
+  background-color: var(--surface-highest-60);
   border-radius: var(--corner-xlarge);
   transition:
     transform 0.1s var(--ease-emphasized),
