@@ -46,6 +46,7 @@ function onClick(e: MouseEvent) {
   display: inline-flex;
   background-color: transparent;
   justify-content: center;
+  align-items: center;
   border: none;
   overflow: hidden;
   border-radius: var(--corner-large);
