@@ -73,7 +73,8 @@ defineExpose({ showNextCard })
       ref="flowCardRef"
       class="flow-card"
       :class="{
-        [`flow-card--${cardState}`]: cardState !== 'pending',
+        [`flow-card--${cardState}`]:
+          cardState !== 'pending',
         'flow-card--touchable': isTouchable,
         'flow-card--is-dragging': isDragging,
         'flow-card--animated': isAnimated,
@@ -139,7 +140,7 @@ defineExpose({ showNextCard })
 }
 
 .flow-card {
-  @include elevation-2;
+  @include elevation-1;
   position: absolute;
   inset: 0;
   outline: var(--stroke-default) solid var(--border-muted);
@@ -164,12 +165,16 @@ defineExpose({ showNextCard })
   }
 
   &--initial {
-    transform: translateY(calc(var(--card-flow-height) * 1px))
+    transform: translateY(
+        calc(var(--card-flow-height) * 1px)
+      )
       scale(0.96);
   }
 
   &--answered {
-    transform: translateY(calc(var(--card-flow-height) * -1px))
+    transform: translateY(
+        calc(var(--card-flow-height) * -1px)
+      )
       scale(0.96);
   }
 

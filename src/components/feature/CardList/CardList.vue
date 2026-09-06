@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import {
+  computed,
+  nextTick,
+  onMounted,
+  ref,
+  watch,
+} from 'vue'
 import type { CardRead } from '@/api/types'
 import type {
   CardGroupLabelData,
@@ -15,7 +21,10 @@ import {
   type VirtualizerHandle,
 } from 'virtua/vue'
 import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgressBar'
-import { useResizeObserver, useThrottleFn } from '@vueuse/core'
+import {
+  useResizeObserver,
+  useThrottleFn,
+} from '@vueuse/core'
 import { useCardListScroll } from './useCardListScroll.ts'
 import { useDateBadge } from './useDateBadge.ts'
 import { nextPaint } from '@/utils/nextPaint.ts'
@@ -100,7 +109,9 @@ function onScrollEnd() {
   maybeLoadMore()
 }
 
-let revealFallback: ReturnType<typeof setTimeout> | undefined
+let revealFallback:
+  | ReturnType<typeof setTimeout>
+  | undefined
 
 watch(
   () => props.listKey,
@@ -237,7 +248,9 @@ onMounted(() => {
             @click="emit('click', $event, item)"
             @enter-done="emit('cardSeen', item.id)"
             @leave-done="emit('cardLeaveDone', item.id)"
-            @toggle-favorite="emit('toggleFavorite', item.id)"
+            @toggle-favorite="
+              emit('toggleFavorite', item.id)
+            "
           />
         </Virtualizer>
       </div>
@@ -285,7 +298,7 @@ onMounted(() => {
 }
 
 .card-list__date-badge {
-  @include elevation-2;
+  @include elevation-1;
   @include background-blur-15;
   @include text-label;
   position: absolute;

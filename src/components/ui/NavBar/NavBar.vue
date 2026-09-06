@@ -147,7 +147,7 @@ onMounted(async () => {
 @use '@/assets/styles/blur' as *;
 
 .nav-bar {
-  @include elevation-2;
+  @include elevation-1;
   @include background-blur-15;
   position: relative;
   display: inline-flex;

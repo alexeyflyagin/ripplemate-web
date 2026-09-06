@@ -223,7 +223,7 @@ async function onEditCard(cardId: string) {
 }
 
 .composer__field {
-  @include elevation-3;
+  @include elevation-1;
   flex: 1 1 0;
   min-width: 0;
   overflow: hidden;

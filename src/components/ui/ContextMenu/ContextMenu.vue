@@ -118,7 +118,7 @@ function onClickItem(item: MenuItemData) {
 
 .context-menu {
   @include hide-scrollbar;
-  @include elevation-4;
+  @include elevation-1;
   @include background-blur-15;
   position: fixed;
   min-width: 180px;

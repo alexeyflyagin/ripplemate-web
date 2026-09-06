@@ -125,7 +125,7 @@ const emit = defineEmits<{
 }
 
 .category-tabs {
-  @include elevation-3;
+  @include elevation-1;
 }
 
 .category-tabs__container {
