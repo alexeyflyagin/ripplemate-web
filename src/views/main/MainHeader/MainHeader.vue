@@ -110,6 +110,7 @@ const emit = defineEmits<{
 .container {
   @include background-blur-20;
   background-color: var(--bg-60);
+  padding-top: env(safe-area-inset-top);
 
   &--expanded {
     border-bottom: var(--stroke-subtle) solid
@@ -121,8 +122,7 @@ const emit = defineEmits<{
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   gap: var(--space-8);
-  padding: calc(var(--space-12) + env(safe-area-inset-top))
-    var(--space-16);
+  padding: calc(var(--space-12)) var(--space-16);
 }
 
 .workspace-dropdown {
