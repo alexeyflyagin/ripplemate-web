@@ -38,7 +38,6 @@ function onClick(e: MouseEvent) {
 <style lang="scss" scoped>
 @use '@/assets/styles/text-styles' as *;
 @use '@/assets/styles/mixins' as *;
-@use '@/assets/styles/blur' as *;
 
 .drop-down {
   @include text-caption-emphasized;
@@ -51,7 +50,7 @@ function onClick(e: MouseEvent) {
   overflow: hidden;
   border-radius: var(--corner-large);
   padding: 0 var(--space-12);
-  color: var(--text-muted);
+  color: var(--text);
   user-select: none;
   cursor: pointer;
 
@@ -65,7 +64,7 @@ function onClick(e: MouseEvent) {
 
   @media (hover: hover) {
     &:hover::after {
-      opacity: var(--opacity-8);
+      opacity: var(--opacity-4);
     }
   }
 
@@ -83,21 +82,13 @@ function onClick(e: MouseEvent) {
   }
 
   &--selected {
-    @include background-blur-15;
-    color: var(--text);
-
     &::after {
       opacity: var(--opacity-8);
     }
 
-    @media (hover: hover) {
-      &:hover::after {
-        opacity: var(--opacity-8);
-      }
-    }
-
     & .drop-down__icon {
       transform: rotate(180deg);
+      color: var(--text);
     }
   }
 }
