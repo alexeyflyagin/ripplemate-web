@@ -131,9 +131,8 @@ function loadMore() {
 }
 
 .card-list {
-  --fade-start: calc(
-    var(--main-header-height, 100px) + 80px
-  );
+  --fade-margin-start: var(--main-header-height, 100px);
+  --fade-start: 30px;
   --fade-end: var(--bottom-container-height, 100px);
   --bottom-spacer: var(--bottom-container-height);
   --top-spacer: calc(

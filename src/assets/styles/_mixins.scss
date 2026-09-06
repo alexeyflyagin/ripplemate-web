@@ -6,8 +6,14 @@
 @mixin fade-mask($direction: to bottom) {
   mask-image: linear-gradient(
     #{$direction},
-    transparent 0,
-    black var(--fade-start, 20px),
+    black 0,
+    black var(--fade-margin-start, 0px),
+    transparent var(--fade-margin-start, 0px),
+    black
+      calc(
+        var(--fade-margin-start, 0px) +
+          var(--fade-start, 20px)
+      ),
     black calc(100% - var(--fade-end, 20px)),
     transparent 100%
   );

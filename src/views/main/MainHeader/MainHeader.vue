@@ -57,7 +57,11 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div ref="container">
+  <div
+    ref="container"
+    class="container"
+    :class="{ 'container--expanded': isExpanded }"
+  >
     <div class="toolbar">
       <WorkspaceDropdown
         class="workspace-dropdown"
@@ -101,13 +105,24 @@ const emit = defineEmits<{
 
 <style lang="scss" scoped>
 @use '@/assets/styles/shadows' as *;
+@use '@/assets/styles/blur' as *;
+
+.container {
+  @include background-blur-20;
+  background-color: var(--bg-60);
+
+  &--expanded {
+    border-bottom: var(--stroke-subtle) solid
+      var(--border-muted);
+  }
+}
 
 .toolbar {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   gap: var(--space-8);
   padding: calc(var(--space-12) + env(safe-area-inset-top))
-    var(--space-16) 0;
+    var(--space-16);
 }
 
 .workspace-dropdown {
@@ -129,14 +144,12 @@ const emit = defineEmits<{
 }
 
 .category-tabs__container {
-  margin-top: var(--space-12);
   padding: 0 var(--space-16);
 
   &--floating {
     position: absolute;
     display: flex;
     justify-content: center;
-    margin-top: 0;
     top: var(--top);
     left: var(--left);
     width: var(--width);
