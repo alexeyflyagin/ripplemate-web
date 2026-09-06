@@ -149,7 +149,9 @@ defineExpose({ showNextCard })
   padding-top: var(--main-header-height);
   padding-right: var(--space-32);
   padding-left: var(--space-32);
-  padding-bottom: var(--bottom-container-height);
+  padding-bottom: calc(
+    var(--bottom-container-height) + var(--space-24)
+  );
   transform: translateY(calc(var(--card-offset) * 1px))
     scale(calc((1 - var(--progress)) * 0.04 + 0.96));
   border-radius: calc(

@@ -135,7 +135,9 @@ function loadMore() {
   --fade-start-margin: var(--main-header-height, 100px);
   --fade-start: 30px;
   --fade-end: var(--bottom-container-height, 100px);
-  --bottom-spacer: var(--bottom-container-height);
+  --bottom-spacer: calc(
+    var(--bottom-container-height) + var(--space-24)
+  );
   --top-spacer: calc(
     var(--main-header-height, 200px) + 50px
   );
