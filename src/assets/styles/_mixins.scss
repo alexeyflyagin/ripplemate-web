@@ -7,15 +7,16 @@
   mask-image: linear-gradient(
     #{$direction},
     black 0,
-    black var(--fade-margin-start, 0px),
-    transparent var(--fade-margin-start, 0px),
+    black var(--fade-start-margin, 0px),
+    var(--fade-start-color, transparent)
+      var(--fade-start-margin, 0px),
     black
       calc(
-        var(--fade-margin-start, 0px) +
+        var(--fade-start-margin, 0px) +
           var(--fade-start, 20px)
       ),
     black calc(100% - var(--fade-end, 20px)),
-    transparent 100%
+    var(--fade-end-color, transparent) 100%
   );
   mask-size: 100% 100%;
   mask-repeat: no-repeat;
