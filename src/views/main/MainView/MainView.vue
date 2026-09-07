@@ -252,7 +252,7 @@ async function onEditCard(cardId: string) {
   left: 0;
   bottom: 0;
   justify-content: center;
-  padding: 0 0 calc(var(--space-24));
+  padding: 0 0 calc(var(--space-24) + env(safe-area-inset-bottom));
   z-index: 10;
   pointer-events: none;
 
