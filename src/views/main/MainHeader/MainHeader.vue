@@ -40,7 +40,8 @@ useResizeObserver(slotEl, () => {})
 const containerEl = useTemplateRef<HTMLElement>('container')
 useResizeObserver(containerEl, (entries) => {
   const width = entries[0]!.contentRect.width
-  const height = entries[0]!.contentRect.height
+  const height =
+    containerEl.value!.getBoundingClientRect().height
   isExpanded.value = width >= EXPANDED_MIN_WIDTH
   emit('heightChanged', height)
 
