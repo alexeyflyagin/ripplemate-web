@@ -58,7 +58,7 @@ const emit = defineEmits<{
   min-height: 40px;
   background-color: transparent;
   padding: var(--space-12) var(--space-16);
-  border-radius: var(--corner-xlarge);
+  border-radius: var(--corner-large);
   border: none;
   color: var(--text-muted);
   user-select: none;
