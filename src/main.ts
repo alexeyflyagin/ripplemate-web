@@ -6,6 +6,7 @@ import App from '@/App.vue'
 import router from '@/router'
 import i18n from '@/i18n'
 import '@/assets/styles/global'
+import { useViewportHeight } from '@/composables/useViewportHeight'
 
 registerSW({
   immediate: true,
@@ -13,6 +14,8 @@ registerSW({
     window.location.reload()
   },
 })
+
+useViewportHeight()
 
 const app = createApp(App)
 
