@@ -35,6 +35,12 @@ const loading = ref<boolean>(false)
 
 const password = ref<string>('')
 const passwordError = ref<string>('')
+const passwordErrorHtml = ref<string>('')
+
+function clearPasswordError() {
+  passwordError.value = ''
+  passwordErrorHtml.value = ''
+}
 
 const { inputType, onShowPassword, passwordIcon } =
   usePasswordShowHide(password)
@@ -42,8 +48,10 @@ const { inputType, onShowPassword, passwordIcon } =
 async function onSubmit() {
   if (loading.value) return
   loading.value = true
+  clearPasswordError()
+
   if (!password.value) {
-    passwordError.value = t(
+    passwordErrorHtml.value = t(
       'auth.error.passwordRequiredWithLink',
       {
         link: forgotPasswordLinkHtml.value,
@@ -59,9 +67,12 @@ async function onSubmit() {
     router.push({ name: 'root' })
   } catch (e) {
     if (e instanceof ApiError && e.status === 400) {
-      passwordError.value = t('auth.error.wrongPassword', {
-        link: forgotPasswordLinkHtml.value,
-      })
+      passwordErrorHtml.value = t(
+        'auth.error.wrongPassword',
+        {
+          link: forgotPasswordLinkHtml.value,
+        },
+      )
     } else {
       passwordError.value = t(
         'general.error.somethingWentWrong',
@@ -74,7 +85,8 @@ async function onSubmit() {
 }
 
 watch(password, () => {
-  if (passwordError.value) passwordError.value = ''
+  if (passwordError.value || passwordErrorHtml.value)
+    clearPasswordError()
 })
 
 onMounted(() => {
@@ -104,8 +116,9 @@ onMounted(() => {
       :label="t('general.label.password')"
       :max-length="MAX_PASSWORD_LENGTH"
       v-model:model-value="password"
-      :error="!!passwordError"
+      :error="!!passwordError || !!passwordErrorHtml"
       :supporting-text="passwordError"
+      :supporting-text-html="passwordErrorHtml"
       :type="inputType"
       :trailing-icon="passwordIcon"
       @trailing-click="onShowPassword"

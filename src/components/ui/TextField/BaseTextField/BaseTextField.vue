@@ -26,6 +26,7 @@ const props = withDefaults(
     trailingIcon?: Component
     multiline?: boolean
     supportingText?: string
+    supportingTextHtml?: string
     error?: boolean
     disabled?: boolean
     readonly?: boolean
@@ -199,11 +200,15 @@ defineExpose({ focusInput })
       />
     </div>
     <span
-      v-if="supportingText"
+      v-if="supportingTextHtml"
       class="text-field__supporting"
-      v-html="supportingText"
+      v-html="supportingTextHtml"
+    ></span>
+    <span
+      v-else-if="supportingText"
+      class="text-field__supporting"
+      >{{ supportingText }}</span
     >
-    </span>
   </div>
 </template>
 
