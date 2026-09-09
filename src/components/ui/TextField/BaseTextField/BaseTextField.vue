@@ -40,6 +40,16 @@ const props = withDefaults(
       | 'tel'
       | 'url'
       | 'search'
+    inputmode?:
+      | 'none'
+      | 'text'
+      | 'decimal'
+      | 'numeric'
+      | 'tel'
+      | 'search'
+      | 'email'
+      | 'url'
+    pattern?: string
   }>(),
   {
     type: 'text',
@@ -160,6 +170,8 @@ defineExpose({ focusInput })
           :id="fieldId"
           :disabled="disabled"
           :type="type"
+          :inputmode="inputmode"
+          :pattern="pattern"
           :maxLength="maxLength"
           :readonly="readonly"
           :autocomplete="autocomplete ? 'on' : 'off'"

@@ -80,9 +80,15 @@ async function checkCode() {
 }
 
 watch(code, async (v) => {
+  const digits = v.replace(/\D/g, '').slice(0, 5)
+  if (digits !== v) {
+    code.value = digits
+    return
+  }
+
   if (codeError.value) codeError.value = ''
 
-  if (v.length === 5) {
+  if (digits.length === 5) {
     await checkCode()
   }
 })
@@ -124,7 +130,9 @@ onMounted(async () => {
       :label="t('general.label.code')"
       :error="!!codeError"
       :max-length="5"
-      type="number"
+      type="text"
+      inputmode="numeric"
+      pattern="[0-9]*"
       :supporting-text="codeError"
       :disabled="loading"
       v-model:model-value="code"
