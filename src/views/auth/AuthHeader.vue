@@ -15,9 +15,11 @@ defineProps<{
       {{ t('appName') }}
     </h1>
     <h1 v-else class="auth-header__header">{{ title }}</h1>
-    <p v-if="subtitle" class="auth-header__subtitle">
-      {{ subtitle }}
-    </p>
+    <p
+      v-if="subtitle"
+      class="auth-header__subtitle"
+      v-html="subtitle"
+    ></p>
   </div>
 </template>
 
@@ -31,6 +33,7 @@ defineProps<{
 
 .auth-header__app-name {
   @include text-heading;
+  font-family: var(--font-serif);
   color: var(--text);
   text-align: center;
 }
@@ -46,5 +49,12 @@ defineProps<{
   color: var(--text-muted);
   text-align: center;
   margin-top: var(--space-4);
+
+  :deep(.email-link) {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: underline;
+    word-break: normal;
+  }
 }
 </style>

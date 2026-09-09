@@ -14,6 +14,7 @@ const ru: typeof en = {
       login: 'Войти',
       logout: 'Выйти',
       letsGo: 'Поехали!',
+      letsGetStarted: 'Начать!',
       edit: 'Редактировать',
       delete: 'Удалить',
       cancel: 'Отмена',
@@ -21,6 +22,8 @@ const ru: typeof en = {
       search: 'Поиск',
       create: 'Создать',
       save: 'Сохранить',
+      next: 'Далее',
+      continue: 'Продолжить',
       addWorkspace: 'Новое пространство',
       editWorkspace: 'Ред. пространство',
       selectWorkspace: 'Выбрать пространтсво',
@@ -34,6 +37,8 @@ const ru: typeof en = {
       all: 'Все',
       whatIsYourName: 'Как вас зовут?',
       email: 'Email',
+      code: 'Код',
+      settings: 'Настройки',
       password: 'Пароль',
       confirmPassword: 'Подтвердите пароль',
       workspaceName: 'Имя пространства',
@@ -67,40 +72,47 @@ const ru: typeof en = {
     },
   },
   auth: {
-    loginHeader: 'Войдите в аккаунт',
-    signupHeader: 'Создайте аккаунт',
-    alreadyHaveAnAccount: 'Уже есть аккаунт?',
-    doNotHaveAnAccount: 'Нет аккаунта?',
-    passwordLength: 'Не менее 8 символов',
-    forgotPassword: 'Забыли пароль?',
-    confirmEmail: {
-      messageSentHeader: 'Проверьте свою почту',
-      messageSentCaption:
-        'Мы отправили ссылку для подтверждения аккаунта на вашу почту. Если не нашли — проверьте спам.',
-      emailVerified: 'Почта подтверждена!',
-      emailVerifiedHint:
-        'Обновите страницу на устройстве, откуда был отправлен код',
+    login: {
+      enterEmail: 'Введите свой email',
+      enterPassword: 'Введите пароль',
+    },
+    register: {
+      createAccount: 'Создайте аккаунт',
+      youAreNewHere:
+        'Похоже, вы здесь впервые. Давайте создадим аккаунт на вашу почту {email}',
+      setPassword: 'Придумайте пароль',
+    },
+    verifyEmail: {
+      checkMailbox: 'Проверьте свою почту',
+      checkMailboxCaption:
+        'Мы отправили код подтверждения на {email}. Если не видите письмо, проверьте папку "Спам".',
+      youAreAllSet: 'Ваш аккаунт успешно создан',
+      congratulations: 'Поздравляем!',
+    },
+    forgotPassword: {
+      checkMailbox: 'Проверьте свою почту',
+      checkMailboxCaption:
+        'Мы отправили код подтверждения на {email}. Если не видите письмо, проверьте папку "Спам".',
     },
     resetPassword: {
-      header: 'Восстановление пароля',
-      caption: 'Введите email для восстановления пароля',
-      messageSentHeader: 'Проверьте свою почту',
-      messageSentCaption:
-        'Мы отправили ссылку для сброса пароля на вашу почту. Если не нашли — проверьте спам.',
-      setNewPasswordHeader: 'Новый пароль',
-      passwordUpdatedHeader: 'Пароль изменен!',
+      setNewPassword: 'Новый пароль',
+      passwordUpdated: 'Пароль изменен!',
     },
-    validation: {
+    passwordHint: 'Не менее 8 символов',
+    error: {
       nameRequired: 'Введите имя',
       emailRequired: 'Введите email',
-      emailInvalid: 'Введите корректный email',
       passwordRequired: 'Введите пароль',
-      wrongPassword: 'Похоже, вы ввели неверный пароль',
-      invalidCredentials: 'Неверный email или пароль',
+      passwordRequiredWithLink: 'Введите пароль. {link}?',
+      passwordsDoNotMatch: 'Пароли не совпадают',
+      invalidOrExpiredCode: 'Неверный или истекший код',
+      tooManyRequests:
+        'Слишком много запросов. Подождите немного и попробуйте снова.',
+      wrongPassword: 'Неверный пароль. {link}?',
       passwordTooShort:
         'Пароль должен содержать не менее 8 символов',
       confirmPasswordRequired: 'Подтвердите пароль',
-      passwordsDoNotMatch: 'Пароли не совпадают',
+      emailInvalid: 'Введите корректный email',
     },
   },
   main: {

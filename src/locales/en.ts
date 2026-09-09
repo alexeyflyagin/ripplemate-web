@@ -12,6 +12,7 @@ export default {
       login: 'Log in',
       logout: 'Log out',
       letsGo: "Let's go!",
+      letsGetStarted: "Let's get started!",
       edit: 'Edit',
       delete: 'Delete',
       cancel: 'Cancel',
@@ -19,6 +20,8 @@ export default {
       search: 'Search',
       create: 'Create',
       save: 'Save',
+      next: 'Next',
+      continue: 'Continue',
       addWorkspace: 'Add workspace',
       editWorkspace: 'Edit workspace',
       selectWorkspace: 'Select workspace',
@@ -32,6 +35,8 @@ export default {
       all: 'All',
       whatIsYourName: "What's your name?",
       email: 'Email',
+      code: 'Code',
+      settings: 'Settings',
       password: 'Password',
       confirmPassword: 'Confirm password',
       workspaceName: 'Workspace name',
@@ -65,42 +70,50 @@ export default {
     },
   },
   auth: {
-    loginHeader: 'Log in to your account',
-    signupHeader: 'Sign up',
-    alreadyHaveAnAccount: 'Already have an account?',
-    doNotHaveAnAccount: "Don't have an account?",
-    passwordLength: 'At least 8 characters',
-    forgotPassword: 'Forgot password?',
-    confirmEmail: {
-      messageSentHeader: 'Check your email',
-      messageSentCaption:
-        "We sent you a link to verify your email. If you can't find it, check your spam folder.",
-      emailVerified: 'Email verified!',
-      emailVerifiedHint:
-        'Refresh the page on the device where the code was sent',
+    login: {
+      enterEmail: 'Enter your email',
+      enterPassword: 'Enter password',
+    },
+    register: {
+      createAccount: 'Create an account',
+      youAreNewHere:
+        "Looks like you're new here. Let’s create an account with your email {email}",
+      setPassword: 'Set a password',
+    },
+    verifyEmail: {
+      checkMailbox: 'Check your mailbox',
+      checkMailboxCaption:
+        "We sent a confirmation code to {email}. Check your spam folder if you don't see it.",
+      youAreAllSet:
+        'Your account has been successfully created',
+      congratulations: 'Congratulations!',
+    },
+    forgotPassword: {
+      checkMailbox: 'Check your mailbox',
+      checkMailboxCaption:
+        "We sent a confirmation code to {email}. Check your spam folder if you don't see it.",
     },
     resetPassword: {
-      header: 'Reset password',
-      caption: 'Enter your email to reset your password',
-      messageSentHeader: 'Check your email',
-      messageSentCaption:
-        "We sent a password reset link to your email. If you haven't found it, check your spam folder.",
-      setNewPasswordHeader: 'Set a new password',
-      passwordUpdatedHeader: 'Password updated!',
+      setNewPassword: 'Set a new password',
+      passwordUpdated: 'Password updated!',
     },
-    validation: {
+    passwordHint: 'At least 8 characters',
+    error: {
       nameRequired: 'Please enter your name',
       emailRequired: 'Please enter your email',
-      emailInvalid: 'Please enter a valid email address',
       passwordRequired: 'Please enter a password',
-      wrongPassword:
-        'It seems you entered the wrong password',
-      invalidCredentials: 'Incorrect email or password',
+      passwordRequiredWithLink:
+        'Please enter a password. {link}?',
+      passwordsDoNotMatch: 'Passwords do not match',
+      invalidOrExpiredCode: 'Invalid or expired code',
+      tooManyRequests:
+        'Too many requests. Please wait a moment and try again.',
+      wrongPassword: 'The password is wrong. {link}?',
       passwordTooShort:
         'Password must be at least 8 characters',
       confirmPasswordRequired:
         'Please confirm your password',
-      passwordsDoNotMatch: 'Passwords do not match',
+      emailInvalid: 'Please enter a valid email address',
     },
   },
   main: {

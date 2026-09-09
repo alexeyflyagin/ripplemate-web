@@ -3,16 +3,12 @@ import {
   createWebHistory,
   type RouteLocationNamedRaw,
 } from 'vue-router'
-import LoginView from '@/views/auth/LoginView.vue'
-import RegisterView from '@/views/auth/RegisterView.vue'
 import MainView from '@/views/main/MainView/MainView.vue'
 import HomeView from '@/views/main/HomeView/HomeView.vue'
 import FlowView from '@/views/main/FlowView/FlowView.vue'
 import { useAuthStore } from '@/stores/domain/auth'
 import { useWorkspaceStore } from '@/stores/domain/workspace'
-import ForgotPassword from '@/views/auth/ForgotPassword.vue'
-import ResetPassword from '@/views/auth/ResetPassword.vue'
-import VerifyEmail from '@/views/auth/VerifyEmail.vue'
+import AuthView from '@/views/auth/AuthView.vue'
 import { useAccountStore } from '@/stores/domain/account'
 
 declare module 'vue-router' {
@@ -46,34 +42,33 @@ const router = createRouter({
       ],
     },
     {
-      path: '/login',
-      name: 'login',
-      component: LoginView,
-      meta: { isPublic: true },
+      path: '/verify-email',
+      name: 'verify-email',
+      component: AuthView,
     },
     {
-      path: '/signup',
-      name: 'signup',
-      component: RegisterView,
+      path: '/auth',
+      name: 'auth',
       meta: { isPublic: true },
+      component: AuthView,
+    },
+    {
+      path: '/register',
+      name: 'register',
+      meta: { isPublic: true },
+      component: AuthView,
     },
     {
       path: '/forgot-password',
       name: 'forgot-password',
-      component: ForgotPassword,
       meta: { isPublic: true },
+      component: AuthView,
     },
     {
       path: '/reset-password',
       name: 'reset-password',
-      component: ResetPassword,
       meta: { isPublic: true },
-    },
-    {
-      path: '/verify-email',
-      name: 'verify-email',
-      component: VerifyEmail,
-      meta: { isPublic: true },
+      component: AuthView,
     },
   ],
 })
@@ -97,30 +92,30 @@ router.beforeEach(async (to) => {
 
   if (authStore.isAuthorized) {
     await authStore.initializeUserData()
-    if (
-      to.name !== 'verify-email' &&
-      !accountStore.account?.is_verified
-    )
-      return { name: 'verify-email' }
-  }
-
-  if (!isPublic && !authStore.isAuthorized) {
-    return { name: 'login' }
   }
 
   if (
-    isPublic &&
+    to.name !== 'verify-email' &&
     authStore.isAuthorized &&
-    to.name !== 'verify-email'
+    !accountStore.account?.is_verified
+  ) {
+    return { name: 'verify-email' }
+  }
+
+  if (
+    accountStore.account?.is_verified &&
+    authStore.isAuthorized &&
+    to.name === 'root'
   ) {
     return authorizedHome()
   }
 
-  if (to.name === 'root' && authStore.isAuthorized) {
-    const target = authorizedHome()
-    if (target.name !== 'root') {
-      return target
-    }
+  if (isPublic && authStore.isAuthorized) {
+    return authorizedHome()
+  }
+
+  if (!isPublic && !authStore.isAuthorized) {
+    return { name: 'auth' }
   }
 })
 

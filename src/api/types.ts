@@ -44,7 +44,7 @@ export interface ResetPasswordRequest {
 }
 
 export interface ResetPassword {
-  token: string
+  reset_token: string
   password: string
 }
 
@@ -52,8 +52,18 @@ export interface VerifyEmailRequest {
   email: string
 }
 
+export interface VerifyResetCode {
+  email: string
+  code: string
+}
+
+export interface ResetCodeConfirmed {
+  reset_token: string
+}
+
 export interface VerifyEmail {
-  token: string
+  email: string
+  code: string
 }
 
 export interface ValidationMessageResponse {

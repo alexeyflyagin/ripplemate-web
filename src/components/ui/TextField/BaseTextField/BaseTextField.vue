@@ -136,7 +136,6 @@ defineExpose({ focusInput })
         <textarea
           v-if="multiline"
           :id="fieldId"
-          :type="type"
           :maxlength="maxLength"
           :readonly="readonly"
           :disabled="disabled"
@@ -163,6 +162,7 @@ defineExpose({ focusInput })
           :type="type"
           :maxLength="maxLength"
           :readonly="readonly"
+          :autocomplete="autocomplete ? 'on' : 'off'"
           class="text-field__input"
           ref="inputEl"
           :placeholder="placeholder"
@@ -189,8 +189,8 @@ defineExpose({ focusInput })
     <span
       v-if="supportingText"
       class="text-field__supporting"
+      v-html="supportingText"
     >
-      {{ supportingText }}
     </span>
   </div>
 </template>
@@ -285,6 +285,12 @@ defineExpose({ focusInput })
   padding: 0 var(--space-12);
   color: var(--text-placeholder);
   white-space: normal;
+
+  :deep(.supporting-link) {
+    color: inherit;
+    text-decoration: underline;
+    word-break: break-all;
+  }
 }
 
 .text-field__content {
@@ -360,5 +366,17 @@ defineExpose({ focusInput })
     .text-field__label {
     transform: translateY(-12px) scale(1);
   }
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
 }
 </style>

@@ -4,11 +4,19 @@ import {
   login as loginApi,
   register as registerApi,
 } from '@/api/repositories/auth'
+import { exists as existsApi } from '@/api/repositories/account'
 import {
   requestResetPassword as requestResetPasswordApi,
   resetPassword as resetPasswordApi,
-} from '@/api/repositories/validation'
-import type { UserCreate } from '@/api/types'
+  verifyResetCode as verifyResetCodeApi,
+} from '@/api/repositories/verification'
+import type {
+  AccountExists,
+  ResetPassword,
+  ResetPasswordRequest,
+  UserCreate,
+  VerifyResetCode,
+} from '@/api/types'
 import { isJWTTokenExpired } from './utils'
 import { useAccountStore } from '../account'
 import { useSettingsStore } from '../settings'
@@ -34,6 +42,10 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.removeItem(TOKEN_STORAGE_KEY)
     }
   })
+
+  function exists(email: string): Promise<AccountExists> {
+    return existsApi(email)
+  }
 
   async function login(email: string, password: string) {
     const response = await loginApi(email, password)
@@ -73,22 +85,30 @@ export const useAuthStore = defineStore('auth', () => {
     window.location.assign(import.meta.env.BASE_URL)
   }
 
-  function requestResetPassword(email: string) {
-    return requestResetPasswordApi(email)
+  function requestResetPassword(
+    data: ResetPasswordRequest,
+  ) {
+    return requestResetPasswordApi(data)
   }
 
-  function resetPassword(token: string, password: string) {
-    return resetPasswordApi(token, password)
+  function verifyResetCode(data: VerifyResetCode) {
+    return verifyResetCodeApi(data)
+  }
+
+  function resetPassword(data: ResetPassword) {
+    return resetPasswordApi(data)
   }
 
   return {
     token,
     isAuthorized,
+    exists,
     initializeUserData,
     login,
     register: registerAndLogin,
     logout,
     requestResetPassword,
     resetPassword,
+    verifyResetCode,
   }
 })
