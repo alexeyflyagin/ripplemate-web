@@ -26,6 +26,10 @@ export interface LoginResponse {
   token_type: string
 }
 
+export interface AccountExists {
+  exists: boolean
+}
+
 export interface AccountRead {
   id: string
   display_name: string
