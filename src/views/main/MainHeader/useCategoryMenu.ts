@@ -3,7 +3,7 @@ import {
   type MenuItemData,
 } from '@/components/ui/ContextMenu'
 import { ConfirmDialog } from '@/components/ui/Dialog/ConfirmDialog'
-import { createCategoryMenu } from '@/menu/Category'
+import { createCategoryMenu } from '@/menu/CategoryMenu'
 import { useCategoryStore } from '@/stores/domain/category'
 import { useCurrentCategory } from '@/stores/domain/category/useCurrentCategory'
 import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'

@@ -1,5 +1,5 @@
-import { createHomeMoreMenu } from '@/menu/HomeMore'
-import { FONT_ICONS, THEME_ICONS } from './constants'
+import { createHomeMoreMenu } from '@/menu/HomeMoreMenu'
+import { FONT_ICONS, THEME_ICONS } from '@/constants/icons'
 import type { ComposerTranslation } from 'vue-i18n'
 import { useAuthStore } from '@/stores/domain/auth'
 import { useAccountStore } from '@/stores/domain/account'
