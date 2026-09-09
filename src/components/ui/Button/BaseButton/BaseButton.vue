@@ -28,7 +28,7 @@ const emit = defineEmits<{
     :class="{
       [`base-button--${variant}`]: variant !== 'default',
     }"
-    :disabled="disabled"
+    :disabled="disabled && !loading"
     :type="type"
     @click="emit('click', $event)"
     @contextmenu.prevent
