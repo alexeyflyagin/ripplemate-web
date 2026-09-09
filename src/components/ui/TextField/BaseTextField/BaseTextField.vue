@@ -8,6 +8,33 @@ import {
   useId,
   type Component,
 } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function onSupportingTextClick(event: MouseEvent) {
+  if (event.button !== 0) return
+  if (
+    event.metaKey ||
+    event.ctrlKey ||
+    event.shiftKey ||
+    event.altKey
+  )
+    return
+
+  const link = (event.target as HTMLElement).closest('a')
+  if (!link) return
+
+  const url = new URL(link.href)
+  if (url.origin !== window.location.origin) return
+
+  event.preventDefault()
+  router.push({
+    path: url.pathname,
+    query: Object.fromEntries(url.searchParams),
+    hash: url.hash || undefined,
+  })
+}
 
 onMounted(() => {
   if (!inputEl.value) return
@@ -203,6 +230,7 @@ defineExpose({ focusInput })
       v-if="supportingTextHtml"
       class="text-field__supporting"
       v-html="supportingTextHtml"
+      @click="onSupportingTextClick"
     ></span>
     <span
       v-else-if="supportingText"
