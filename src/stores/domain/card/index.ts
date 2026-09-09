@@ -111,12 +111,17 @@ export const useCardStore = defineStore('card', () => {
     const key = segmentKey(categoryId)
     const existing = cache.value.get(key)
 
-    if (!existing || existing.items.length <= page.items.length) {
+    if (
+      !existing ||
+      existing.items.length <= page.items.length
+    ) {
       cache.value.set(key, page)
       return
     }
 
-    const byId = new Map(existing.items.map((c) => [c.id, c]))
+    const byId = new Map(
+      existing.items.map((c) => [c.id, c]),
+    )
     for (const fresh of page.items) {
       const current = byId.get(fresh.id)
       if (current) Object.assign(current, fresh)
@@ -235,9 +240,9 @@ export const useCardStore = defineStore('card', () => {
   ) {
     const created = await createCardApi(workspaceId, data)
 
-    justCreatedIds.value = new Set(justCreatedIds.value).add(
-      created.id,
-    )
+    justCreatedIds.value = new Set(
+      justCreatedIds.value,
+    ).add(created.id)
 
     const allSeg = cache.value.get('all')
     if (allSeg) {
@@ -272,7 +277,9 @@ export const useCardStore = defineStore('card', () => {
     )
 
     for (const [key, seg] of cache.value) {
-      const idx = seg.items.findIndex((c) => c.id === cardId)
+      const idx = seg.items.findIndex(
+        (c) => c.id === cardId,
+      )
       if (idx === -1) continue
 
       const inThisCategory =
@@ -313,10 +320,14 @@ export const useCardStore = defineStore('card', () => {
     patch: Partial<CardRead>,
   ) {
     for (const [key, seg] of cache.value) {
-      const idx = seg.items.findIndex((c) => c.id === cardId)
+      const idx = seg.items.findIndex(
+        (c) => c.id === cardId,
+      )
       if (idx === -1) continue
+      const current = seg.items[idx]
+      if (!current) continue
       const items = seg.items.slice()
-      items[idx] = { ...items[idx], ...patch }
+      items[idx] = { ...current, ...patch }
       cache.value.set(key, { items, total: seg.total })
     }
   }
@@ -352,7 +363,10 @@ export const useCardStore = defineStore('card', () => {
     for (const [key, seg] of cache.value) {
       const items = seg.items.filter((c) => c.id !== cardId)
       if (items.length !== seg.items.length) {
-        cache.value.set(key, { items, total: seg.total - 1 })
+        cache.value.set(key, {
+          items,
+          total: seg.total - 1,
+        })
       }
     }
   }
@@ -377,7 +391,9 @@ export const useCardStore = defineStore('card', () => {
     cardId: string,
   ) {
     pendingDelete.set(cardId, { api: false, anim: false })
-    deletingIds.value = new Set(deletingIds.value).add(cardId)
+    deletingIds.value = new Set(deletingIds.value).add(
+      cardId,
+    )
 
     try {
       await deleteCardApi(workspaceId, cardId)
