@@ -112,7 +112,7 @@ onMounted(() => {
     />
 
     <BaseButton
-      class="enter-password-form__sumbit"
+      class="enter-password-form__submit"
       :label="t('general.action.login')"
       :loading="loading"
       variant="accent"
@@ -142,7 +142,7 @@ onMounted(() => {
     margin-bottom: var(--space-32);
   }
 
-  &__sumbit {
+  &__submit {
     margin-top: var(--space-32);
   }
 

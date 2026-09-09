@@ -1,6 +1,5 @@
 import type { MenuItemData } from '@/components/ui/ContextMenu'
 import LanguageIcon from '~icons/icons-16/language'
-import LeaveIcon from '~icons/icons-16/leave'
 import type { ComposerTranslation } from 'vue-i18n'
 import type { Component } from 'vue'
 import OledIcon from '~icons/icons-16/oled'

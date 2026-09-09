@@ -7,5 +7,8 @@ const ESCAPE_MAP: Record<string, string> = {
 }
 
 export function escapeHtml(value: string): string {
-  return value.replace(/[&<>"']/g, (char) => ESCAPE_MAP[char]!)
+  return value.replace(
+    /[&<>"']/g,
+    (char) => ESCAPE_MAP[char]!,
+  )
 }

@@ -85,7 +85,7 @@ onMounted(() => {
     />
 
     <BaseButton
-      class="enter-name-form__sumbit"
+      class="enter-name-form__submit"
       :label="t('general.action.next')"
       variant="accent"
       type="submit"
@@ -114,7 +114,7 @@ onMounted(() => {
     margin-bottom: var(--space-32);
   }
 
-  &__sumbit {
+  &__submit {
     margin-top: var(--space-32);
   }
 

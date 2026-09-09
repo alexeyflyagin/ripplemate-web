@@ -156,7 +156,7 @@ onMounted(() => {
     />
 
     <BaseButton
-      class="reset-password-form__sumbit"
+      class="reset-password-form__submit"
       :label="t('general.action.continue')"
       :loading="loading"
       variant="accent"
@@ -190,7 +190,7 @@ onMounted(() => {
     margin-top: var(--space-8);
   }
 
-  &__sumbit {
+  &__submit {
     margin-top: var(--space-32);
   }
 

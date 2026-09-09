@@ -14,7 +14,7 @@ import { BaseTextField } from '@/components/ui/TextField/BaseTextField/index.ts'
 import { useAuthStore } from '@/stores/domain/auth/index.ts'
 import { emailLinkHtml } from '@/utils/emailLink.ts'
 import { ApiError } from '@/api/client.ts'
-import { useResendButtonWithTimer } from '../../composables/useResendButtonWIthTimer.ts'
+import { useResendButtonWithTimer } from '../../composables/useResendButtonWithTimer.ts'
 import { RESEND_TIMER_SECONDS } from '../../AuthView.constants.ts'
 
 const { t } = useI18n()
@@ -136,7 +136,7 @@ onMounted(async () => {
     />
 
     <BaseButton
-      class="verify-reset-code-form__sumbit"
+      class="verify-reset-code-form__submit"
       :label="resendLabel"
       :loading="loading"
       :disabled="isResendDisabled"
@@ -167,7 +167,7 @@ onMounted(async () => {
     margin-bottom: var(--space-32);
   }
 
-  &__sumbit {
+  &__submit {
     margin-top: var(--space-32);
   }
 

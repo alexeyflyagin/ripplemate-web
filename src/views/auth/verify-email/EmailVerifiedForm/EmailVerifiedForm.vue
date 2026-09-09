@@ -49,7 +49,7 @@ watch(
     />
 
     <BaseButton
-      class="email-verified-form__sumbit"
+      class="email-verified-form__submit"
       :label="t('general.action.letsGetStarted')"
       :loading="loading"
       variant="accent"
@@ -69,7 +69,7 @@ watch(
     margin-bottom: var(--space-32);
   }
 
-  &__sumbit {
+  &__submit {
     margin-top: var(--space-32);
   }
 }

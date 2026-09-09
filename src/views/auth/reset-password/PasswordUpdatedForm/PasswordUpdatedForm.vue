@@ -26,7 +26,7 @@ async function onSubmit() {
     />
 
     <BaseButton
-      class="password-updated-form__sumbit"
+      class="password-updated-form__submit"
       :label="t('general.action.back')"
       @click="onSubmit"
     />
@@ -44,7 +44,7 @@ async function onSubmit() {
     margin-bottom: var(--space-32);
   }
 
-  &__sumbit {
+  &__submit {
     margin-top: var(--space-32);
   }
 }

@@ -98,7 +98,7 @@ onMounted(async () => {
     />
 
     <BaseButton
-      class="enter-email-form__sumbit"
+      class="enter-email-form__submit"
       :label="t('general.action.letsGo')"
       variant="accent"
       :loading="loading"
@@ -116,7 +116,7 @@ onMounted(async () => {
     margin-bottom: var(--space-32);
   }
 
-  &__sumbit {
+  &__submit {
     margin-top: var(--space-32);
   }
 }

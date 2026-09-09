@@ -16,7 +16,7 @@ import { useAccountStore } from '@/stores/domain/account/index.ts'
 import { emailLinkHtml } from '@/utils/emailLink.ts'
 import { ApiError } from '@/api/client.ts'
 import { RESEND_TIMER_SECONDS } from '../../AuthView.constants.ts'
-import { useResendButtonWithTimer } from '../../composables/useResendButtonWIthTimer.ts'
+import { useResendButtonWithTimer } from '../../composables/useResendButtonWithTimer.ts'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -131,7 +131,7 @@ onMounted(async () => {
     />
 
     <BaseButton
-      class="verify-email-form__sumbit"
+      class="verify-email-form__submit"
       :label="resendLabel"
       :loading="loading"
       :disabled="isResendDisabled"
@@ -163,7 +163,7 @@ onMounted(async () => {
     margin-bottom: var(--space-32);
   }
 
-  &__sumbit {
+  &__submit {
     margin-top: var(--space-32);
   }
 

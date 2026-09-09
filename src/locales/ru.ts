@@ -113,6 +113,8 @@ const ru: typeof en = {
         'Пароль должен содержать не менее 8 символов',
       confirmPasswordRequired: 'Подтвердите пароль',
       emailInvalid: 'Введите корректный email',
+      emailAlreadyExists:
+        'Аккаунт с таким email уже существует',
     },
   },
   main: {

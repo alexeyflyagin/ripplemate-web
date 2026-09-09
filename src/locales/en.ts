@@ -114,6 +114,8 @@ export default {
       confirmPasswordRequired:
         'Please confirm your password',
       emailInvalid: 'Please enter a valid email address',
+      emailAlreadyExists:
+        'An account with this email already exists',
     },
   },
   main: {

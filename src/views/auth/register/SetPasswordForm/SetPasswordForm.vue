@@ -9,13 +9,7 @@ import {
   MIN_PASSWORD_LENGTH,
 } from '../../AuthView.constants.ts'
 import { useRoute, useRouter } from 'vue-router'
-import {
-  computed,
-  nextTick,
-  onMounted,
-  ref,
-  watch,
-} from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useAuthStore } from '@/stores/domain/auth/index.ts'
 import { ApiError } from '@/api/client.ts'
 
@@ -90,7 +84,7 @@ async function onSubmit() {
   } catch (e) {
     if (e instanceof ApiError && e.status === 400) {
       confirmPasswordError.value = t(
-        'auth.validation.emailAlreadyExists',
+        'auth.error.emailAlreadyExists',
       )
     } else {
       confirmPasswordError.value = t(
@@ -175,7 +169,7 @@ onMounted(() => {
     />
 
     <BaseButton
-      class="set-password-form__sumbit"
+      class="set-password-form__submit"
       :label="t('general.action.continue')"
       :loading="loading"
       variant="accent"
@@ -209,7 +203,7 @@ onMounted(() => {
     margin-top: var(--space-8);
   }
 
-  &__sumbit {
+  &__submit {
     margin-top: var(--space-32);
   }
 
