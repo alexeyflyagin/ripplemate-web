@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { NAV_ITEM_SIZE } from './NavBar.constants'
 
 defineProps<{
   icon: Component
@@ -19,10 +18,6 @@ const emit = defineEmits<{
     :class="{
       'nav-item--selected': selected,
     }"
-    :style="{
-      width: NAV_ITEM_SIZE + 'px',
-      height: NAV_ITEM_SIZE + 'px',
-    }"
     @click="emit('click', $event)"
     @contextmenu.prevent
   >
@@ -39,6 +34,8 @@ const emit = defineEmits<{
 .nav-item {
   position: relative;
   display: inline-flex;
+  width: 48px;
+  height: 48px;
   padding: 0;
   background-color: transparent;
   border: none;

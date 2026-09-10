@@ -1,8 +1,8 @@
 import type { NavItemData } from '@/components/ui/NavBar'
-import HomeIcon from '~icons/icons-16/home'
-import HomeFilledIcon from '~icons/icons-16/home-filled'
-import PlayIcon from '~icons/icons-16/play'
-import PlayFilledIcon from '~icons/icons-16/play-filled'
+import LibraryIcon from '~icons/icons-16/library'
+import LibraryFilledIcon from '~icons/icons-16/library-filled'
+import CardsIcon from '~icons/icons-16/cards'
+import CardsFilledIcon from '~icons/icons-16/cards-filled'
 import { computed } from 'vue'
 import { VIEWS, useCurrentView } from './useMainViewState'
 
@@ -15,14 +15,14 @@ export function useNavBar() {
         case 'library':
           return {
             id: v,
-            icon: HomeIcon,
-            iconSelected: HomeFilledIcon,
+            icon: LibraryIcon,
+            iconSelected: LibraryFilledIcon,
           }
         case 'flow':
           return {
             id: v,
-            icon: PlayIcon,
-            iconSelected: PlayFilledIcon,
+            icon: CardsIcon,
+            iconSelected: CardsFilledIcon,
           }
         default:
           throw Error('Unexpected type of view')
