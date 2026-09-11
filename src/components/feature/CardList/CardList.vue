@@ -36,6 +36,7 @@ const props = defineProps<{
   headerHeight?: number
   newIds?: Set<string>
   leavingIds?: Set<string>
+  highlitedIds?: Set<string>
 }>()
 
 const emit = defineEmits<{
@@ -244,6 +245,7 @@ onMounted(() => {
                 item.position === 'last',
             }"
             v-bind="item"
+            :highlited="highlitedIds?.has(item.id)"
             @contextmenu="emit('contextmenu', $event, item)"
             @click="emit('click', $event, item)"
             @enter-done="emit('cardSeen', item.id)"

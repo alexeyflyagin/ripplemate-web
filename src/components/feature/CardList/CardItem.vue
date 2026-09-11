@@ -17,11 +17,13 @@ const props = withDefaults(
     position?: CardPosition
     isNew?: boolean
     isLeaving?: boolean
+    highlited?: boolean
   }>(),
   {
     position: 'middle',
     isNew: false,
     isLeaving: false,
+    highlited: false,
   },
 )
 
@@ -88,6 +90,7 @@ useResizeObserver(cardItemEl, () => {
       :class="{
         [`card-item--${position}`]: position !== 'middle',
         'card-item--new': isNew,
+        'card-item--highlited': highlited,
         'card-item--leaving': isLeaving,
         'card-item--pulse': pulsing,
       }"
@@ -172,6 +175,10 @@ useResizeObserver(cardItemEl, () => {
     background-color: var(--text);
     opacity: 0;
     pointer-events: none;
+  }
+
+  &--highlited::after {
+    opacity: var(--opacity-8);
   }
 
   &__term {

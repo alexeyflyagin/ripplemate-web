@@ -9,7 +9,7 @@ import { EmptyState } from '@/components/feature/EmptyState'
 import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgressBar'
 import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
 import { useCurrentCategory } from '@/stores/domain/category/useCurrentCategory'
-import { watch } from 'vue'
+import { computed, watch } from 'vue'
 
 const { t } = useI18n()
 
@@ -25,8 +25,15 @@ const cardStore = useCardStore()
 const { currentWorkspaceId } = useCurrentWorkspace()
 const { currentCategoryId } = useCurrentCategory()
 
-const { openCardMenu } = useCardItemMenu(t, {
-  editCard: (cardId) => emit('editCard', cardId),
+const { selectedCardId, openCardMenu } = useCardItemMenu(
+  t,
+  {
+    editCard: (cardId) => emit('editCard', cardId),
+  },
+)
+const highlitedCardIds = computed<Set<string>>(() => {
+  if (!selectedCardId.value) return new Set()
+  return new Set([selectedCardId.value])
 })
 
 function onToggleFavorite(cardId: string) {
@@ -74,6 +81,7 @@ function loadMore() {
       :cards="cardStore.cards"
       :new-ids="cardStore.justCreatedIds"
       :leaving-ids="cardStore.deletingIds"
+      :highlited-ids="highlitedCardIds"
       @load-more="loadMore"
       @contextmenu="openCardMenu"
       @click="openCardMenu"

@@ -14,7 +14,7 @@ import {
   type OffsetOptions,
   type Placement,
 } from '@floating-ui/dom'
-import { computed } from 'vue'
+import { computed, readonly, ref, watch } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
 
 export function useCardItemMenu(
@@ -24,7 +24,15 @@ export function useCardItemMenu(
   const cardStore = useCardStore()
   const overlayStore = useOverlayStore()
   const { currentWorkspaceId } = useCurrentWorkspace()
-  let overlay: OverlayHandle
+  const selectedCardId = ref<string | undefined>()
+  const overlay = ref<OverlayHandle>()
+
+  watch(
+    () => overlay.value?.isOpen,
+    (v) => {
+      if (!v) selectedCardId.value = undefined
+    },
+  )
 
   async function handleClick(
     item: MenuItemData,
@@ -36,11 +44,11 @@ export function useCardItemMenu(
     switch (item.id) {
       case 'edit':
         options?.editCard(cardId)
-        overlay.close()
+        overlay.value?.close()
         break
       case 'delete':
         openCardDeleteDialog(cardId)
-        overlay.close()
+        overlay.value?.close()
         break
     }
   }
@@ -92,16 +100,21 @@ export function useCardItemMenu(
           : 0,
     } as OffsetOptions
 
-    overlay = overlayStore.open(ContextMenu, {
+    overlay.value = overlayStore.open(ContextMenu, {
       targetEl: row,
       items: items,
       payload: cardItem.id.toString(),
       position: 'bottom-top' as Placement,
       offsetOptions: offset,
       onClickItem: handleClick,
-      onClose: () => overlay.close(),
+      onClose: () => overlay.value?.close(),
     })
+
+    selectedCardId.value = cardItem.id
   }
 
-  return { openCardMenu: openCardItemMenu }
+  return {
+    selectedCardId: readonly(selectedCardId),
+    openCardMenu: openCardItemMenu,
+  }
 }
