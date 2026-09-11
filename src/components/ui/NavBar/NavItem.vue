@@ -44,8 +44,15 @@ const emit = defineEmits<{
   cursor: pointer;
 
   &:focus-visible {
-    @include focus-outline;
-    outline-offset: -4px;
+    outline: none;
+
+    &::after {
+      @include focus-outline;
+      content: '';
+      position: absolute;
+      border-radius: inherit;
+      inset: var(--space-4);
+    }
   }
 
   &:active .nav-item__icon {
