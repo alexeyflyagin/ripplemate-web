@@ -44,9 +44,9 @@ function onClick(event: MouseEvent) {
 }
 
 watch(
-  () => props.selectable,
-  (v) => {
-    if (!v) selected.value = false
+  [() => props.selectable, selected],
+  ([newSelectable]) => {
+    if (!newSelectable) selected.value = false
   },
   { immediate: true },
 )
