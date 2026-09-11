@@ -67,7 +67,7 @@ watch(
     }"
     :disabled="disabled"
     type="button"
-    @click="onClick"
+    @click.stop="onClick"
     @contextmenu.prevent
   >
     <span v-if="!loading" class="base-icon-button__icon">
