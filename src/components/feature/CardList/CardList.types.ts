@@ -9,7 +9,7 @@ export interface CardItemData {
   id: string
   term: string
   timeLabel: string
-  isFavorite?: boolean
+  favorite?: boolean
   position?: CardPosition
   isNew?: boolean
   isLeaving?: boolean

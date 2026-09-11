@@ -61,7 +61,7 @@ export function convertCards(
         timeLabel: dateFormatter.timeHHmm(
           dateFormatter.parseBackendDate(card.created_at),
         ),
-        isFavorite: card.is_favorite,
+        favorite: card.is_favorite,
         isNew: newIds?.has(card.id) ?? false,
         isLeaving: leavingIds?.has(card.id) ?? false,
         position,

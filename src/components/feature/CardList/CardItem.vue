@@ -1,23 +1,25 @@
 <script setup lang="ts">
-import CardItemTogglableIconButton from './CardItemTogglableIconButton.vue'
 import HeartIcon from '~icons/icons-16/heart'
 import HeartFilledIcon from '~icons/icons-16/heart-filled'
 import type { CardPosition } from './CardList.types.ts'
 import { nextTick, ref, watch } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
+import { BaseIconButton } from '@/components/ui/Button/BaseIconButton/index.ts'
+
+const favorite = defineModel<boolean>('favorite', {
+  default: false,
+})
 
 const props = withDefaults(
   defineProps<{
     term: string
     timeLabel: string
     position?: CardPosition
-    isFavorite?: boolean
     isNew?: boolean
     isLeaving?: boolean
   }>(),
   {
     position: 'middle',
-    isFavorite: false,
     isNew: false,
     isLeaving: false,
   },
@@ -42,6 +44,10 @@ watch(
     triggerPulse()
   },
 )
+
+watch(favorite, () => {
+  emit('toggleFavorite')
+})
 
 function onAnimationEnd(event: AnimationEvent) {
   const name = event.animationName
@@ -88,12 +94,15 @@ useResizeObserver(cardItemEl, () => {
       :style="{ '--area-factor': areaFactor }"
       @animationend="onAnimationEnd"
     >
-      <CardItemTogglableIconButton
+      <BaseIconButton
+        class="card-item__favorite"
         :icon="HeartIcon"
         :icon-selected="HeartFilledIcon"
-        :selected="isFavorite"
-        :style="{ 'margin-top': '2px' }"
-        @click.stop="emit('toggleFavorite')"
+        size="small"
+        :variant="favorite ? 'danger' : 'default'"
+        :show-selected-background="false"
+        v-model:selected="favorite"
+        :selectable="true"
       />
       <span class="card-item__term">{{ term }}</span>
       <span class="card-item__time-label">{{
@@ -188,6 +197,10 @@ useResizeObserver(cardItemEl, () => {
     align-content: center;
     margin-right: var(--space-12);
     color: var(--text-placeholder);
+  }
+
+  &__favorite {
+    margin: var(--space-2);
   }
 }
 
