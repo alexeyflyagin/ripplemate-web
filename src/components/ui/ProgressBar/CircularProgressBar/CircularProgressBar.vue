@@ -5,13 +5,13 @@ const props = withDefaults(
   defineProps<{
     delay?: number
     size?: number
-    width?: number
+    thickness?: number
     progress?: number
   }>(),
   {
     delay: 0,
     size: 24,
-    width: 3,
+    thickness: 3,
     progress: 60,
   },
 )
@@ -20,7 +20,7 @@ let timeoutId = 0
 const visible = ref<boolean>(false)
 
 const radius = computed<number>(() => {
-  return props.size / 2 - props.width
+  return props.size / 2 - props.thickness
 })
 
 onMounted(() => {
@@ -40,7 +40,7 @@ onUnmounted(() => {
     :style="{
       '--size': `${size}px`,
       '--circumference-length': `${2 * 3.14 * radius}`,
-      '--width': `${width}px`,
+      '--thickness': `${thickness}px`,
       '--progress': `${progress}`,
     }"
   >
@@ -89,13 +89,13 @@ onUnmounted(() => {
 .track {
   fill: none;
   stroke: var(--track-color, var(--border-muted));
-  stroke-width: var(--width);
+  stroke-width: var(--thickness);
 }
 
 .arc {
   fill: none;
   stroke: var(--indicator-color, var(--accent));
-  stroke-width: calc(var(--width));
+  stroke-width: var(--thickness);
   stroke-linecap: round;
   stroke-dasharray: calc(
       var(--circumference-length) * var(--progress) / 100
