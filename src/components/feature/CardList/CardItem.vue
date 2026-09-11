@@ -153,15 +153,15 @@ useResizeObserver(cardItemEl, () => {
   transition: transform 0.3s var(--ease-bounce);
 
   &--first {
-    border-top-left-radius: var(--corner-xlarge);
+    border-top-left-radius: var(--corner-large);
   }
 
   &--last {
-    border-bottom-left-radius: var(--corner-xlarge);
+    border-bottom-left-radius: var(--corner-large);
   }
 
   &--only-one {
-    border-radius: var(--corner-xlarge);
+    border-radius: var(--corner-large);
   }
 
   &::after {
@@ -175,8 +175,7 @@ useResizeObserver(cardItemEl, () => {
   }
 
   &__term {
-    margin: var(--space-8) var(--space-16) var(--space-8)
-      var(--space-2);
+    margin: var(--space-8) var(--space-16) var(--space-8) 0;
     flex-grow: 1;
     min-width: 0;
     text-align: left;
@@ -201,6 +200,9 @@ useResizeObserver(cardItemEl, () => {
 
   &__favorite {
     margin: var(--space-2);
+    border-radius: calc(
+      var(--corner-large) - var(--space-2)
+    );
   }
 }
 
