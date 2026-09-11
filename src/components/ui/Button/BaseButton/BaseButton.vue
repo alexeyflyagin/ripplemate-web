@@ -37,7 +37,7 @@ const emit = defineEmits<{
       v-if="loading"
       class="base-button__progress-bar"
       :size="14"
-      :width="2"
+      :thickness="2"
     />
     <div v-else class="base-button__content">
       <component class="base-button__icon" :is="icon" />
