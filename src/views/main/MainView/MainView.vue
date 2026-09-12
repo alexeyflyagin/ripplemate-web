@@ -34,6 +34,7 @@ const {
 } = useNavBar()
 
 const {
+  collapsed,
   mode,
   placeholder,
   actionCaptionData,
@@ -134,6 +135,7 @@ async function onEditCard(cardId: string) {
             :leading-button="leadingButtonData"
             :submit-button="sumbitButtonData"
             :secondary-button="secondaryButtonData"
+            :collapsed="collapsed"
             @submit-click="onSubmitClick"
             @secondary-click="termFieldValue = ''"
             @leading-click="onLeadingClick"
@@ -252,7 +254,8 @@ async function onEditCard(cardId: string) {
   left: 0;
   bottom: 0;
   justify-content: center;
-  padding: 0 0 calc(var(--space-24) + env(safe-area-inset-bottom));
+  padding: 0 0
+    calc(var(--space-24) + env(safe-area-inset-bottom));
   z-index: 10;
   pointer-events: none;
 

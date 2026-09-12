@@ -4,16 +4,17 @@ import { useCardStore } from '@/stores/domain/card'
 import { useCurrentCategory } from '@/stores/domain/category/useCurrentCategory'
 import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
 import { useLibraryModeStore } from '@/stores/ui/libraryMode'
-import { computed, ref, watch } from 'vue'
+import { computed, readonly, ref, watch } from 'vue'
 import type { ComposerTranslation } from 'vue-i18n'
-import SearchIcon from '~icons/icons-12/search'
-import EditIcon from '~icons/icons-12/edit'
+import SearchIcon from '~icons/icons-16/search'
+import EditIcon from '~icons/icons-16/edit'
 import CircleCloseIcon from '~icons/icons-16/circle-close'
 import PlusIcon from '~icons/icons-16/plus'
 import TickIcon from '~icons/icons-16/tick'
 import CaretLeftIcon from '~icons/icons-16/caret-left'
 import CloseIcon from '~icons/icons-16/close'
 import type { CardRead } from '@/api/types'
+import type { BaseIconButtonData } from '@/components/ui/Button/BaseIconButton'
 
 export function useTermTextField(t: ComposerTranslation) {
   const cardStore = useCardStore()
@@ -23,6 +24,12 @@ export function useTermTextField(t: ComposerTranslation) {
 
   const mode = computed(() => libraryMode.mode)
   const editedCard = ref<CardRead | undefined>()
+
+  const collapsed = computed(
+    () =>
+      libraryMode.mode === 'default' &&
+      !termFieldValue.value,
+  )
 
   const termFieldValue = ref<string>('')
 
@@ -76,6 +83,7 @@ export function useTermTextField(t: ComposerTranslation) {
           icon: EditIcon,
           caption: t('general.label.editing') + ':',
           value: editedCard.value.term,
+          closable: true,
         }
       default:
         return undefined
@@ -87,7 +95,7 @@ export function useTermTextField(t: ComposerTranslation) {
       case 'search':
         return t('general.action.search')
       case 'default':
-        return t('general.label.newCard')
+        return t('general.label.term')
       default:
         return undefined
     }
@@ -110,20 +118,19 @@ export function useTermTextField(t: ComposerTranslation) {
   })
 
   const sumbitButtonData = computed<
-    RoundIconButtonData | undefined
+    BaseIconButtonData | undefined
   >(() => {
     switch (libraryMode.mode) {
       case 'default':
-        if (!termFieldValue.value.trim()) return undefined
         return {
           icon: PlusIcon,
-          color: 'accent',
+          variant: 'accent',
         }
       case 'edit-card':
         return {
           icon: TickIcon,
-          color: 'accent',
-          disabled: !termFieldValue.value.trim(),
+          variant: 'accent',
+          hide: !termFieldValue.value.trim(),
         }
       default:
         return undefined
@@ -182,6 +189,7 @@ export function useTermTextField(t: ComposerTranslation) {
   }
 
   return {
+    collapsed: readonly(collapsed),
     mode,
     termFieldValue,
     actionCaptionData,
