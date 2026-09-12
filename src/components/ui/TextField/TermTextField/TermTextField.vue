@@ -166,6 +166,7 @@ onMounted(async () => {
         v-if="secondaryButton && !collapsed"
         class="term-text-field__secondary-button"
         v-bind="secondaryButton"
+        :init-animation="true"
         :style="{
           ...(submitButton ? { marginRight: 0 } : {}),
         }"
