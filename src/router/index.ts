@@ -4,7 +4,7 @@ import {
   type RouteLocationNamedRaw,
 } from 'vue-router'
 import MainView from '@/views/main/MainView/MainView.vue'
-import HomeView from '@/views/main/HomeView/HomeView.vue'
+import LibraryView from '@/views/main/LibraryView/LibraryView.vue'
 import FlowView from '@/views/main/FlowView/FlowView.vue'
 import { useAuthStore } from '@/stores/domain/auth'
 import { useWorkspaceStore } from '@/stores/domain/workspace'
@@ -32,7 +32,7 @@ const router = createRouter({
         {
           path: '',
           name: 'library',
-          component: HomeView,
+          component: LibraryView,
         },
         {
           path: 'flow',
