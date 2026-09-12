@@ -1,4 +1,3 @@
-import type { RoundIconButtonData } from '@/components/ui/Button/RoundIconButton'
 import type { ActionCaptionData } from '@/components/ui/TextField/TermTextField'
 import { useCardStore } from '@/stores/domain/card'
 import { useCurrentCategory } from '@/stores/domain/category/useCurrentCategory'
@@ -102,13 +101,13 @@ export function useTermTextField(t: ComposerTranslation) {
   })
 
   const leadingButtonData = computed<
-    RoundIconButtonData | undefined
+    BaseIconButtonData | undefined
   >(() => {
     switch (libraryMode.mode) {
       case 'edit-card':
         return {
           icon: CloseIcon,
-          color: 'danger',
+          variant: 'danger',
         }
       case 'search':
         return { icon: CaretLeftIcon }
@@ -138,7 +137,7 @@ export function useTermTextField(t: ComposerTranslation) {
   })
 
   const secondaryButtonData = computed<
-    RoundIconButtonData | undefined
+    BaseIconButtonData | undefined
   >(() => {
     switch (libraryMode.mode) {
       case 'search':
