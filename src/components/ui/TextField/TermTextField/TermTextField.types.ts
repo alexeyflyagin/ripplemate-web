@@ -1,7 +1,9 @@
 import type { Component } from 'vue'
 
 export interface ActionCaptionData {
+  icon: Component
   value: string
-  caption?: string
-  icon?: Component
+  caption: string
+  closable?: boolean
+  hide?: boolean
 }

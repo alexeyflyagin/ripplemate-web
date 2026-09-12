@@ -1,0 +1,1 @@
+export const ACTION_CAPTION_HEIGHT = 46

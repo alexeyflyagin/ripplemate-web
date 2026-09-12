@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import {
-  RoundIconButton,
-  type RoundIconButtonData,
-} from '@/components/ui/Button/RoundIconButton/index.ts'
 import { onMounted, ref, watch } from 'vue'
 import { nextTick } from 'vue'
 import type { ActionCaptionData } from './TermTextField.types.ts'
+import {
+  BaseIconButton,
+  type BaseIconButtonData,
+} from '@/components/ui/Button/BaseIconButton'
+import ActionCaption from './ActionCaption.vue'
 
 const modelValue = defineModel<string>('modelValue', {
   default: '',
@@ -14,10 +15,11 @@ const modelValue = defineModel<string>('modelValue', {
 defineProps<{
   placeholder?: string
   actionCaption?: ActionCaptionData
-  leadingButton?: RoundIconButtonData
-  secondaryButton?: RoundIconButtonData
-  submitButton?: RoundIconButtonData
+  leadingButton?: BaseIconButtonData
+  secondaryButton?: BaseIconButtonData
+  submitButton?: BaseIconButtonData
   maxLength?: number
+  collapsed?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -106,28 +108,23 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="term-text-field" @click="() => focusInput()">
-    <div v-if="actionCaption" class="action-caption">
-      <div class="action-caption__container">
-        <component
-          v-if="actionCaption.icon"
-          class="action-caption__icon"
-          :is="actionCaption.icon"
-        />
-        <span class="action-caption__caption">
-          {{ actionCaption.caption }}
-        </span>
-        <span
-          v-if="actionCaption.value"
-          class="action-caption__value"
-        >
-          {{ actionCaption.value }}
-        </span>
-      </div>
-    </div>
+  <div
+    class="term-text-field"
+    :class="{
+      'term-text-field--expand': !collapsed,
+      'term-text-field--collapse':
+        collapsed && !initialization,
+    }"
+    @click="() => focusInput()"
+  >
+    <ActionCaption
+      class="action-caption"
+      :data="actionCaption"
+    />
     <div class="main-content">
-      <RoundIconButton
-        v-if="leadingButton"
+      <BaseIconButton
+        v-if="leadingButton && !collapsed"
+        class="term-text-field__leading-button"
         v-bind="leadingButton"
         @click="emit('leadingClick')"
       />
@@ -141,8 +138,8 @@ onMounted(async () => {
         :style="{
           '--fade-start': `${startFade}px`,
           '--fade-end': `${endFade}px`,
-          'padding-left': `${leadingButton ? 'var(--space-8)' : 'var(--space-24)'}`,
-          'padding-right': `${secondaryButton || submitButton ? 'var(--space-8)' : 'var(--space-24)'}`,
+          'padding-left': `${!leadingButton || collapsed ? 'var(--space-24)' : 0}`,
+          'padding-right': `${secondaryButton?.hide && submitButton?.hide ? 'var(--space-24)' : 0}`,
         }"
         @keydown.enter="onEnter"
         @input="
@@ -152,13 +149,20 @@ onMounted(async () => {
         "
         @scroll="onScroll"
       />
-      <RoundIconButton
+      <BaseIconButton
         v-if="secondaryButton"
+        class="term-text-field__secondary-button"
         v-bind="secondaryButton"
+        :hide="collapsed ? true : secondaryButton.hide"
+        :style="{
+          ...(submitButton ? { marginRight: 0 } : {}),
+        }"
         @click="emit('secondaryClick')"
       />
-      <RoundIconButton
+      <BaseIconButton
         v-if="submitButton"
+        class="term-text-field__submit-button"
+        :hide="collapsed ? true : submitButton.hide"
         v-bind="submitButton"
         @click="emit('submitClick')"
       />
@@ -177,9 +181,8 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   background-color: var(--surface-highest-80);
-  border-radius: 26px;
+  border-radius: var(--corner-xlarge);
   overflow: hidden;
-  min-height: 52px;
   margin: 1px;
   outline: var(--stroke-subtle) solid var(--border-muted);
   transition: outline-color 0.2s var(--ease-emphasized);
@@ -193,11 +196,18 @@ onMounted(async () => {
   &:focus-within {
     outline-color: var(--border);
   }
+
+  &__leading-button,
+  &__secondary-button,
+  &__submit-button {
+    margin: var(--space-4);
+  }
 }
 
 .main-content {
   position: relative;
   display: flex;
+  min-height: 48px;
   flex: 1;
   min-width: 0;
   align-items: flex-end;
@@ -235,44 +245,31 @@ onMounted(async () => {
   }
 }
 
-.action-caption {
-  display: flex;
+.term-text-field--collapse {
+  animation: term-text-field-collapse 0.15s
+    var(--ease-emphasized) forwards;
+}
 
-  &__container {
-    @include text-label;
-    display: flex;
-    margin: var(--space-8) var(--space-8) 0;
-    padding: var(--space-12) var(--space-16);
-    border-radius: var(--corner-full);
-    background-color: var(--accent-10);
-    flex: 1;
-    overflow: hidden;
-    align-items: center;
-    color: var(--accent);
+@keyframes term-text-field-collapse {
+  from {
+    border-radius: var(--corner-xlarge);
   }
-
-  &__icon {
-    width: 12px;
-    height: 12px;
-    flex-shrink: 0;
-    margin-right: var(--space-8);
+  to {
+    border-radius: 28px;
   }
+}
 
-  &__caption {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.term-text-field--expand {
+  animation: term-text-field-expand 0.15s
+    var(--ease-emphasized) forwards;
+}
+
+@keyframes term-text-field-expand {
+  from {
+    border-radius: 28px;
   }
-
-  &__value {
-    @include text-label-emphasized;
-    color: var(--text);
-    margin-left: var(--space-4);
-    overflow: hidden;
-    flex: 1;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    min-width: 100px;
+  to {
+    border-radius: var(--corner-xlarge);
   }
 }
 </style>
