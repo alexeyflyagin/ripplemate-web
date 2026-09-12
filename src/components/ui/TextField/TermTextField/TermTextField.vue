@@ -112,8 +112,7 @@ onMounted(async () => {
     class="term-text-field"
     :class="{
       'term-text-field--expand': !collapsed,
-      'term-text-field--collapse':
-        collapsed && !initialization,
+      'term-text-field--collapse': collapsed,
     }"
     @click="() => focusInput()"
   >
