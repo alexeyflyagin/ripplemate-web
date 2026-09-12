@@ -11,7 +11,6 @@ import CircleCloseIcon from '~icons/icons-16/circle-close'
 import PlusIcon from '~icons/icons-16/plus'
 import TickIcon from '~icons/icons-16/tick'
 import CaretLeftIcon from '~icons/icons-16/caret-left'
-import CloseIcon from '~icons/icons-16/close'
 import type { CardRead } from '@/api/types'
 import type { BaseIconButtonData } from '@/components/ui/Button/BaseIconButton'
 
@@ -106,7 +105,12 @@ export function useTermTextField(t: ComposerTranslation) {
   >(() => {
     switch (libraryMode.mode) {
       case 'search':
-        return { icon: CaretLeftIcon }
+        return {
+          icon: CaretLeftIcon,
+          onClick: () => {
+            libraryMode.reset()
+          },
+        }
       default:
         return undefined
     }
@@ -120,12 +124,41 @@ export function useTermTextField(t: ComposerTranslation) {
         return {
           icon: PlusIcon,
           variant: 'accent',
+          onClick: async () => {
+            if (!currentWorkspaceId.value) return
+            if (!termFieldValue.value.trim()) return
+            await cardStore.createCard(
+              currentWorkspaceId.value,
+              currentCategoryId.value ?? null,
+              {
+                term: termFieldValue.value,
+                category_id:
+                  currentCategoryId.value ?? null,
+              },
+            )
+            termFieldValue.value = ''
+          },
         }
       case 'edit-card':
         return {
           icon: TickIcon,
           variant: 'accent',
           hide: !termFieldValue.value.trim(),
+          onClick: async () => {
+            if (!currentWorkspaceId.value) return
+            if (editedCard.value) {
+              await cardStore.updateCard(
+                currentWorkspaceId.value,
+                currentCategoryId.value ?? null,
+                editedCard.value.id,
+                {
+                  term: termFieldValue.value.trim(),
+                },
+              )
+            }
+            termFieldValue.value = ''
+            libraryMode.reset()
+          },
         }
       default:
         return undefined
@@ -140,48 +173,14 @@ export function useTermTextField(t: ComposerTranslation) {
         if (termFieldValue.value.trim())
           return {
             icon: CircleCloseIcon,
+            onClick: () => {
+              termFieldValue.value = ''
+            },
           }
       default:
         return undefined
     }
   })
-
-  async function onSubmitClick() {
-    if (!currentWorkspaceId.value) return
-
-    switch (libraryMode.mode) {
-      case 'default':
-        if (!termFieldValue.value.trim()) return
-        await cardStore.createCard(
-          currentWorkspaceId.value,
-          currentCategoryId.value ?? null,
-          {
-            term: termFieldValue.value,
-            category_id: currentCategoryId.value ?? null,
-          },
-        )
-        termFieldValue.value = ''
-        break
-      case 'edit-card':
-        if (editedCard.value) {
-          await cardStore.updateCard(
-            currentWorkspaceId.value,
-            currentCategoryId.value ?? null,
-            editedCard.value.id,
-            {
-              term: termFieldValue.value.trim(),
-            },
-          )
-        }
-        termFieldValue.value = ''
-        libraryMode.reset()
-        break
-    }
-  }
-
-  function onLeadingClick() {
-    libraryMode.reset()
-  }
 
   return {
     collapsed: readonly(collapsed),
@@ -192,8 +191,6 @@ export function useTermTextField(t: ComposerTranslation) {
     leadingButtonData,
     sumbitButtonData,
     secondaryButtonData,
-    onSubmitClick,
-    onLeadingClick,
     editCard,
   }
 }

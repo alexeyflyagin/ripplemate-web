@@ -22,12 +22,6 @@ const props = defineProps<{
   collapsed?: boolean
 }>()
 
-const emit = defineEmits<{
-  submitClick: []
-  secondaryClick: []
-  leadingClick: []
-}>()
-
 defineExpose({ focusInput })
 
 const MAX_FADE = 20
@@ -102,7 +96,7 @@ function onEnter(e: KeyboardEvent) {
   if (e.shiftKey) return
   if (isTouchDevice) return
   e.preventDefault()
-  emit('submitClick')
+  props.submitButton?.onClick?.(e)
 }
 
 onMounted(async () => {
@@ -142,7 +136,6 @@ onMounted(async () => {
         v-if="leadingButton && !collapsed"
         class="term-text-field__leading-button"
         v-bind="leadingButton"
-        @click="emit('leadingClick')"
       />
       <textarea
         ref="textAreaEl"
@@ -173,13 +166,11 @@ onMounted(async () => {
         :style="{
           ...(submitButton ? { marginRight: 0 } : {}),
         }"
-        @click="emit('secondaryClick')"
       />
       <BaseIconButton
         v-if="submitButton && !collapsed"
         class="term-text-field__submit-button"
         v-bind="submitButton"
-        @click="emit('submitClick')"
       />
     </div>
   </div>

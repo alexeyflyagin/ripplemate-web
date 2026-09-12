@@ -10,4 +10,5 @@ export interface BaseIconButtonData {
   showSelectedBackground?: boolean
   disabled?: boolean
   hide?: boolean
+  onClick?: (event: MouseEvent | KeyboardEvent) => void
 }

@@ -39,12 +39,10 @@ const {
   placeholder,
   actionCaptionData,
   leadingButtonData,
-  onSubmitClick,
   secondaryButtonData,
   sumbitButtonData,
   termFieldValue,
   editCard,
-  onLeadingClick,
 } = useTermTextField(t)
 
 const hasText = computed(
@@ -136,9 +134,6 @@ async function onEditCard(cardId: string) {
             :submit-button="sumbitButtonData"
             :secondary-button="secondaryButtonData"
             :collapsed="collapsed"
-            @submit-click="onSubmitClick"
-            @secondary-click="termFieldValue = ''"
-            @leading-click="onLeadingClick"
           />
           <FAB
             v-if="showControls"
