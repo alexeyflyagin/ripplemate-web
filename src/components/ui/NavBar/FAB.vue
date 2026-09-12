@@ -30,8 +30,8 @@ const emit = defineEmits<{
   @include background-blur-15;
   position: relative;
   display: inline-flex;
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   padding: 0;
   background-color: var(--surface-highest-80);
   border: none;
