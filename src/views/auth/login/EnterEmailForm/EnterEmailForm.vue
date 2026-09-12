@@ -8,6 +8,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/domain/auth/index.ts'
 import { computed, onMounted, ref, watch } from 'vue'
 import { validateEmail } from '@/utils/validations.ts'
+import EmailIcon from '~icons/icons-16/email'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -89,6 +90,7 @@ onMounted(async () => {
     <BaseTextField
       ref="emailFieldRef"
       class="enter-email-form__email"
+      :leading-icon="EmailIcon"
       :label="t('general.label.email')"
       :max-length="MAX_EMAIL_LENGTH"
       v-model:model-value="email"
