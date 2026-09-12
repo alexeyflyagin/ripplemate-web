@@ -12,7 +12,7 @@ const modelValue = defineModel<string>('modelValue', {
   default: '',
 })
 
-defineProps<{
+const props = defineProps<{
   placeholder?: string
   actionCaption?: ActionCaptionData
   leadingButton?: BaseIconButtonData
@@ -37,6 +37,16 @@ let textResizeObserver: ResizeObserver | null = null
 const textAreaEl = ref<HTMLTextAreaElement>()
 const isTouchDevice =
   'ontouchstart' in window || navigator.maxTouchPoints > 0
+
+const animateCollapse = ref(false)
+
+watch(
+  () => props.collapsed,
+  (v, oldV) => {
+    if (oldV !== undefined) animateCollapse.value = true
+  },
+  { immediate: true },
+)
 
 watch(
   modelValue,
@@ -111,8 +121,11 @@ onMounted(async () => {
   <div
     class="term-text-field"
     :class="{
-      'term-text-field--expand': !collapsed,
-      'term-text-field--collapse': collapsed,
+      'term-text-field--collapsed': collapsed,
+      'term-text-field--collapse-animate':
+        collapsed && animateCollapse,
+      'term-text-field--expand-animate':
+        !collapsed && animateCollapse,
     }"
     @click="() => focusInput()"
   >
@@ -139,7 +152,7 @@ onMounted(async () => {
           '--fade-start': `${startFade}px`,
           '--fade-end': `${endFade}px`,
           'padding-left': `${!leadingButton || collapsed ? 'var(--space-24)' : 0}`,
-          'padding-right': `${secondaryButton?.hide && submitButton?.hide ? 'var(--space-24)' : 0}`,
+          'padding-right': `${secondaryButton?.hide && submitButton?.hide ? 'var(--space-24)' : 'var(--space-8)'}`,
         }"
         @keydown.enter="onEnter"
         @input="
@@ -150,19 +163,17 @@ onMounted(async () => {
         @scroll="onScroll"
       />
       <BaseIconButton
-        v-if="secondaryButton"
+        v-if="secondaryButton && !collapsed"
         class="term-text-field__secondary-button"
         v-bind="secondaryButton"
-        :hide="collapsed ? true : secondaryButton.hide"
         :style="{
           ...(submitButton ? { marginRight: 0 } : {}),
         }"
         @click="emit('secondaryClick')"
       />
       <BaseIconButton
-        v-if="submitButton"
+        v-if="submitButton && !collapsed"
         class="term-text-field__submit-button"
-        :hide="collapsed ? true : submitButton.hide"
         v-bind="submitButton"
         @click="emit('submitClick')"
       />
@@ -245,7 +256,11 @@ onMounted(async () => {
   }
 }
 
-.term-text-field--collapse {
+.term-text-field--collapsed {
+  border-radius: 28px;
+}
+
+.term-text-field--collapse-animate {
   animation: term-text-field-collapse 0.15s
     var(--ease-emphasized) forwards;
 }
@@ -259,7 +274,7 @@ onMounted(async () => {
   }
 }
 
-.term-text-field--expand {
+.term-text-field--expand-animate {
   animation: term-text-field-expand 0.15s
     var(--ease-emphasized) forwards;
 }
