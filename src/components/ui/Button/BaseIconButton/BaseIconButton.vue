@@ -1,9 +1,21 @@
 <script setup lang="ts">
-import { computed, watch, type Component } from 'vue'
+import {
+  computed,
+  nextTick,
+  onMounted,
+  ref,
+  watch,
+  type Component,
+} from 'vue'
 import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgressBar'
+import { nextPaint } from '@/utils/nextPaint'
 
 const selected = defineModel<boolean>('selected', {
   default: false,
+})
+
+const visible = defineModel<boolean>('visible', {
+  default: true,
 })
 
 const props = withDefaults(
@@ -13,14 +25,22 @@ const props = withDefaults(
     selectable?: boolean
     loading?: boolean
     size?: 'default' | 'small'
-    variant?: 'default' | 'accent' | 'danger'
+    variant?:
+      | 'default'
+      | 'accent'
+      | 'accent-text'
+      | 'danger'
     showSelectedBackground?: boolean
     disabled?: boolean
+    hide?: boolean
+    initAnimation?: boolean
   }>(),
   {
     variant: 'default',
     size: 'default',
     showSelectedBackground: true,
+    hide: false,
+    initAnimation: false,
   },
 )
 
@@ -37,6 +57,15 @@ const emit = defineEmits<{
   click: [event: MouseEvent]
 }>()
 
+const animateOnShow = ref<boolean>(props.initAnimation)
+
+function onAnimationEnd(event: AnimationEvent) {
+  const name = event.animationName
+  if (name.startsWith('base-icon-button-hide')) {
+    visible.value = false
+  }
+}
+
 function onClick(event: MouseEvent) {
   if (props.loading) return
   if (props.selectable) selected.value = !selected.value
@@ -50,10 +79,28 @@ watch(
   },
   { immediate: true },
 )
+
+watch(
+  () => props.hide,
+  (v) => {
+    if (!v) visible.value = true
+  },
+  { immediate: true },
+)
+
+watch(
+  () => props.hide,
+  (v, oldV) => {
+    if (!v) visible.value = true
+    if (oldV !== undefined) animateOnShow.value = true
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
   <button
+    v-if="visible"
     class="base-icon-button"
     :class="{
       [`base-icon-button--size-${size}`]:
@@ -64,11 +111,14 @@ watch(
       'base-icon-button--loading': loading,
       'base-icon-button--show-selected-background':
         showSelectedBackground,
+      'base-icon-button--hide': hide,
+      'base-icon-button--show': !hide && animateOnShow,
     }"
     :disabled="disabled"
     type="button"
     @click.stop="onClick"
     @contextmenu.prevent
+    @animationend="onAnimationEnd"
   >
     <span v-if="!loading" class="base-icon-button__icon">
       <component
@@ -242,6 +292,61 @@ watch(
     &.base-icon-button--selected {
       background-color: transparent;
     }
+  }
+}
+
+.base-icon-button--accent-text {
+  color: var(--accent);
+
+  &.base-icon-button--show-selected-background {
+    &.base-icon-button--selected {
+      background-color: var(--accent-10);
+    }
+  }
+
+  &:hover::after {
+    background-color: var(--accent);
+  }
+
+  &:disabled {
+    color: var(--text);
+
+    &.base-icon-button--selected {
+      background-color: transparent;
+    }
+  }
+}
+
+.base-icon-button--show {
+  animation: base-icon-button-show 0.15s
+    var(--ease-emphasized) forwards;
+}
+
+@keyframes base-icon-button-show {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.base-icon-button--hide {
+  animation: base-icon-button-hide 0.15s
+    var(--ease-emphasized) forwards;
+  pointer-events: none;
+}
+
+@keyframes base-icon-button-hide {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8);
   }
 }
 </style>
