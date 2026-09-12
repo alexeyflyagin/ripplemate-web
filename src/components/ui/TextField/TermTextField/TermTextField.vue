@@ -117,6 +117,7 @@ onMounted(async () => {
     @click="() => focusInput()"
   >
     <ActionCaption
+      v-if="!collapsed"
       class="action-caption"
       :data="actionCaption"
     />
