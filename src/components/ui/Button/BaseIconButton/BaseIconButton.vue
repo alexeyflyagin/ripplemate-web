@@ -1,14 +1,6 @@
 <script setup lang="ts">
-import {
-  computed,
-  nextTick,
-  onMounted,
-  ref,
-  watch,
-  type Component,
-} from 'vue'
+import { computed, ref, watch, type Component } from 'vue'
 import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgressBar'
-import { nextPaint } from '@/utils/nextPaint'
 
 const selected = defineModel<boolean>('selected', {
   default: false,
