@@ -132,7 +132,10 @@ onMounted(async () => {
     <ActionCaption
       v-if="!collapsed"
       class="action-caption"
-      :data="actionCaption"
+      v-bind="{
+        data: actionCaption,
+        onClose: actionCaption?.onClose,
+      }"
     />
     <div class="main-content">
       <BaseIconButton

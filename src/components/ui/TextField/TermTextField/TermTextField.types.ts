@@ -6,4 +6,5 @@ export interface ActionCaptionData {
   caption: string
   closable?: boolean
   hide?: boolean
+  onClose?: () => void
 }

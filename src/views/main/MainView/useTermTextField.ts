@@ -83,6 +83,7 @@ export function useTermTextField(t: ComposerTranslation) {
           caption: t('general.label.editing') + ':',
           value: editedCard.value.term,
           closable: true,
+          onClose: libraryMode.reset,
         }
       default:
         return undefined
@@ -104,11 +105,6 @@ export function useTermTextField(t: ComposerTranslation) {
     BaseIconButtonData | undefined
   >(() => {
     switch (libraryMode.mode) {
-      case 'edit-card':
-        return {
-          icon: CloseIcon,
-          variant: 'danger',
-        }
       case 'search':
         return { icon: CaretLeftIcon }
       default:
