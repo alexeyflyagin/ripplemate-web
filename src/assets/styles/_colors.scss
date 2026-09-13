@@ -68,6 +68,12 @@
     transparent
   );
 
+  --text-10: color-mix(
+    in srgb,
+    var(--text) 10%,
+    transparent
+  );
+
   --text-50: color-mix(
     in srgb,
     var(--text) 50%,
