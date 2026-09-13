@@ -29,3 +29,25 @@
     display: none;
   }
 }
+
+@mixin custom-scrollbar(
+  $thumb: var(--border-muted),
+  $track: transparent,
+  $width: 6px
+) {
+  scrollbar-width: thin;
+  scrollbar-color: #{$thumb} #{$track};
+
+  &::-webkit-scrollbar {
+    width: $width;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: $track;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $thumb;
+    border-radius: 4px;
+  }
+}
