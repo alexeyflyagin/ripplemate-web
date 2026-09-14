@@ -1,127 +1,110 @@
-import { createHomeMoreMenu } from '@/menu/HomeMoreMenu'
-import { FONT_ICONS, THEME_ICONS } from '@/constants/icons'
+import { createMainMoreMenu } from '@/menu/MainMoreMenu'
 import type { ComposerTranslation } from 'vue-i18n'
-import { useAuthStore } from '@/stores/domain/auth'
-import { useAccountStore } from '@/stores/domain/account'
-import { useWorkspaceStore } from '@/stores/domain/workspace'
-import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
-import { computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { useSettingsStore } from '@/stores/domain/settings'
-import type { MenuItemData } from '@/components/ui/ContextMenu'
+import {
+  ContextMenu,
+  type MenuItemData,
+} from '@/components/ui/ContextMenu'
 import {
   useOverlayStore,
   type OverlayHandle,
 } from '@/stores/ui/overlay'
-import { ContextMenu } from '@/components/ui/ContextMenu'
 import { ConfirmDialog } from '@/components/ui/Dialog/ConfirmDialog'
-import type { Placement } from '@floating-ui/dom'
-import type { OffsetOptions } from '@floating-ui/core'
-import WorkspaceDialog from '@/views/dialogs/WorkspaceDialog/WorkspaceDialog.vue'
+import { useCardStore } from '@/stores/domain/card'
+import { useCategoryStore } from '@/stores/domain/category'
+import { useCurrentCategory } from '@/stores/domain/category/useCurrentCategory'
+import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
+import CategoryDialog from '@/views/dialogs/CategoryDialog/CategoryDialog.vue'
+import type { OffsetOptions, Placement } from '@floating-ui/dom'
+import { computed, ref } from 'vue'
 
 export function useMoreMenu(t: ComposerTranslation) {
-  const authStore = useAuthStore()
-  const accountStore = useAccountStore()
-  const workspaceStore = useWorkspaceStore()
   const overlayStore = useOverlayStore()
-  const settingsStore = useSettingsStore()
-  const router = useRouter()
-  const { currentWorkspaceId, currentWorkspace } =
-    useCurrentWorkspace()
+  const categoryStore = useCategoryStore()
+  const cardStore = useCardStore()
+  const { currentWorkspaceId } = useCurrentWorkspace()
+  const { currentCategoryId, currentCategory } =
+    useCurrentCategory()
   let overlay: OverlayHandle
 
-  async function onItemClick(item: MenuItemData) {
+  const isRefreshing = ref<boolean>(false)
+
+  async function refresh() {
+    const workspaceId = currentWorkspaceId.value
+    if (!workspaceId) return
+
+    isRefreshing.value = true
+    try {
+      await cardStore.loadCards(
+        workspaceId,
+        currentCategoryId.value ?? null,
+      )
+    } finally {
+      isRefreshing.value = false
+    }
+  }
+
+  function editCategory() {
+    const categoryId = currentCategoryId.value
+    if (!categoryId) return
+
+    const editOverlay = overlayStore.open(CategoryDialog, {
+      categoryId,
+      onClose: () => editOverlay.close(),
+    })
+  }
+
+  async function deleteCategory() {
+    const workspaceId = currentWorkspaceId.value
+    const categoryId = currentCategoryId.value
+    if (!workspaceId || !categoryId) return
+
+    const category = await categoryStore.getCategory(
+      workspaceId,
+      categoryId,
+    )
+
+    const confirmOverlay = overlayStore.open(ConfirmDialog, {
+      title: t('dialog.category.delete.title'),
+      caption: t('dialog.category.delete.caption', {
+        name: `<strong>${category.name}</strong>`,
+      }),
+      type: 'destructive',
+      confirm: t('general.action.delete'),
+      onConfirm: async () => {
+        await categoryStore.deleteCategory(
+          workspaceId,
+          categoryId,
+        )
+        confirmOverlay.close()
+      },
+      onCancel: () => confirmOverlay.close(),
+    })
+  }
+
+  function onItemClick(item: MenuItemData) {
     switch (item.id) {
-      case 'editWorkspaceName':
-        editWorkspace()
+      case 'refresh':
+        overlay.close()
+        refresh()
+        break
+      case 'edit':
+        editCategory()
         overlay.close()
         break
-      case 'deleteWorkspace':
-        deleteWorkspace()
-        overlay.close()
-        break
-      case 'font':
-        await settingsStore.nextFont()
-        break
-      case 'language':
-        await settingsStore.nextLanguage()
-        break
-      case 'theme':
-        settingsStore.nextTheme()
-        break
-      case 'oled':
-        settingsStore.toggleOled()
-        break
-      case 'logout':
-        authStore.logout()
+      case 'delete':
+        deleteCategory()
         overlay.close()
         break
     }
   }
 
-  function editWorkspace() {
-    const workspaceOverlay = overlayStore.open(
-      WorkspaceDialog,
-      {
-        workspaceId: currentWorkspaceId.value,
-        onClose: () => workspaceOverlay.close(),
-      },
-    )
-  }
-
-  async function deleteWorkspace() {
-    const workspace = currentWorkspace.value
-    if (!workspace) return
-
-    const confirmOverlay = overlayStore.open(
-      ConfirmDialog,
-      {
-        title: t('dialog.workspace.delete.title'),
-        caption: t('dialog.workspace.delete.caption', {
-          name: `<strong>${workspace.name}</strong>`,
-        }),
-        type: 'destructive',
-        confirm: t('general.action.delete'),
-        onConfirm: async () => {
-          await workspaceStore.deleteWorkspace(workspace.id)
-          confirmOverlay.close()
-
-          const next = workspaceStore.workspaces[0]
-          if (next) {
-            router.push({
-              name: 'library',
-              params: { workspaceId: next.id },
-            })
-          } else {
-            router.push({ name: 'root' })
-          }
-        },
-        onCancel: () => confirmOverlay.close(),
-      },
-    )
-  }
-
-  async function openMoreMenu(event: MouseEvent) {
+  function openMoreMenu(event: MouseEvent) {
     const items = computed(() =>
-      createHomeMoreMenu(t, {
-        font: settingsStore.font,
-        fontIcon: FONT_ICONS[settingsStore.font],
-        theme: t(`general.theme.${settingsStore.theme}`),
-        language: t(
-          `general.lang.${settingsStore.language}`,
-        ),
-        themeIcon:
-          THEME_ICONS[
-            settingsStore.isDark ? 'dark' : 'light'
-          ],
-        showOled: settingsStore.isDark,
-        isOled: settingsStore.isOled,
-        userDisplayName: accountStore.account
-          ? accountStore.account.display_name
-          : t('general.state.loading'),
-        workspaceName: currentWorkspace.value?.name,
-        canDeleteWorkspace:
-          workspaceStore.workspaces.length > 1,
+      createMainMoreMenu(t, {
+        categoryName:
+          currentCategory.value?.name ??
+          t('general.label.all'),
+        canManageCategory: !!currentCategory.value,
       }),
     )
 
@@ -132,12 +115,12 @@ export function useMoreMenu(t: ComposerTranslation) {
         mainAxis: -targetHtmlEl.offsetHeight,
       } as OffsetOptions,
       targetEl: event.currentTarget,
-      items: items,
       placement: 'top-end' as Placement,
+      items,
       onClickItem: onItemClick,
       onClose: () => overlay.close(),
     })
   }
 
-  return { openMoreMenu }
+  return { openMoreMenu, isRefreshing }
 }

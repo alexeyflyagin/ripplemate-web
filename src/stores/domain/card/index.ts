@@ -174,7 +174,7 @@ export const useCardStore = defineStore('card', () => {
     const key = segmentKey(categoryId)
 
     if (cache.value.has(key)) {
-      revalidateSegment(workspaceId, categoryId)
+      await revalidateSegment(workspaceId, categoryId)
       return
     }
 

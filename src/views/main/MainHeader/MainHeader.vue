@@ -21,7 +21,7 @@ const emit = defineEmits<{
   heightChanged: [height: number]
 }>()
 
-const { openMoreMenu } = useMoreMenu(t)
+const { openMoreMenu, isRefreshing } = useMoreMenu(t)
 const { currentCategory } = useCurrentCategory()
 
 const showSidebar = defineModel<boolean>('showSidebar', {
@@ -62,6 +62,7 @@ useResizeObserver(rootEl, () => {
       />
       <BaseIconButton
         :icon="MoreIcon"
+        :loading="isRefreshing"
         @click="openMoreMenu"
       />
     </div>
