@@ -5,8 +5,7 @@ import type {
 } from '@vueuse/integrations/useFocusTrap'
 import { onBeforeUnmount, onMounted } from 'vue'
 
-// Stack of active traps; activating one fully deactivates (not pauses) the one below it,
-// since pause() leaves listeners in place and they still fight over focus.
+// Stack of active traps; activating one fully deactivates the one below it (pause() isn't enough).
 const trapStack: UseFocusTrapReturn[] = []
 
 function registerTrap(trap: UseFocusTrapReturn) {

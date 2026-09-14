@@ -110,8 +110,7 @@ function updateScrolledState() {
     return
   }
 
-  // items[0] is the top-spacer (see convertCards); compared in the virtualizer's
-  // own coordinate space since the flex-grow filler offsets it from scrollTop.
+  // items[0] is the top-spacer (see convertCards), compared in the virtualizer's own coordinate space.
   const topSpacerBottom =
     list.getItemOffset(0) + list.getItemSize(0)
   const visibleTop =
@@ -176,17 +175,14 @@ watch(
     }
 
     if (isAppendOrUpdate && !isPositioning.value) {
-      // pagination (older cards appended) or an in-place update
-      // (favorite toggled, term edited) — keep the scroll position
+      // pagination or an in-place update — keep the scroll position
       await nextTick()
       refresh()
       maybeLoadMore()
       return
     }
 
-    // a genuinely different dataset is now displayed (new search
-    // results, or a category/workspace/filter switch armed via
-    // list-key) — jump to the bottom instantly
+    // a genuinely different dataset is now displayed — jump to the bottom instantly
     await nextTick()
     scrollToBottom()
 

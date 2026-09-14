@@ -161,8 +161,7 @@ export const useCardStore = defineStore('card', () => {
 
   const debouncedSearch = useDebounceFn(
     (workspaceId: string) => {
-      // The user may have left search mode (or cleared the query)
-      // while this was pending — don't run a stale search.
+      // Don't run a stale search if the user has left search mode meanwhile.
       if (!isSearching.value) return
       runSearch(workspaceId, true)
     },
@@ -202,8 +201,7 @@ export const useCardStore = defineStore('card', () => {
     }
   }
 
-  // loadMore tracks its own in-flight state (not isLoading/requestId) since it can
-  // run alongside loadCards/runSearch and an unrelated call finishing first would race it.
+  // loadMore tracks its own in-flight state since it can run alongside loadCards/runSearch.
   const isLoadingMore = ref(false)
   let loadMoreRequestId = 0
 
