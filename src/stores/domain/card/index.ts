@@ -145,7 +145,7 @@ export const useCardStore = defineStore('card', () => {
       const offset = reset ? 0 : searchResults.value.length
       const res = await getCardsApi(
         workspaceId,
-        null,
+        activeCategoryId.value,
         search.value,
         PAGE_SIZE,
         offset,
