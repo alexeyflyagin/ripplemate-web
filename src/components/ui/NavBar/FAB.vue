@@ -64,12 +64,7 @@ const emit = defineEmits<{
 
   &:focus-visible {
     @include focus-outline;
-    outline-offset: calc(var(--space-2) * -1);
     color: var(--text);
-
-    &::after {
-      opacity: var(--opacity-10);
-    }
   }
 
   &--selected {
