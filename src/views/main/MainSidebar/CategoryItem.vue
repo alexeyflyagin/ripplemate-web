@@ -2,8 +2,6 @@
 import { BaseIconButton } from '@/components/ui/Button/BaseIconButton'
 import { ref } from 'vue'
 import MoreHorizontalIcon from '~icons/icons-16/more-horizontal'
-import FolderIcon from '~icons/icons-16/folder'
-import FolderFilledIcon from '~icons/icons-16/folder-filled'
 
 defineProps<{
   label: string
@@ -37,10 +35,6 @@ const showActions = ref<boolean>(false)
       @keydown.enter="emit('click', $event)"
       @keydown.space.prevent="emit('click', $event)"
     >
-      <component
-        class="category-item__icon"
-        :is="active ? FolderFilledIcon : FolderIcon"
-      />
       <span class="category-item__label">{{ label }}</span>
       <div
         v-if="showActions || active || selected"
@@ -114,15 +108,10 @@ const showActions = ref<boolean>(false)
     @include focus-outline;
   }
 
-  &__icon {
-    width: 16px;
-    height: 16px;
-    padding-left: var(--space-12);
-  }
-
   &__label {
     text-align: start;
-    margin: var(--space-8) var(--space-12);
+    margin: var(--space-8) var(--space-12) var(--space-8)
+      var(--space-16);
     flex-grow: 1;
     white-space: nowrap;
     text-overflow: ellipsis;
