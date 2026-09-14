@@ -210,6 +210,7 @@ export function useTermTextField(t: ComposerTranslation) {
         if (termFieldValue.value.trim())
           return {
             icon: CircleCloseIcon,
+            loading: cardStore.isLoading,
             onClick: () => {
               termFieldValue.value = ''
             },
