@@ -110,12 +110,8 @@ function updateScrolledState() {
     return
   }
 
-  // items[0] is always the top-spacer (see convertCards) — the
-  // header only starts covering real content once its bottom edge
-  // has scrolled past the header. Compared in the virtualizer's own
-  // coordinate space (list.scrollOffset), not raw scrollEl.scrollTop,
-  // since the flex-grow filler above wrapEl offsets the two when the
-  // list is shorter than the viewport.
+  // items[0] is the top-spacer (see convertCards); compared in the virtualizer's
+  // own coordinate space since the flex-grow filler offsets it from scrollTop.
   const topSpacerBottom =
     list.getItemOffset(0) + list.getItemSize(0)
   const visibleTop =
@@ -163,7 +159,8 @@ watch(
   () => props.cards,
   async (value) => {
     const firstId = value[0]?.id
-    const isNewCard = !!firstId && !!props.newIds?.has(firstId)
+    const isNewCard =
+      !!firstId && !!props.newIds?.has(firstId)
     const isAppendOrUpdate =
       firstId === prevFirstId && value.length >= prevLength
 

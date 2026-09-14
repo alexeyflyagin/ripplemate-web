@@ -177,10 +177,7 @@ export const useCardStore = defineStore('card', () => {
     activeCategoryId.value = categoryId
 
     if (isSearching.value) {
-      // Keep whatever is currently shown (previous search
-      // results, or nothing) on screen instead of resetting
-      // to it while typing — the debounced request replaces
-      // it in place once it resolves.
+      // Keep whatever is shown while typing; the debounced request replaces it in place.
       debouncedSearch(workspaceId)
       return
     }
@@ -205,12 +202,8 @@ export const useCardStore = defineStore('card', () => {
     }
   }
 
-  // loadMore runs alongside loadCards/runSearch (e.g. scrolling up
-  // for older history while a search is still debouncing), so it
-  // tracks its own in-flight state instead of sharing isLoading /
-  // requestId — otherwise an unrelated call finishing first could
-  // clear the flag early and let two loadMore calls for the same
-  // segment race and duplicate items.
+  // loadMore tracks its own in-flight state (not isLoading/requestId) since it can
+  // run alongside loadCards/runSearch and an unrelated call finishing first would race it.
   const isLoadingMore = ref(false)
   let loadMoreRequestId = 0
 

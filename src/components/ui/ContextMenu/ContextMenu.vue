@@ -62,16 +62,7 @@ useMoveFocus(menuEl, { withArrows: true })
 
 useInitialScroll(elements, menuEl, props.initialScrollToId)
 
-// Note: the trap is intentionally NOT deactivated here. Whether the
-// menu closes after an item click is entirely up to the caller (see
-// e.g. useProfileMenu, where most items keep the menu open so several
-// toggles can be picked in a row, and only some close it via
-// `overlay.close()`). Deactivating on every click regardless of
-// whether the menu actually closes left it open-but-untrapped, which
-// fights with any parent trap (e.g. the mobile sidebar's) that
-// reactivates once this one deactivates. Real cleanup happens in
-// useManagedFocusTrap's onBeforeUnmount once the menu is actually
-// removed from the DOM.
+// Trap is intentionally not deactivated here; whether the menu closes is up to the caller.
 function onClickItem(item: MenuItemData) {
   emit('clickItem', item, props.payload)
 }
