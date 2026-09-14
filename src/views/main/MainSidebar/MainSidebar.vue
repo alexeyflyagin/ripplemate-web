@@ -9,6 +9,7 @@ import ProfileIcon from '~icons/icons-16/profile'
 import { BaseButton } from '@/components/ui/Button/BaseButton/index.ts'
 import { useProfileMenu } from './useProfileMenu.ts'
 import { useWorkspaceMoreMenu } from './useWorkspaceMoreMenu.ts'
+import { useAboutMenu } from './useAboutMenu.ts'
 import InfoCircleIcon from '~icons/icons-16/info-circle'
 import AddFolderIcon from '~icons/icons-16/add-folder'
 import CategoryItem from './CategoryItem.vue'
@@ -41,6 +42,8 @@ const { userName, openMenu } = useProfileMenu(t)
 
 const { openMenu: openWorkspaceMoreMenu } =
   useWorkspaceMoreMenu(t)
+
+const { openMenu: openAboutMenu } = useAboutMenu(t)
 
 const categoryEls = ref<Map<string, HTMLElement>>(new Map())
 
@@ -120,8 +123,9 @@ function onCategory(id: string) {
         @click="openMenu"
       />
       <BaseIconButton
-        class="main-sidebar__info-button"
+        class="main-sidebar__about-button"
         :icon="InfoCircleIcon"
+        @click="openAboutMenu"
       />
     </footer>
   </div>
@@ -168,8 +172,9 @@ function onCategory(id: string) {
       var(--space-12);
   }
 
-  &__info-button {
+  &__about-button {
     margin-left: auto;
+    opacity: var(--opacity-60);
   }
 }
 </style>

@@ -30,9 +30,11 @@ export default {
       back: '« Back',
       resend: 'Resend',
       resendIn: 'Resend in {timer}',
+      sendFeedback: 'Send feedback',
     },
     label: {
       all: 'All',
+      version: 'Version',
       whatIsYourName: "What's your name?",
       email: 'Email',
       code: 'Code',

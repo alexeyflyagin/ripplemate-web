@@ -153,7 +153,7 @@ const emit = defineEmits<{
 // inner elements (label/value/icon)
 .menu-item__button {
   &__label {
-    @include text-label;
+    @include text-label-emphasized;
     text-align: start;
     min-width: 0;
     flex-shrink: 1;

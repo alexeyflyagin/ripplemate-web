@@ -32,9 +32,11 @@ const ru: typeof en = {
       back: '« Назад',
       resend: 'Отправить еще раз',
       resendIn: 'Отправить ещё раз через {timer}',
+      sendFeedback: 'Обратная связь',
     },
     label: {
       all: 'Все',
+      version: 'Версия',
       whatIsYourName: 'Как вас зовут?',
       email: 'Email',
       code: 'Код',
