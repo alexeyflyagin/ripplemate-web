@@ -1,5 +1,6 @@
 import type { ActionCaptionData } from '@/components/ui/TextField/TermTextField'
 import { useCardStore } from '@/stores/domain/card'
+import { useFavoritesFilter } from '@/stores/domain/card/useFavoritesFilter'
 import { useCurrentCategory } from '@/stores/domain/category/useCurrentCategory'
 import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
 import { useLibraryModeStore } from '@/stores/ui/libraryMode'
@@ -19,6 +20,7 @@ export function useTermTextField(t: ComposerTranslation) {
   const libraryMode = useLibraryModeStore()
   const { currentWorkspaceId } = useCurrentWorkspace()
   const { currentCategoryId } = useCurrentCategory()
+  const { favoritesOnly } = useFavoritesFilter()
 
   const mode = computed(() => libraryMode.mode)
   const editedCard = ref<CardRead | undefined>()
@@ -136,15 +138,28 @@ export function useTermTextField(t: ComposerTranslation) {
 
             isCreatingCard.value = true
             try {
-              await cardStore.createCard(
-                currentWorkspaceId.value,
-                currentCategoryId.value ?? null,
+              const workspaceId = currentWorkspaceId.value
+              const categoryId =
+                currentCategoryId.value ?? null
+
+              const created = await cardStore.createCard(
+                workspaceId,
+                categoryId,
                 {
                   term: termFieldValue.value,
-                  category_id:
-                    currentCategoryId.value ?? null,
+                  category_id: categoryId,
                 },
               )
+
+              if (favoritesOnly.value) {
+                await cardStore.updateCard(
+                  workspaceId,
+                  categoryId,
+                  created.id,
+                  { is_favorite: true },
+                )
+              }
+
               termFieldValue.value = ''
             } finally {
               isCreatingCard.value = false

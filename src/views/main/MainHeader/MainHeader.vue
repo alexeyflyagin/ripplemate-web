@@ -5,6 +5,7 @@ import { useMoreMenu } from './useMoreMenu'
 import { useTemplateRef } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
 import { useCurrentCategory } from '@/stores/domain/category/useCurrentCategory'
+import { useFavoritesFilter } from '@/stores/domain/card/useFavoritesFilter'
 import SidebarIcon from '~icons/icons-16/sidebar'
 import SidebarFilledIcon from '~icons/icons-16/sidebar-filled'
 import HeartIcon from '~icons/icons-16/heart'
@@ -23,6 +24,7 @@ const emit = defineEmits<{
 
 const { openMoreMenu, isRefreshing } = useMoreMenu(t)
 const { currentCategory } = useCurrentCategory()
+const { favoritesOnly } = useFavoritesFilter()
 
 const showSidebar = defineModel<boolean>('showSidebar', {
   default: true,
@@ -59,6 +61,7 @@ useResizeObserver(rootEl, () => {
         :icon="HeartIcon"
         :icon-selected="HeartFilledIcon"
         :selectable="true"
+        v-model:selected="favoritesOnly"
       />
       <BaseIconButton
         :icon="MoreIcon"

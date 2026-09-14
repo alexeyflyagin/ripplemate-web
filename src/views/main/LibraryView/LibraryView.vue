@@ -9,6 +9,7 @@ import { EmptyState } from '@/components/feature/EmptyState'
 import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgressBar'
 import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
 import { useCurrentCategory } from '@/stores/domain/category/useCurrentCategory'
+import { useFavoritesFilter } from '@/stores/domain/card/useFavoritesFilter'
 import { computed, watch } from 'vue'
 
 const { t } = useI18n()
@@ -24,6 +25,7 @@ const emit = defineEmits<{
 const cardStore = useCardStore()
 const { currentWorkspaceId } = useCurrentWorkspace()
 const { currentCategoryId } = useCurrentCategory()
+const { favoritesOnly } = useFavoritesFilter()
 
 const { selectedCardId, openCardMenu } = useCardItemMenu(
   t,
@@ -34,6 +36,11 @@ const { selectedCardId, openCardMenu } = useCardItemMenu(
 const highlitedCardIds = computed<Set<string>>(() => {
   if (!selectedCardId.value) return new Set()
   return new Set([selectedCardId.value])
+})
+
+const displayedCards = computed(() => {
+  if (!favoritesOnly.value) return cardStore.cards
+  return cardStore.cards.filter((c) => c.is_favorite)
 })
 
 function onToggleFavorite(cardId: string) {
@@ -73,12 +80,12 @@ function loadMore() {
 <template>
   <div class="home-view">
     <CardList
-      v-if="cardStore.cards.length"
+      v-if="displayedCards.length"
       class="card-list"
-      :list-key="`${currentWorkspaceId}-${currentCategoryId}-${cardStore.search}`"
+      :list-key="`${currentWorkspaceId}-${currentCategoryId}-${cardStore.search}-${favoritesOnly}`"
       :has-more="cardStore.hasMore"
       :header-height="headerHeight"
-      :cards="cardStore.cards"
+      :cards="displayedCards"
       :new-ids="cardStore.justCreatedIds"
       :leaving-ids="cardStore.deletingIds"
       :highlited-ids="highlitedCardIds"
@@ -98,15 +105,17 @@ function loadMore() {
       v-else
       class="empty-state"
       :icon="
-        cardStore.search ? NoCardsFoundIcon : NoCardsYetIcon
+        cardStore.search || favoritesOnly
+          ? NoCardsFoundIcon
+          : NoCardsYetIcon
       "
       :title="
-        cardStore.search
+        cardStore.search || favoritesOnly
           ? t('main.noCardsFoundTitle')
           : t('main.noCardsYetTitle')
       "
       :subtitle="
-        cardStore.search
+        cardStore.search || favoritesOnly
           ? t('main.noCardsFoundSubtitle')
           : t('main.noCardsYetSubtitle')
       "
