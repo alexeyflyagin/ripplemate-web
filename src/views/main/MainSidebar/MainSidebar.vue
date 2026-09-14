@@ -8,6 +8,7 @@ import MoreIcon from '~icons/icons-16/more'
 import ProfileIcon from '~icons/icons-16/profile'
 import { BaseButton } from '@/components/ui/Button/BaseButton/index.ts'
 import { useProfileMenu } from './useProfileMenu.ts'
+import { useWorkspaceMoreMenu } from './useWorkspaceMoreMenu.ts'
 import InfoCircleIcon from '~icons/icons-16/info-circle'
 import AddFolderIcon from '~icons/icons-16/add-folder'
 import CategoryItem from './CategoryItem.vue'
@@ -37,6 +38,9 @@ const {
 } = useCategories(t)
 
 const { userName, openMenu } = useProfileMenu(t)
+
+const { openMenu: openWorkspaceMoreMenu } =
+  useWorkspaceMoreMenu(t)
 
 const categoryEls = ref<Map<string, HTMLElement>>(new Map())
 
@@ -88,6 +92,7 @@ function onCategory(id: string) {
         <BaseIconButton
           class="main-sidebar__workspace-more-button"
           :icon="MoreIcon"
+          @click="openWorkspaceMoreMenu"
         />
       </div>
     </div>
