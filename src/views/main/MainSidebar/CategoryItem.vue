@@ -111,7 +111,7 @@ const showActions = ref<boolean>(false)
   &__label {
     text-align: start;
     margin: var(--space-8) var(--space-12) var(--space-8)
-      var(--space-16);
+      var(--space-12);
     flex-grow: 1;
     white-space: nowrap;
     text-overflow: ellipsis;
