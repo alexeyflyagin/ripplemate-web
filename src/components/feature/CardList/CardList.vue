@@ -156,41 +156,49 @@ watch(
   },
 )
 
-watch(items, async () => {
-  if (!isPositioning.value) return
+let prevFirstId: string | undefined
+let prevLength = 0
 
-  await nextTick()
-  scrollToBottom()
-
-  await nextPaint()
-  refresh()
-  scrollToBottom()
-
-  isPositioning.value = false
-  clearTimeout(revealFallback)
-})
-
-let prevFirstId: string | null = null
 watch(
   () => props.cards,
   async (value) => {
-    const firstId = value[0]?.id ?? null
-    const prependedNewer =
-      value.length > 0 &&
-      prevFirstId !== null &&
-      firstId !== prevFirstId
+    const firstId = value[0]?.id
+    const isNewCard = !!firstId && !!props.newIds?.has(firstId)
+    const isAppendOrUpdate =
+      firstId === prevFirstId && value.length >= prevLength
+
     prevFirstId = firstId
+    prevLength = value.length
 
     onLoadSettled()
 
-    if (prependedNewer) {
+    if (isNewCard) {
       await nextTick()
       scrollToBottom(true)
       return
     }
 
+    if (isAppendOrUpdate && !isPositioning.value) {
+      // pagination (older cards appended) or an in-place update
+      // (favorite toggled, term edited) — keep the scroll position
+      await nextTick()
+      refresh()
+      maybeLoadMore()
+      return
+    }
+
+    // a genuinely different dataset is now displayed (new search
+    // results, or a category/workspace/filter switch armed via
+    // list-key) — jump to the bottom instantly
     await nextTick()
+    scrollToBottom()
+
+    await nextPaint()
     refresh()
+    scrollToBottom()
+
+    isPositioning.value = false
+    clearTimeout(revealFallback)
     maybeLoadMore()
   },
 )
@@ -206,7 +214,8 @@ useResizeObserver(wrapEl, keepPinnedToBottom)
 useResizeObserver(scrollEl, keepPinnedToBottom)
 
 onMounted(() => {
-  prevFirstId = props.cards[0]?.id ?? null
+  prevFirstId = props.cards[0]?.id
+  prevLength = props.cards.length
   scrollToBottom()
   refresh()
 })

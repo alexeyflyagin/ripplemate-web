@@ -94,7 +94,7 @@ function loadMore() {
     <CardList
       v-if="displayedCards.length"
       class="card-list"
-      :list-key="`${currentWorkspaceId}-${currentCategoryId}-${cardStore.search}-${favoritesOnly}`"
+      :list-key="`${currentWorkspaceId}-${currentCategoryId}-${favoritesOnly}`"
       :has-more="cardStore.hasMore"
       :header-height="headerHeight"
       :cards="displayedCards"

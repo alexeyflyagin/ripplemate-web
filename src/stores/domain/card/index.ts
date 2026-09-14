@@ -159,6 +159,16 @@ export const useCardStore = defineStore('card', () => {
     }
   }
 
+  const debouncedSearch = useDebounceFn(
+    (workspaceId: string) => {
+      // The user may have left search mode (or cleared the query)
+      // while this was pending — don't run a stale search.
+      if (!isSearching.value) return
+      runSearch(workspaceId, true)
+    },
+    300,
+  )
+
   async function loadCards(
     workspaceId: string,
     categoryId: string | null,
@@ -167,7 +177,11 @@ export const useCardStore = defineStore('card', () => {
     activeCategoryId.value = categoryId
 
     if (isSearching.value) {
-      await runSearch(workspaceId, true)
+      // Keep whatever is currently shown (previous search
+      // results, or nothing) on screen instead of resetting
+      // to it while typing — the debounced request replaces
+      // it in place once it resolves.
+      debouncedSearch(workspaceId)
       return
     }
 
@@ -191,14 +205,28 @@ export const useCardStore = defineStore('card', () => {
     }
   }
 
+  // loadMore runs alongside loadCards/runSearch (e.g. scrolling up
+  // for older history while a search is still debouncing), so it
+  // tracks its own in-flight state instead of sharing isLoading /
+  // requestId — otherwise an unrelated call finishing first could
+  // clear the flag early and let two loadMore calls for the same
+  // segment race and duplicate items.
+  const isLoadingMore = ref(false)
+  let loadMoreRequestId = 0
+
   async function loadMore(
     workspaceId: string,
     categoryId: string | null,
   ) {
-    if (isLoading.value || !hasMore.value) return
+    if (isLoadingMore.value || !hasMore.value) return
 
     if (isSearching.value) {
-      await runSearch(workspaceId, false)
+      isLoadingMore.value = true
+      try {
+        await runSearch(workspaceId, false)
+      } finally {
+        isLoadingMore.value = false
+      }
       return
     }
 
@@ -206,8 +234,8 @@ export const useCardStore = defineStore('card', () => {
     const seg = cache.value.get(key)
     if (!seg) return
 
-    isLoading.value = true
-    const current = ++requestId
+    isLoadingMore.value = true
+    const current = ++loadMoreRequestId
     try {
       const res = await getCardsApi(
         workspaceId,
@@ -216,7 +244,7 @@ export const useCardStore = defineStore('card', () => {
         PAGE_SIZE,
         seg.items.length,
       )
-      if (current !== requestId) return
+      if (current !== loadMoreRequestId) return
       const seen = new Set(seg.items.map((c) => c.id))
       const fresh = res.items.filter((c) => !seen.has(c.id))
       cache.value.set(key, {
@@ -224,7 +252,9 @@ export const useCardStore = defineStore('card', () => {
         total: res.total,
       })
     } finally {
-      if (current === requestId) isLoading.value = false
+      if (current === loadMoreRequestId) {
+        isLoadingMore.value = false
+      }
     }
   }
 
@@ -457,12 +487,9 @@ export const useCardStore = defineStore('card', () => {
     justCreatedIds.value = next
   }
 
-  const setSearch = useDebounceFn(
-    (value: string | null) => {
-      search.value = value
-    },
-    300,
-  )
+  function setSearch(value: string | null) {
+    search.value = value
+  }
 
   return {
     cards,
