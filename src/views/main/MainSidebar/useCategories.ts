@@ -123,12 +123,9 @@ export function useCategories(t: ComposerTranslation) {
     )
     if (!category) return
 
-    const menuItems = computed(() =>
-      createCategoryMenu(t, category.name),
-    )
+    const menuItems = computed(() => createCategoryMenu(t))
 
     selectedId.value = categoryId
-    const row = event.currentTarget as HTMLElement
 
     overlay = overlayStore.open(ContextMenu, {
       targetEl: event.currentTarget,
