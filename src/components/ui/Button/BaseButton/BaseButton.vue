@@ -81,10 +81,6 @@ const emit = defineEmits<{
 
   &:focus-visible {
     @include focus-outline;
-
-    &::after {
-      opacity: var(--opacity-10);
-    }
   }
 
   &:active {
