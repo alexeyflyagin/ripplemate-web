@@ -3,8 +3,11 @@ import AppVersionBadge from '@/components/ui/Badges/AppVersionBadge/AppVersionBa
 import { BaseIconButton } from '@/components/ui/Button/BaseIconButton'
 import { useI18n } from 'vue-i18n'
 import RefreshIcon from '~icons/icons-16/refresh'
+import { useDataRefreshStore } from '@/stores/ui/dataRefresh'
 
 const { t } = useI18n()
+
+const dataRefresh = useDataRefreshStore()
 </script>
 
 <template>
@@ -18,7 +21,11 @@ const { t } = useI18n()
         version="alpha"
       />
     </div>
-    <BaseIconButton :icon="RefreshIcon" />
+    <BaseIconButton
+      :icon="RefreshIcon"
+      :loading="dataRefresh.isRefreshing"
+      @click="dataRefresh.refresh"
+    />
   </header>
 </template>
 
