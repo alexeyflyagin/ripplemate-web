@@ -22,6 +22,8 @@ export function useTermTextField(t: ComposerTranslation) {
 
   const mode = computed(() => libraryMode.mode)
   const editedCard = ref<CardRead | undefined>()
+  const isCreatingCard = ref<boolean>(false)
+  const isUpdatingCard = ref<boolean>(false)
 
   const collapsed = computed(
     () =>
@@ -126,19 +128,27 @@ export function useTermTextField(t: ComposerTranslation) {
           icon: PlusIcon,
           variant: 'accent',
           initAnimation: true,
+          loading: isCreatingCard.value,
           onClick: async () => {
+            if (isCreatingCard.value) return
             if (!currentWorkspaceId.value) return
             if (!termFieldValue.value.trim()) return
-            await cardStore.createCard(
-              currentWorkspaceId.value,
-              currentCategoryId.value ?? null,
-              {
-                term: termFieldValue.value,
-                category_id:
-                  currentCategoryId.value ?? null,
-              },
-            )
-            termFieldValue.value = ''
+
+            isCreatingCard.value = true
+            try {
+              await cardStore.createCard(
+                currentWorkspaceId.value,
+                currentCategoryId.value ?? null,
+                {
+                  term: termFieldValue.value,
+                  category_id:
+                    currentCategoryId.value ?? null,
+                },
+              )
+              termFieldValue.value = ''
+            } finally {
+              isCreatingCard.value = false
+            }
           },
         }
       case 'edit-card':
@@ -146,20 +156,30 @@ export function useTermTextField(t: ComposerTranslation) {
           icon: TickIcon,
           variant: 'accent',
           hide: !termFieldValue.value.trim(),
+          loading: isUpdatingCard.value,
           onClick: async () => {
+            if (isUpdatingCard.value) return
             if (!currentWorkspaceId.value) return
-            if (editedCard.value) {
+            if (!editedCard.value) return
+
+            const cardId = editedCard.value.id
+            const term = termFieldValue.value.trim()
+
+            isUpdatingCard.value = true
+            try {
               await cardStore.updateCard(
                 currentWorkspaceId.value,
                 currentCategoryId.value ?? null,
-                editedCard.value.id,
-                {
-                  term: termFieldValue.value.trim(),
-                },
+                cardId,
+                { term },
               )
+
+              if (editedCard.value?.id !== cardId) return
+              termFieldValue.value = ''
+              libraryMode.reset()
+            } finally {
+              isUpdatingCard.value = false
             }
-            termFieldValue.value = ''
-            libraryMode.reset()
           },
         }
       default:
