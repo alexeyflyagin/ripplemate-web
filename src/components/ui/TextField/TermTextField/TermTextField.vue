@@ -189,7 +189,6 @@ onMounted(async () => {
   background-color: var(--surface-highest-80);
   border-radius: var(--corner-xlarge);
   overflow: hidden;
-  margin: 1px;
   outline: var(--stroke-subtle) solid var(--border-muted);
   transition: outline-color 0.2s var(--ease-emphasized);
 
@@ -253,6 +252,10 @@ onMounted(async () => {
 
 .term-text-field--collapsed {
   border-radius: 28px;
+
+  .text-area::placeholder {
+    white-space: nowrap;
+  }
 }
 
 .term-text-field--collapse-animate {
