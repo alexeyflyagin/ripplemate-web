@@ -10,7 +10,7 @@ import { CircularProgressBar } from '@/components/ui/ProgressBar/CircularProgres
 import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
 import { useCurrentCategory } from '@/stores/domain/category/useCurrentCategory'
 import { useFavoritesFilter } from '@/stores/domain/card/useFavoritesFilter'
-import { computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const { t } = useI18n()
 
@@ -20,6 +20,7 @@ defineProps<{
 
 const emit = defineEmits<{
   editCard: [cardId: string]
+  contentScrolled: [scrolled: boolean]
 }>()
 
 const cardStore = useCardStore()
@@ -41,6 +42,17 @@ const highlitedCardIds = computed<Set<string>>(() => {
 const displayedCards = computed(() => {
   if (!favoritesOnly.value) return cardStore.cards
   return cardStore.cards.filter((c) => c.is_favorite)
+})
+
+const isCardListScrolled = ref(false)
+const isContentUnderHeader = computed(
+  () =>
+    displayedCards.value.length > 0 &&
+    isCardListScrolled.value,
+)
+
+watch(isContentUnderHeader, (v) => emit('contentScrolled', v), {
+  immediate: true,
 })
 
 function onToggleFavorite(cardId: string) {
@@ -95,6 +107,7 @@ function loadMore() {
       @card-seen="cardStore.markCardSeen"
       @card-leave-done="cardStore.onCardLeaveDone"
       @toggle-favorite="onToggleFavorite"
+      @scrolled-changed="(v) => (isCardListScrolled = v)"
     />
     <CircularProgressBar
       v-else-if="cardStore.isLoading"

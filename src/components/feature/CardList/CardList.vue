@@ -49,6 +49,7 @@ const emit = defineEmits<{
   cardSeen: [cardId: string]
   cardLeaveDone: [cardId: string]
   toggleFavorite: [cardId: string]
+  scrolledChanged: [scrolled: boolean]
 }>()
 
 const dateFormatter = useDate()
@@ -94,9 +95,39 @@ const {
   onActivity: onBadgeActivity,
 } = useDateBadge(listRef, items, headerHeight)
 
+const isContentUnderHeader = ref(false)
+
+watch(
+  isContentUnderHeader,
+  (v) => emit('scrolledChanged', v),
+  { immediate: true },
+)
+
+function updateScrolledState() {
+  const list = listRef.value
+  if (!list || items.value.length === 0) {
+    isContentUnderHeader.value = false
+    return
+  }
+
+  // items[0] is always the top-spacer (see convertCards) — the
+  // header only starts covering real content once its bottom edge
+  // has scrolled past the header. Compared in the virtualizer's own
+  // coordinate space (list.scrollOffset), not raw scrollEl.scrollTop,
+  // since the flex-grow filler above wrapEl offsets the two when the
+  // list is shorter than the viewport.
+  const topSpacerBottom =
+    list.getItemOffset(0) + list.getItemSize(0)
+  const visibleTop =
+    (list.scrollOffset ?? 0) + headerHeight.value
+
+  isContentUnderHeader.value = topSpacerBottom <= visibleTop
+}
+
 function refresh() {
   measure()
   updateBadge()
+  updateScrolledState()
 }
 
 const onScroll = useThrottleFn(() => {
@@ -165,6 +196,7 @@ watch(
 )
 
 function keepPinnedToBottom() {
+  refresh()
   if (distanceToBottom.value < BOTTOM_THRESHOLD) {
     scrollToBottom()
   }

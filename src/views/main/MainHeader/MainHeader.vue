@@ -16,6 +16,7 @@ const { t } = useI18n()
 
 defineProps<{
   bottomBorder?: boolean
+  transparent?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -44,7 +45,10 @@ useResizeObserver(rootEl, () => {
   <div
     ref="rootEl"
     class="main-header"
-    :class="{ 'main-header--with-border': bottomBorder }"
+    :class="{
+      'main-header--with-border': bottomBorder,
+      'main-header--transparent': transparent,
+    }"
   >
     <BaseIconButton
       :icon="SidebarIcon"
@@ -84,10 +88,16 @@ useResizeObserver(rootEl, () => {
   gap: var(--space-12);
   padding: calc(var(--space-12) + env(safe-area-inset-top))
     var(--space-16) var(--space-12);
+  border-bottom: var(--stroke-subtle) solid transparent;
+  transition: border-color 0.2s var(--ease-emphasized);
 
   &--with-border {
-    border-bottom: var(--stroke-subtle) solid
-      var(--border-muted);
+    border-color: var(--border-muted);
+  }
+
+  &--transparent {
+    background-color: transparent;
+    backdrop-filter: none;
   }
 
   &__title {

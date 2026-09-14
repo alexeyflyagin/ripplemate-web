@@ -3,14 +3,22 @@ import MainHeader from '@/views/main/MainHeader/MainHeader.vue'
 import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
 import { useCategoryStore } from '@/stores/domain/category'
 import BottomNavigation from './BottomNavigation/BottomNavigation.vue'
-import { ref, useTemplateRef, watch } from 'vue'
+import { computed, ref, useTemplateRef, watch } from 'vue'
 import InlineMainSidebar from '../MainSidebar/InlineMainSidebar.vue'
 import { useBreakpoints } from '@vueuse/core'
 import OverlayMainSidebar from '../MainSidebar/OverlayMainSidebar.vue'
+import { useRoute } from 'vue-router'
 
 const MOBILE_BREAKPOINT = 760
 
 const categoryStore = useCategoryStore()
+const route = useRoute()
+
+const isContentUnderHeader = ref<boolean>(false)
+const isFlowView = computed(() => route.name === 'flow')
+const showHeaderBorder = computed(
+  () => !isFlowView.value && isContentUnderHeader.value,
+)
 
 const bottomNavigationRef = useTemplateRef<
   InstanceType<typeof BottomNavigation>
@@ -72,7 +80,8 @@ watch(
     >
       <MainHeader
         class="main-view__header"
-        :bottom-border="true"
+        :bottom-border="showHeaderBorder"
+        :transparent="isFlowView"
         v-model:show-sidebar="showSidebar"
         @height-changed="(h) => (mainHeaderHeight = h)"
       />
@@ -85,6 +94,9 @@ watch(
         }"
         :header-height="mainHeaderHeight"
         @edit-card="bottomNavigationRef?.onEditCard"
+        @content-scrolled="
+          (v: boolean) => (isContentUnderHeader = v)
+        "
       />
 
       <BottomNavigation
