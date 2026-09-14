@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
+import { useManagedFocusTrap } from '@/composables/useManagedFocusTrap.ts'
 import { useTemplateRef } from 'vue'
 
 withDefaults(
@@ -17,7 +17,7 @@ const emit = defineEmits<{
 
 const overlay = useTemplateRef('overlay')
 
-useFocusTrap(overlay, {
+useManagedFocusTrap(overlay, {
   immediate: true,
 })
 </script>
