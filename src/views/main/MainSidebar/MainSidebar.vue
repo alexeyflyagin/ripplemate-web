@@ -133,11 +133,15 @@ function onCategory(id: string) {
 .main-sidebar {
   display: flex;
   flex-direction: column;
-  min-width: 260px;
+  min-width: 300px;
 
   &__workpsace {
     display: flex;
     padding: 0 var(--space-12) var(--space-8);
+  }
+
+  &__workspace-dropwdown {
+    margin-right: var(--space-8);
   }
 
   &__add-category-button {

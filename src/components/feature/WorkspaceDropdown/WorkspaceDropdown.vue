@@ -99,6 +99,7 @@ function onClick(e: MouseEvent) {
   justify-content: center;
   align-items: center;
   gap: var(--space-4);
+  overflow: hidden;
   transition: transform 0.3s var(--ease-bounce);
 }
 

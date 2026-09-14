@@ -23,7 +23,7 @@ withDefaults(
 <style lang="scss" scoped>
 .inline-main-sidebar {
   display: flex;
-  width: 280px;
+  width: 300px;
   border-right: var(--stroke-subtle) solid
     var(--border-muted);
   transition:
@@ -44,7 +44,7 @@ withDefaults(
 
 .main-sidebar {
   flex: 1;
-  min-width: 280px;
+  min-width: 300px;
   transition: transform 0.3s var(--ease-emphasized);
 }
 </style>

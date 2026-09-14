@@ -68,7 +68,7 @@ watch(
 .inline-main-sidebar {
   @include elevation-1;
   display: flex;
-  width: 280px;
+  width: 300px;
   transition:
     transform 0.2s var(--ease-emphasized),
     opacity 0.2s var(--ease-emphasized);
@@ -77,7 +77,7 @@ watch(
     var(--border-muted);
 
   &--collapsed {
-    transform: translateX(-280px);
+    transform: translateX(-300px);
     border-right: none;
     pointer-events: none;
 
@@ -90,7 +90,7 @@ watch(
 
 .main-sidebar {
   flex: 1;
-  min-width: 280px;
+  min-width: 300px;
   transition: opacity 0.2s var(--ease-emphasized);
 }
 </style>
