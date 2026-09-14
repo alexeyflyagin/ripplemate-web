@@ -124,14 +124,14 @@ defineExpose({ showNextCard })
   justify-content: center;
   align-items: center;
   padding-top: var(--main-header-height);
-  padding-bottom: var(--bottom-container-height);
+  padding-bottom: var(--bottom-navigation-height);
 }
 
 .empty-state {
   position: absolute;
   inset: 0;
   padding-top: var(--main-header-height);
-  padding-bottom: var(--bottom-container-height);
+  padding-bottom: var(--bottom-navigation-height);
 }
 
 .flow-card,
@@ -150,7 +150,7 @@ defineExpose({ showNextCard })
   padding-right: var(--space-32);
   padding-left: var(--space-32);
   padding-bottom: calc(
-    var(--bottom-container-height) + var(--space-24)
+    var(--bottom-navigation-height) + var(--space-24)
   );
   transform: translateY(calc(var(--card-offset) * 1px))
     scale(calc((1 - var(--progress)) * 0.04 + 0.96));

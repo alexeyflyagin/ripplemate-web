@@ -1,151 +1,99 @@
 <script setup lang="ts">
-import { useNavBar } from './useNavBar.ts'
 import MainHeader from '@/views/main/MainHeader/MainHeader.vue'
-import { NavBar, FAB } from '@/components/ui/NavBar'
-import SearchIcon from '~icons/icons-16/search'
-import { TermTextField } from '@/components/ui/TextField/TermTextField'
-import { computed, ref, watch } from 'vue'
-
-import { useI18n } from 'vue-i18n'
-import { useTermTextField } from './useTermTextField.ts'
-import { nextPaint } from '@/utils/nextPaint.ts'
-import { useBottomContainer } from './useBottomContainer.ts'
 import { useCurrentWorkspace } from '@/stores/domain/workspace/useCurrentWorkspace'
 import { useCategoryStore } from '@/stores/domain/category'
-import { useLibraryModeStore } from '@/stores/ui/libraryMode'
+import BottomNavigation from './BottomNavigation/BottomNavigation.vue'
+import { ref, useTemplateRef, watch } from 'vue'
+import InlineMainSidebar from '../MainSidebar/InlineMainSidebar.vue'
+import { useBreakpoints } from '@vueuse/core'
+import OverlayMainSidebar from '../MainSidebar/OverlayMainSidebar.vue'
 
-const { t } = useI18n()
+const MOBILE_BREAKPOINT = 760
 
-const termTextFieldRef =
-  ref<InstanceType<typeof TermTextField>>()
-const bottomContainerEl = ref<HTMLElement>()
+const categoryStore = useCategoryStore()
+
+const bottomNavigationRef = useTemplateRef<
+  InstanceType<typeof BottomNavigation>
+>('bottomNavigationRef')
+
 const mainHeaderHeight = ref<number>(0)
+const bottomNavigationHeight = ref<number>(0)
+const showSidebar = ref<boolean>(true)
+const breakpoints = useBreakpoints({
+  mobile: MOBILE_BREAKPOINT,
+})
 
-const { bottomContainerHeight } = useBottomContainer(
-  bottomContainerEl,
-)
-
-const libraryMode = useLibraryModeStore()
-const {
-  currentView,
-  goToView,
-  items: navItems,
-  setSelectedNavItemId,
-} = useNavBar()
-
-const {
-  collapsed,
-  mode,
-  placeholder,
-  actionCaptionData,
-  leadingButtonData,
-  secondaryButtonData,
-  sumbitButtonData,
-  termFieldValue,
-  editCard,
-} = useTermTextField(t)
-
-const hasText = computed(
-  () => !!termFieldValue.value.trim(),
-)
-
-const showControls = computed(
-  () => mode.value === 'default',
-)
-
-const isFlow = computed(() => currentView.value === 'flow')
+const isMobileLayout = breakpoints.smaller('mobile')
 
 const { currentWorkspaceId } = useCurrentWorkspace()
-const categoryStore = useCategoryStore()
 
 watch(
   currentWorkspaceId,
   (id) => {
-    if (id) categoryStore.loadCategories(id)
-    else categoryStore.clearCategories()
+    if (!id) {
+      categoryStore.clearCategories()
+      return
+    }
+
+    categoryStore.loadCategories(id)
   },
   { immediate: true },
 )
 
-async function onSearch() {
-  if (currentView.value !== 'library') {
-    await goToView('library')
-  }
-  libraryMode.openSearch()
-  await nextPaint()
-  termTextFieldRef.value?.focusInput()
-}
-
-async function onEditCard(cardId: string) {
-  libraryMode.openEdit(cardId)
-  if (currentView.value !== 'library')
-    setSelectedNavItemId('library')
-  await editCard(cardId)
-  await nextPaint()
-  termTextFieldRef.value?.focusInput(true)
-}
+watch(
+  isMobileLayout,
+  (v) => {
+    if (v) showSidebar.value = false
+    else showSidebar.value = true
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
-  <div
-    class="main-view"
-    :style="{
-      '--bottom-container-height':
-        bottomContainerHeight + 'px',
-      '--main-header-height': mainHeaderHeight + 'px',
-    }"
-  >
-    <MainHeader
-      class="main-header"
-      @height-changed="(h) => (mainHeaderHeight = h)"
+  <div class="main-view">
+    <OverlayMainSidebar
+      v-if="isMobileLayout"
+      class="main-view__overlay-sidebar"
+      :collapsed="!showSidebar"
+      @close="() => (showSidebar = false)"
     />
-    <RouterView
-      :header-height="mainHeaderHeight"
-      @edit-card="onEditCard"
+    <InlineMainSidebar
+      v-if="!isMobileLayout"
+      class="main-view__sidebar"
+      :collapsed="!showSidebar"
     />
-    <div class="bottom-container" ref="bottomContainerEl">
-      <div class="bottom-container__content">
-        <div
-          class="composer"
-          :class="{ 'composer--field-collapsed': isFlow }"
-        >
-          <NavBar
-            v-if="showControls"
-            class="composer__nav-bar"
-            :class="{
-              'composer__control--collapsed': hasText,
-            }"
-            :nav-items="navItems"
-            :selected-id="currentView"
-            @update:selected-id="setSelectedNavItemId"
-          />
-          <TermTextField
-            ref="termTextFieldRef"
-            class="composer__field"
-            :class="{
-              'composer__field--collapsed': isFlow,
-              'composer__field--nowrap': !hasText,
-            }"
-            :placeholder="placeholder"
-            :action-caption="actionCaptionData"
-            v-model:model-value="termFieldValue"
-            :max-length="255"
-            :leading-button="leadingButtonData"
-            :submit-button="sumbitButtonData"
-            :secondary-button="secondaryButtonData"
-            :collapsed="collapsed"
-          />
-          <FAB
-            v-if="showControls"
-            class="composer__search"
-            :class="{
-              'composer__control--collapsed': hasText,
-            }"
-            :icon="SearchIcon"
-            @click="onSearch"
-          />
-        </div>
-      </div>
+    <div
+      class="main-view__content"
+      :class="{
+        'main-view__content--overlay-opened':
+          isMobileLayout && showSidebar,
+      }"
+    >
+      <MainHeader
+        class="main-view__header"
+        :bottom-border="true"
+        v-model:show-sidebar="showSidebar"
+        @height-changed="(h) => (mainHeaderHeight = h)"
+      />
+
+      <RouterView
+        class="router"
+        :style="{
+          '--bottom-navigation-height': `${bottomNavigationHeight}px`,
+          '--main-header-height': `${mainHeaderHeight}px`,
+        }"
+        :header-height="mainHeaderHeight"
+        @edit-card="bottomNavigationRef?.onEditCard"
+      />
+
+      <BottomNavigation
+        ref="bottomNavigationRef"
+        class="main-view__navigation"
+        @height-changed="
+          (v) => (bottomNavigationHeight = v)
+        "
+      />
     </div>
   </div>
 </template>
@@ -157,109 +105,48 @@ async function onEditCard(cardId: string) {
 .main-view {
   position: relative;
   display: flex;
-  flex-direction: column;
   height: 100%;
-}
 
-.main-header {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  flex-shrink: 0;
-  z-index: 10;
-}
+  &__overlay-sidebar {
+    position: absolute;
+    inset: 0;
+    z-index: 200;
+  }
 
-:deep(.home-view),
-:deep(.flow-view) {
-  flex: 1;
-  min-height: 0;
-}
-
-.composer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-width: 0;
-  min-height: 54px;
-}
-
-.composer__nav-bar,
-.composer__search {
-  flex: none;
-  align-self: center;
-  overflow: hidden;
-  max-width: 240px;
-  opacity: 1;
-  pointer-events: auto;
-  transition:
-    max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    margin 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.composer__nav-bar {
-  margin-right: var(--space-8);
-}
-
-.composer__search {
-  margin-left: var(--space-8);
-}
-
-.composer--field-collapsed .composer__search {
-  margin-left: 0;
-}
-
-.composer__control--collapsed {
-  max-width: 0;
-  margin-right: 0;
-  margin-left: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.composer__field {
-  @include elevation-1;
-  flex: 1 1 0;
-  min-width: 0;
-  overflow: hidden;
-  align-self: center;
-  pointer-events: auto;
-  transition:
-    flex-grow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-    margin 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.composer__field--nowrap :deep(.text-area) {
-  white-space: nowrap;
-  overflow: hidden;
-}
-.composer__field--collapsed {
-  flex-grow: 0;
-  margin: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.bottom-container {
-  position: absolute;
-  display: flex;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  justify-content: center;
-  padding: 0 0
-    calc(var(--space-24) + env(safe-area-inset-bottom));
-  z-index: 10;
-  pointer-events: none;
+  &__sidebar {
+    flex-shrink: 0;
+  }
 
   &__content {
+    position: relative;
+    display: flex;
     flex: 1;
-    min-width: 0;
-    max-width: var(--max-content-width-680);
-    padding: 0 var(--space-16);
-    box-sizing: border-box;
+    flex-direction: column;
+    transition: transform 0.2s var(--ease-emphasized);
+
+    &--overlay-opened {
+      transform: translateX(40px);
+    }
   }
+
+  &__header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 10;
+  }
+
+  &__navigation {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
+.router {
+  flex: 1;
+  min-height: 0;
 }
 </style>

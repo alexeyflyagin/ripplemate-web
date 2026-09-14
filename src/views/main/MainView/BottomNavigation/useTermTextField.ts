@@ -121,9 +121,11 @@ export function useTermTextField(t: ComposerTranslation) {
   >(() => {
     switch (libraryMode.mode) {
       case 'default':
+        if (!termFieldValue.value.trim()) return undefined
         return {
           icon: PlusIcon,
           variant: 'accent',
+          initAnimation: true,
           onClick: async () => {
             if (!currentWorkspaceId.value) return
             if (!termFieldValue.value.trim()) return

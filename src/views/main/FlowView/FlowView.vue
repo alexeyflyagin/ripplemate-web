@@ -84,7 +84,7 @@ async function loadNextCard() {
 .flow-deck {
   @include fade-mask(to bottom);
   --fade-start: calc(var(--main-header-height, 100px));
-  --fade-end: var(--bottom-container-height, 100px);
+  --fade-end: var(--bottom-navigation-height, 100px);
   position: relative;
   flex: 1;
 }

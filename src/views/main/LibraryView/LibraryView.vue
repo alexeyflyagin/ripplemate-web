@@ -120,7 +120,7 @@ function loadMore() {
 .empty-state {
   flex: 1;
   margin-top: var(--main-header-height);
-  margin-bottom: var(--bottom-container-height);
+  margin-bottom: var(--bottom-navigation-height);
 }
 
 .home-view {
@@ -135,16 +135,16 @@ function loadMore() {
   justify-content: center;
   align-items: center;
   margin-top: var(--main-header-height);
-  margin-bottom: var(--bottom-container-height);
+  margin-bottom: var(--bottom-navigation-height);
 }
 
 .card-list {
   --fade-start-color: rgba(0, 0, 0, 0.4);
   --fade-start-margin: var(--main-header-height, 100px);
   --fade-start: 30px;
-  --fade-end: var(--bottom-container-height, 100px);
+  --fade-end: var(--bottom-navigation-height, 100px);
   --bottom-spacer: calc(
-    var(--bottom-container-height) + var(--space-24)
+    var(--bottom-navigation-height) + var(--space-24)
   );
   --top-spacer: calc(
     var(--main-header-height, 200px) + 50px
