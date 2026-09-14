@@ -2,7 +2,7 @@
 import { BaseButton } from '@/components/ui/Button/BaseButton'
 import { computed, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
+import { useManagedFocusTrap } from '@/composables/useManagedFocusTrap.ts'
 
 const { t } = useI18n()
 
@@ -49,7 +49,7 @@ function onOverlay() {
   if (props.overlayClickIsCancel) emit('cancel')
 }
 
-useFocusTrap(overlay, {
+useManagedFocusTrap(overlay, {
   immediate: true,
   initialFocus: () =>
     props.type === 'positive'
