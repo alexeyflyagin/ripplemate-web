@@ -10,6 +10,7 @@ import type {
   CategoryRead,
   CategoryUpdate,
 } from '@/api/types'
+import { useCardStore } from '@/stores/domain/card'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -75,6 +76,7 @@ export const useCategoryStore = defineStore(
       categories.value = categories.value.filter(
         (c) => c.id !== id,
       )
+      useCardStore().removeCategoryFromCache(id)
     }
 
     async function getCategory(

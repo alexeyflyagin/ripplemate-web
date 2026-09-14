@@ -371,6 +371,32 @@ export const useCardStore = defineStore('card', () => {
     }
   }
 
+  function removeCategoryFromCache(categoryId: string) {
+    cache.value.delete(segmentKey(categoryId))
+
+    for (const [key, seg] of cache.value) {
+      const items = seg.items.filter(
+        (c) => c.category_id !== categoryId,
+      )
+      if (items.length !== seg.items.length) {
+        cache.value.set(key, {
+          items,
+          total: seg.total - (seg.items.length - items.length),
+        })
+      }
+    }
+
+    const removedFromSearch = searchResults.value.filter(
+      (c) => c.category_id === categoryId,
+    ).length
+    if (removedFromSearch > 0) {
+      searchResults.value = searchResults.value.filter(
+        (c) => c.category_id !== categoryId,
+      )
+      searchTotal.value -= removedFromSearch
+    }
+  }
+
   function stopDeleting(cardId: string) {
     pendingDelete.delete(cardId)
     if (!deletingIds.value.has(cardId)) return
@@ -457,5 +483,6 @@ export const useCardStore = defineStore('card', () => {
     deleteCard,
     getCard,
     clearWorkspaceCache,
+    removeCategoryFromCache,
   }
 })
