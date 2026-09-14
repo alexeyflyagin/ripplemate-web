@@ -2,7 +2,7 @@
 import { ref, useTemplateRef } from 'vue'
 import type { MenuItemData } from './ContextMenu.types.ts'
 import MenuItem from './MenuItem.vue'
-import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
+import { useManagedFocusTrap } from '@/composables/useManagedFocusTrap.ts'
 import { useMoveFocus } from '@/composables/useMoveFocus.ts'
 import {
   type OffsetOptions,
@@ -54,7 +54,7 @@ const { x, y, maxHeight } = useContextMenuPosition(
   },
 )
 
-const focusTrap = useFocusTrap(overlayRef, {
+useManagedFocusTrap(overlayRef, {
   immediate: true,
 })
 
@@ -62,8 +62,17 @@ useMoveFocus(menuEl, { withArrows: true })
 
 useInitialScroll(elements, menuEl, props.initialScrollToId)
 
+// Note: the trap is intentionally NOT deactivated here. Whether the
+// menu closes after an item click is entirely up to the caller (see
+// e.g. useProfileMenu, where most items keep the menu open so several
+// toggles can be picked in a row, and only some close it via
+// `overlay.close()`). Deactivating on every click regardless of
+// whether the menu actually closes left it open-but-untrapped, which
+// fights with any parent trap (e.g. the mobile sidebar's) that
+// reactivates once this one deactivates. Real cleanup happens in
+// useManagedFocusTrap's onBeforeUnmount once the menu is actually
+// removed from the DOM.
 function onClickItem(item: MenuItemData) {
-  focusTrap.deactivate({ returnFocus: false })
   emit('clickItem', item, props.payload)
 }
 </script>
